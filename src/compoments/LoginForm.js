@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
+// Login form 주변영역
 const DarkBackground = styled.div`
   position: fixed;
   left: 0;
@@ -12,6 +13,7 @@ const DarkBackground = styled.div`
   justify-content: center;
   background: rgba(0, 0, 0, 0.8);
 `;
+// LoginForm 영역
 const LoginFormStyle = styled.div`
   width: 300px;
   padding: 1.5rem;
@@ -57,6 +59,7 @@ const LoginFormStyle = styled.div`
     color: white;
   }
 `;
+// LoginForm 버튼
 const Button = styled.button`
   border-radius: 4px;
   font-weight: bold;
