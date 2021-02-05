@@ -170,11 +170,11 @@ export default function Nav() {
             <MdMenu />
             <span>카테고리</span>
             <DropDownMenu>
-              <DropDownContent href="/">한식</DropDownContent>
-              <DropDownContent href="/">중식</DropDownContent>
-              <DropDownContent href="/">양식</DropDownContent>
-              <DropDownContent href="/">일식</DropDownContent>
-              <DropDownContent href="/">음료/술</DropDownContent>
+              <DropDownContent to="/">한식</DropDownContent>
+              <DropDownContent to="/">중식</DropDownContent>
+              <DropDownContent to="/">양식</DropDownContent>
+              <DropDownContent to="/">일식</DropDownContent>
+              <DropDownContent to="/">음료/술</DropDownContent>
             </DropDownMenu>
           </CategoryMenu>
           <CategoryItem>랭킹</CategoryItem>
