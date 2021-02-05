@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 export default function Recipe({ recipe }) {
   const { title, thumnailUrl, userName, rate, views } = recipe;
   const starRate = Number(rate) * 20;
-  console.log(starRate);
   return (
     <RecipeWrap>
       <Thumnail>
