@@ -5,7 +5,7 @@ import Recipe from "./Recipe";
 
 const RecipeListContainer = styled.div`
   display: table;
-  margin: 0 auto;
+  margin: 10px auto;
   width: 100%;
   height: calc(100vh - 6rem);
 `;
