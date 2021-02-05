@@ -45,7 +45,7 @@ export default function Nav() {
             </MyPageLink>
           </CategoryItem>
           <CategoryItem>
-            <MyPageLink to="/myrecipe">
+            <MyPageLink to="/postrecipe">
               <HiOutlinePencil />
             </MyPageLink>
           </CategoryItem>
