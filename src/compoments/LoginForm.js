@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 // Login form 주변영역
 const DarkBackground = styled.div`
+  z-index: 1000;
   position: fixed;
   left: 0;
   top: 0;
@@ -15,6 +17,7 @@ const DarkBackground = styled.div`
 `;
 // LoginForm 영역
 const LoginFormStyle = styled.div`
+  position: relative;
   width: 300px;
   padding: 1.5rem;
   background: white;
@@ -59,6 +62,7 @@ const LoginFormStyle = styled.div`
     color: white;
   }
 `;
+
 // LoginForm 버튼
 const Button = styled.button`
   border-radius: 4px;
@@ -74,11 +78,22 @@ const Button = styled.button`
   border: 1px solid lightgray;
 `;
 
-function LoginForm() {
+const Close = styled.span`
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  cursor: pointer;
+`;
+
+function LoginForm({ show, isShow }) {
+  if (!show) {
+    return null;
+  }
+
   return (
     <DarkBackground>
       <LoginFormStyle>
-        <a href="/">닫기</a>
+        <Close onClick={() => isShow(false)}>닫기</Close>
         <h3>로그인</h3>
         <form>
           <input
@@ -106,3 +121,8 @@ function LoginForm() {
 }
 
 export default LoginForm;
+
+LoginForm.propTypes = {
+  show: PropTypes.bool.isRequired,
+  isShow: PropTypes.func.isRequired,
+};

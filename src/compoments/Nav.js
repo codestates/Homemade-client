@@ -1,10 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { darken, lighten } from "polished";
 import { MdMenu } from "react-icons/md";
 import { FiUser, FiSearch } from "react-icons/fi";
 import { HiOutlinePencil } from "react-icons/hi";
+import LoginForm from "./LoginForm";
+import SignUpForm from "./SignUpForm";
+
+export default function Nav() {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignUp] = useState(false);
+
+  return (
+    <NavWrap>
+      <TopBar>
+        <Info>
+          <InfoBtn onClick={() => setShowSignUp(true)}>회원가입</InfoBtn>
+          <InfoBtn onClick={() => setShowLogin(true)}>로그인</InfoBtn>
+        </Info>
+      </TopBar>
+      <BottomBar>
+        <Category>
+          <Logo to="/">Homemade</Logo>
+          <CategoryMenu>
+            <MdMenu />
+            <span>카테고리</span>
+            <DropDownMenu>
+              <DropDownContent to="/">한식</DropDownContent>
+              <DropDownContent to="/">중식</DropDownContent>
+              <DropDownContent to="/">양식</DropDownContent>
+              <DropDownContent to="/">일식</DropDownContent>
+              <DropDownContent to="/">음료/술</DropDownContent>
+            </DropDownMenu>
+          </CategoryMenu>
+          <CategoryItem>랭킹</CategoryItem>
+          <CategoryInput>
+            <input className="search" type="text" />
+            <FiSearch />
+          </CategoryInput>
+          <CategoryItem>
+            <MyPageLink to="/userinfo">
+              <FiUser />
+            </MyPageLink>
+          </CategoryItem>
+          <CategoryItem>
+            <MyPageLink to="/postrecipe">
+              <HiOutlinePencil />
+            </MyPageLink>
+          </CategoryItem>
+        </Category>
+      </BottomBar>
+      <LoginForm show={showLogin} isShow={setShowLogin} />
+      <SignUpForm show={showSignup} isShow={setShowSignUp} />
+    </NavWrap>
+  );
+}
 
 const NavWrap = styled.header`
   width: 100%
@@ -29,16 +80,21 @@ const Info = styled.section`
   }
 `;
 
-const InfoItem = styled(Link)`
+const InfoBtn = styled.button`
   color: #6f6f6f;
   font-size: 0.8rem;
   margin-left: 1rem;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
   &:hover {
     color: ${lighten(0.1, `#6f6f6f`)};
   }
   &:active {
     color: ${darken(0.1, `#6f6f6f`)};
+  }
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -77,7 +133,9 @@ const CategoryItem = styled.div`
   }
 `;
 
-const Logo = styled(CategoryItem)`
+const Logo = styled(CategoryItem.withComponent(Link))`
+  color: white;
+  text-decoration: none;
   width: 168px;
   font-size: 1.3rem;
 `;
@@ -153,47 +211,3 @@ const DropDownContent = styled(Link)`
     color: ${darken(0.1, `#6f6f6f`)};
   }
 `;
-
-export default function Nav() {
-  return (
-    <NavWrap>
-      <TopBar>
-        <Info>
-          <InfoItem to="/signup">회원가입</InfoItem>
-          <InfoItem to="/login">로그인</InfoItem>
-        </Info>
-      </TopBar>
-      <BottomBar>
-        <Category>
-          <Logo>Homemade</Logo>
-          <CategoryMenu>
-            <MdMenu />
-            <span>카테고리</span>
-            <DropDownMenu>
-              <DropDownContent href="/">한식</DropDownContent>
-              <DropDownContent href="/">중식</DropDownContent>
-              <DropDownContent href="/">양식</DropDownContent>
-              <DropDownContent href="/">일식</DropDownContent>
-              <DropDownContent href="/">음료/술</DropDownContent>
-            </DropDownMenu>
-          </CategoryMenu>
-          <CategoryItem>랭킹</CategoryItem>
-          <CategoryInput>
-            <input className="search" type="text" />
-            <FiSearch />
-          </CategoryInput>
-          <CategoryItem>
-            <MyPageLink to="/userinfo">
-              <FiUser />
-            </MyPageLink>
-          </CategoryItem>
-          <CategoryItem>
-            <MyPageLink to="/myrecipe">
-              <HiOutlinePencil />
-            </MyPageLink>
-          </CategoryItem>
-        </Category>
-      </BottomBar>
-    </NavWrap>
-  );
-}

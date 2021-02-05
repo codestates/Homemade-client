@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 export default function Comment({ nickname, createdAt, text, rate }) {
-  const starRate = rate * 20;
+  const starRate = Number(rate) * 20;
   return (
     <CommentWrap>
       <div>
@@ -12,7 +12,7 @@ export default function Comment({ nickname, createdAt, text, rate }) {
       </div>
       <StarRating className="star-ratings-sprite">
         <span
-          style={{ width: { starRate } }}
+          style={{ width: `${starRate}%` }}
           className="star-ratings-sprite-rating"
         />
       </StarRating>
