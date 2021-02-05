@@ -16,9 +16,18 @@ const RecipeListWrap = styled.div`
   justify-content: center;
 `;
 
+const Title = styled.div`
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
+  padding: 1rem;
+`;
+
 export default function RecipeList({ recipes }) {
   return (
     <RecipeListContainer>
+      <Title>오늘의 레시피에 대한 결과입니다.</Title>
       <RecipeListWrap>
         {recipes.map(recipe => (
           <Recipe key={recipe.id} recipe={recipe} />

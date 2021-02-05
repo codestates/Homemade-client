@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 export default function Recipe({ recipe }) {
   const { title, thumnailUrl, userName, rate, views } = recipe;
+  const starRate = Number(rate) * 20;
+  console.log(starRate);
   return (
     <RecipeWrap>
       <Thumnail>
@@ -13,8 +15,14 @@ export default function Recipe({ recipe }) {
         <Title>{title}</Title>
         <UserName>{userName}</UserName>
         <div>
-          <span>{rate}</span> &nbsp;
-          <span>조회수 {views}</span>
+          <StarRating>
+            <span
+              style={{ width: `${starRate}%` }}
+              className="star-ratings-sprite-rating"
+            />
+          </StarRating>{" "}
+          &nbsp;
+          <span>({views})</span>
         </div>
       </RecipeInfo>
     </RecipeWrap>
@@ -74,4 +82,26 @@ const Title = styled.div`
 const UserName = styled.div`
   font-size: 0.9rem;
   font-weight: 400;
+`;
+
+const StarRating = styled.div`
+  display: inline-block;
+  margin-top: 0.2rem;
+  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/2605/star-rating-sprite.png")
+    repeat-x;
+  font-size: 0;
+  height: 21px;
+  line-height: 0;
+  overflow: hidden;
+  text-indent: -999em;
+  width: 110px;
+
+  span {
+    background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/2605/star-rating-sprite.png")
+      repeat-x;
+    background-position: 0 100%;
+    float: left;
+    height: 21px;
+    display: block;
+  }
 `;
