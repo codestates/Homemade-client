@@ -59,7 +59,7 @@ const CommentInputForm = styled.form`
 
 const CommentInput = styled.textarea`
   width: 594px;
-  height: 82px;
+  height: 100px;
   font-size: 1.2rem;
   padding: 8px;
   margin: 0 auto;
