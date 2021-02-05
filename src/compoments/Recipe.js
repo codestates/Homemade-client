@@ -1,12 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 export default function Recipe({ recipe }) {
-  const { title, thumnailUrl, userName, rate, views } = recipe;
+  const { id, title, thumnailUrl, userName, rate, views } = recipe;
   const starRate = Number(rate) * 20;
   return (
-    <RecipeWrap>
+    <RecipeWrap to={`/recipe/${id}`}>
       <Thumnail>
         <img src={thumnailUrl} alt={title} />
       </Thumnail>
@@ -21,7 +22,7 @@ export default function Recipe({ recipe }) {
             />
           </StarRating>{" "}
           &nbsp;
-          <span>({views})</span>
+          <span>view: {views}</span>
         </div>
       </RecipeInfo>
     </RecipeWrap>
@@ -40,11 +41,13 @@ Recipe.propTypes = {
   ).isRequired,
 };
 
-const RecipeWrap = styled.div`
+const RecipeWrap = styled(Link)`
+  color: black;
+  text-decoration: none;
   display: inline-block;
   width: 272px;
   height: 342px;
-  margin: 0.5rem;
+  margin: 2rem;
   img {
     width: 210px;
     height: 210px;
