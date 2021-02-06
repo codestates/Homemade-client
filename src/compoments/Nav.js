@@ -1,21 +1,90 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { darken, lighten } from "polished";
 import { MdMenu } from "react-icons/md";
-import { FiUser, FiShoppingCart, FiSearch } from "react-icons/fi";
+import { FiUser, FiSearch } from "react-icons/fi";
+import { HiOutlinePencil } from "react-icons/hi";
+import LoginForm from "./LoginForm";
+import SignUpForm from "./SignUpForm";
 
+export default function Nav() {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignUp] = useState(false);
+  const [keyword, setKeyword] = useState("");
+
+  const categories = ["한식", "중식", "양식", "일식", "음료/술"];
+
+  return (
+    <NavWrap>
+      <TopBar>
+        <Info>
+          <InfoBtn onClick={() => setShowSignUp(true)}>회원가입</InfoBtn>
+          <InfoBtn onClick={() => setShowLogin(true)}>로그인</InfoBtn>
+        </Info>
+      </TopBar>
+      <BottomBar>
+        <Category>
+          <Logo to="/">Homemade</Logo>
+          <CategoryMenu>
+            <MdMenu />
+            <span>카테고리</span>
+            <DropDownMenu>
+              <DropDownContent to={`/search?category=${categories[0]}`}>
+                한식
+              </DropDownContent>
+              <DropDownContent to={`/search?category=${categories[1]}`}>
+                중식
+              </DropDownContent>
+              <DropDownContent to={`/search?category=${categories[2]}`}>
+                양식
+              </DropDownContent>
+              <DropDownContent to={`/search?category=${categories[3]}`}>
+                일식
+              </DropDownContent>
+              <DropDownContent to={`/search?category=${categories[4]}`}>
+                음료/술
+              </DropDownContent>
+            </DropDownMenu>
+          </CategoryMenu>
+          <CategoryItem>랭킹</CategoryItem>
+          <CategoryInput>
+            <Search
+              name="keyword"
+              value={keyword}
+              onChange={e => setKeyword(e.target.value)}
+              type="text"
+            />
+            <SearchRecipe to={`/search?q=${keyword}`}>
+              <FiSearch />
+            </SearchRecipe>
+          </CategoryInput>
+          <CategoryItem>
+            <MyPageLink to="/userinfo">
+              <FiUser />
+            </MyPageLink>
+          </CategoryItem>
+          <CategoryItem>
+            <MyPageLink to="/postrecipe">
+              <HiOutlinePencil />
+            </MyPageLink>
+          </CategoryItem>
+        </Category>
+      </BottomBar>
+      <LoginForm show={showLogin} isShow={setShowLogin} />
+      <SignUpForm show={showSignup} isShow={setShowSignUp} />
+    </NavWrap>
+  );
+}
 const NavWrap = styled.header`
   width: 100%
   height: 6rem;
 `;
-
 const TopBar = styled.article`
   width: 100%;
   height: 2rem;
   background-color: #f0f0f0;
 `;
-
 const Info = styled.section`
   width: 1020px;
   height: 2rem;
@@ -27,20 +96,23 @@ const Info = styled.section`
     width: 80%;
   }
 `;
-
-const InfoItem = styled(Link)`
+const InfoBtn = styled.button`
   color: #6f6f6f;
   font-size: 0.8rem;
   margin-left: 1rem;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
   &:hover {
     color: ${lighten(0.1, `#6f6f6f`)};
   }
   &:active {
     color: ${darken(0.1, `#6f6f6f`)};
   }
+  &:focus {
+    outline: none;
+  }
 `;
-
 const BottomBar = styled.article`
   svg {
     font-size: 2rem;
@@ -49,7 +121,6 @@ const BottomBar = styled.article`
   height: 4rem;
   background-color: #9a8b80;
 `;
-
 const Category = styled.section`
   width: 1020px;
   height: 100%;
@@ -58,27 +129,43 @@ const Category = styled.section`
   color: white;
   font-size: 1.1rem;
 `;
-
-const CategoryItem = styled.span`
+const CategoryItem = styled.div`
+  max-width: 168px;
+  cursor: pointer;
   display: table-cell;
   line-height: 100%;
   vertical-align: middle;
-  flex: 1;
+  flex: 2;
+  max-width: 100px;
   margin-left: 10px;
-`;
-
-const MyPageLink = styled(Link)`
-  color: white;
   &:hover {
-    text-decoration: underline;
+    color: ${lighten(0.4, `#6f6f6f`)};
   }
   &:active {
-    text-decoration: underline;
     color: ${darken(0.1, `#6f6f6f`)};
   }
 `;
-
-const CategoryModal = styled(CategoryItem)`
+const Logo = styled(CategoryItem.withComponent(Link))`
+  color: white;
+  text-decoration: none;
+  width: 168px;
+  font-size: 1.3rem;
+`;
+const MyPageLink = styled(Link)`
+  color: white;
+  &:hover {
+    color: ${lighten(0.4, `#6f6f6f`)};
+  }
+  &:active {
+    color: ${darken(0.1, `#6f6f6f`)};
+  }
+`;
+const SearchRecipe = styled(Link)`
+  &:active {
+    color: ${darken(0.1, `#6f6f6f`)};
+  }
+`;
+const CategoryMenu = styled(CategoryItem)`
   width: 168px;
   span {
     position: relative;
@@ -86,70 +173,56 @@ const CategoryModal = styled(CategoryItem)`
   }
   svg {
     margin-right: 8px;
-    // &:hover {
-    //   color: ${lighten(0.1, `#6f6f6f`)};
-    // }
-    // &:active {
-    //   color: ${darken(0.1, `#6f6f6f`)};
-    // }
+  }
+  &:hover {
+    color: white;
+    div {
+      display: block;
+    }
   }
 `;
-
 const CategoryInput = styled.span`
   position: relative;
-  flex: 2;
+  flex: 4;
   display: flex;
   width: 100%;
-  input {
-    outline: none;
-    width: 90%;
-    height: 36px;
-    border-radius: 8px;
-    border: 0.5px solid #6f6f6f;
-    margin-top: 14px;
-  }
   svg {
     font-size: 1.6rem;
     position: absolute;
     top: 18px;
     right: 50px;
     color: black;
+    &:active {
+      color: ${darken(0.1, `#6f6f6f`)};
+    }
   }
 `;
-
-export default function Nav() {
-  return (
-    <NavWrap>
-      <TopBar>
-        <Info>
-          <InfoItem to="/signup">회원가입</InfoItem>
-          <InfoItem to="/login">로그인</InfoItem>
-        </Info>
-      </TopBar>
-      <BottomBar>
-        <Category>
-          <CategoryItem>로고</CategoryItem>
-          <CategoryModal>
-            <MdMenu />
-            <span>카테고리</span>
-          </CategoryModal>
-          <CategoryItem>랭킹</CategoryItem>
-          <CategoryInput>
-            <input className="search" type="text" />
-            <FiSearch />
-          </CategoryInput>
-          <CategoryItem>
-            <MyPageLink to="/userinfo">
-              <FiUser />
-            </MyPageLink>
-          </CategoryItem>
-          <CategoryItem>
-            <MyPageLink to="/myrecipe">
-              <FiShoppingCart />
-            </MyPageLink>
-          </CategoryItem>
-        </Category>
-      </BottomBar>
-    </NavWrap>
-  );
-}
+const Search = styled.input`
+  outline: none;
+  width: 90%;
+  height: 36px;
+  border-radius: 8px;
+  border: 0.5px solid #6f6f6f;
+  margin-top: 14px;
+`;
+const DropDownMenu = styled.div`
+  display: none;
+  position: absolute;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  background-color: #f1f1f1;
+  width: 120px;
+  z-index: 1;
+  transform: translateY(1rem);
+`;
+const DropDownContent = styled(Link)`
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  &:hover {
+    color: ${lighten(0.1, `#6f6f6f`)};
+  }
+  &:active {
+    color: ${darken(0.1, `#6f6f6f`)};
+  }
+`;

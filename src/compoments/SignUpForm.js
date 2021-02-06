@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 // SignUpForm 주변영역
 const DarkBackground = styled.div`
@@ -12,6 +13,7 @@ const DarkBackground = styled.div`
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
 `;
 // SignUpForm 영역
 const SignUpFormStyle = styled.div`
@@ -97,7 +99,10 @@ const Button = styled.button`
   border: 1px solid lightgray;
 `;
 
-function SignUpForm() {
+export default function SignUpForm({ show, isShow }) {
+  if (!show) {
+    return null;
+  }
   return (
     <DarkBackground>
       <SignUpFormStyle>
@@ -156,7 +161,9 @@ function SignUpForm() {
           </table>
           <div id="button-wrap">
             <input type="submit" id="sign-up" value="가입하기" />
-            <Button type="button">취소</Button>
+            <Button type="button" onClick={() => isShow(false)}>
+              취소
+            </Button>
           </div>
         </form>
       </SignUpFormStyle>
@@ -164,4 +171,7 @@ function SignUpForm() {
   );
 }
 
-export default SignUpForm;
+SignUpForm.propTypes = {
+  show: PropTypes.bool.isRequired,
+  isShow: PropTypes.func.isRequired,
+};
