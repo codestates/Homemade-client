@@ -1,7 +1,13 @@
 import React from "react";
 import RecipeList from "../compoments/RecipeList";
 import recipes from "../assets/recipes";
+import Banner from "../compoments/Banner";
 
 export default function Main() {
-  return <RecipeList recipes={recipes} />;
+  return (
+    <>
+      <Banner />
+      <RecipeList recipes={recipes} />;
+    </>
+  );
 }
