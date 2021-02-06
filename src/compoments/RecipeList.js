@@ -9,25 +9,14 @@ const RecipeListContainer = styled.div`
   width: 100%;
   height: calc(100vh - 6rem);
 `;
-
 const RecipeListWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 `;
-
-const Title = styled.div`
-  font-size: 1.5rem;
-  display: flex;
-  justify-content: center;
-  margin: 1rem;
-  padding: 1rem;
-`;
-
 export default function RecipeList({ recipes }) {
   return (
     <RecipeListContainer>
-      <Title>오늘의 레시피에 대한 결과입니다.</Title>
       <RecipeListWrap>
         {recipes.map(recipe => (
           <Recipe key={recipe.id} recipe={recipe} />
@@ -36,7 +25,6 @@ export default function RecipeList({ recipes }) {
     </RecipeListContainer>
   );
 }
-
 RecipeList.propTypes = {
   recipes: PropTypes.arrayOf(
     PropTypes.shape({
