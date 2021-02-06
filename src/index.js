@@ -1,12 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
-import LoginForm from "./compoments/LoginForm";
+import User from "./compoments/LoginForm";
+import Nav from "./compoments/Nav";
+import { Link } 
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
-    <LoginForm />
+    <User />
+    <Nav />
   </React.StrictMode>,
   document.getElementById("root"),
 );
