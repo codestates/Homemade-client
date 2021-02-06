@@ -1,9 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { darken, lighten } from "polished";
 import { MdMenu } from "react-icons/md";
-import { FiUser, FiShoppingCart, FiSearch } from "react-icons/fi";
+import { FiUser, FiSearch } from "react-icons/fi";
+import { HiOutlinePencil } from "react-icons/hi";
+import LoginForm from "./LoginForm";
+import SignUpForm from "./SignUpForm";
+
+export default function Nav() {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignUp] = useState(false);
+
+  return (
+    <NavWrap>
+      <TopBar>
+        <Info>
+          <InfoBtn onClick={() => setShowSignUp(true)}>회원가입</InfoBtn>
+          <InfoBtn onClick={() => setShowLogin(true)}>로그인</InfoBtn>
+        </Info>
+      </TopBar>
+      <BottomBar>
+        <Category>
+          <Logo to="/">Homemade</Logo>
+          <CategoryMenu>
+            <MdMenu />
+            <span>카테고리</span>
+            <DropDownMenu>
+              <DropDownContent to="/">한식</DropDownContent>
+              <DropDownContent to="/">중식</DropDownContent>
+              <DropDownContent to="/">양식</DropDownContent>
+              <DropDownContent to="/">일식</DropDownContent>
+              <DropDownContent to="/">음료/술</DropDownContent>
+            </DropDownMenu>
+          </CategoryMenu>
+          <CategoryItem>랭킹</CategoryItem>
+          <CategoryInput>
+            <input className="search" type="text" />
+            <FiSearch />
+          </CategoryInput>
+          <CategoryItem>
+            <MyPageLink to="/userinfo">
+              <FiUser />
+            </MyPageLink>
+          </CategoryItem>
+          <CategoryItem>
+            <MyPageLink to="/postrecipe">
+              <HiOutlinePencil />
+            </MyPageLink>
+          </CategoryItem>
+        </Category>
+      </BottomBar>
+      <LoginForm show={showLogin} isShow={setShowLogin} />
+      <SignUpForm show={showSignup} isShow={setShowSignUp} />
+    </NavWrap>
+  );
+}
 
 const NavWrap = styled.header`
   width: 100%
@@ -28,16 +80,21 @@ const Info = styled.section`
   }
 `;
 
-const InfoItem = styled(Link)`
+const InfoBtn = styled.button`
   color: #6f6f6f;
   font-size: 0.8rem;
   margin-left: 1rem;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
   &:hover {
     color: ${lighten(0.1, `#6f6f6f`)};
   }
   &:active {
     color: ${darken(0.1, `#6f6f6f`)};
+  }
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -59,26 +116,41 @@ const Category = styled.section`
   font-size: 1.1rem;
 `;
 
-const CategoryItem = styled.span`
+const CategoryItem = styled.div`
+  max-width: 168px;
+  cursor: pointer;
   display: table-cell;
   line-height: 100%;
   vertical-align: middle;
-  flex: 1;
+  flex: 2;
+  max-width: 100px;
   margin-left: 10px;
+  &:hover {
+    color: ${lighten(0.4, `#6f6f6f`)};
+  }
+  &:active {
+    color: ${darken(0.1, `#6f6f6f`)};
+  }
+`;
+
+const Logo = styled(CategoryItem.withComponent(Link))`
+  color: white;
+  text-decoration: none;
+  width: 168px;
+  font-size: 1.3rem;
 `;
 
 const MyPageLink = styled(Link)`
   color: white;
   &:hover {
-    text-decoration: underline;
+    color: ${lighten(0.4, `#6f6f6f`)};
   }
   &:active {
-    text-decoration: underline;
     color: ${darken(0.1, `#6f6f6f`)};
   }
 `;
 
-const CategoryModal = styled(CategoryItem)`
+const CategoryMenu = styled(CategoryItem)`
   width: 168px;
   span {
     position: relative;
@@ -86,18 +158,18 @@ const CategoryModal = styled(CategoryItem)`
   }
   svg {
     margin-right: 8px;
-    // &:hover {
-    //   color: ${lighten(0.1, `#6f6f6f`)};
-    // }
-    // &:active {
-    //   color: ${darken(0.1, `#6f6f6f`)};
-    // }
+  }
+  &:hover {
+    color: white;
+    div {
+      display: block;
+    }
   }
 `;
 
 const CategoryInput = styled.span`
   position: relative;
-  flex: 2;
+  flex: 4;
   display: flex;
   width: 100%;
   input {
@@ -117,39 +189,25 @@ const CategoryInput = styled.span`
   }
 `;
 
-export default function Nav() {
-  return (
-    <NavWrap>
-      <TopBar>
-        <Info>
-          <InfoItem to="/signup">회원가입</InfoItem>
-          <InfoItem to="/login">로그인</InfoItem>
-        </Info>
-      </TopBar>
-      <BottomBar>
-        <Category>
-          <CategoryItem>로고</CategoryItem>
-          <CategoryModal>
-            <MdMenu />
-            <span>카테고리</span>
-          </CategoryModal>
-          <CategoryItem>랭킹</CategoryItem>
-          <CategoryInput>
-            <input className="search" type="text" />
-            <FiSearch />
-          </CategoryInput>
-          <CategoryItem>
-            <MyPageLink to="/userinfo">
-              <FiUser />
-            </MyPageLink>
-          </CategoryItem>
-          <CategoryItem>
-            <MyPageLink to="/myrecipe">
-              <FiShoppingCart />
-            </MyPageLink>
-          </CategoryItem>
-        </Category>
-      </BottomBar>
-    </NavWrap>
-  );
-}
+const DropDownMenu = styled.div`
+  display: none;
+  position: absolute;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  background-color: #f1f1f1;
+  width: 120px;
+  z-index: 1;
+  transform: translateY(1rem);
+`;
+
+const DropDownContent = styled(Link)`
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  &:hover {
+    color: ${lighten(0.1, `#6f6f6f`)};
+  }
+  &:active {
+    color: ${darken(0.1, `#6f6f6f`)};
+  }
+`;
