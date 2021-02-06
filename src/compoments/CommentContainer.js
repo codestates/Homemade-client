@@ -45,7 +45,7 @@ CommentContainer.propTypes = {
 };
 
 const CommentWrap = styled.div`
-  width: 712px;
+  width: 720px;
   margin-top: 10px;
   display: flex;
   flex-direction: column;
