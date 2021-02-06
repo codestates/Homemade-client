@@ -13,6 +13,8 @@ export default function Nav() {
   const [showSignup, setShowSignUp] = useState(false);
   const [keyword, setKeyword] = useState("");
 
+  const categories = ["한식", "중식", "양식", "일식", "음료/술"];
+
   return (
     <NavWrap>
       <TopBar>
@@ -28,11 +30,21 @@ export default function Nav() {
             <MdMenu />
             <span>카테고리</span>
             <DropDownMenu>
-              <DropDownContent to="/">한식</DropDownContent>
-              <DropDownContent to="/">중식</DropDownContent>
-              <DropDownContent to="/">양식</DropDownContent>
-              <DropDownContent to="/">일식</DropDownContent>
-              <DropDownContent to="/">음료/술</DropDownContent>
+              <DropDownContent to={`/search?category=${categories[0]}`}>
+                한식
+              </DropDownContent>
+              <DropDownContent to={`/search?category=${categories[1]}`}>
+                중식
+              </DropDownContent>
+              <DropDownContent to={`/search?category=${categories[2]}`}>
+                양식
+              </DropDownContent>
+              <DropDownContent to={`/search?category=${categories[3]}`}>
+                일식
+              </DropDownContent>
+              <DropDownContent to={`/search?category=${categories[4]}`}>
+                음료/술
+              </DropDownContent>
             </DropDownMenu>
           </CategoryMenu>
           <CategoryItem>랭킹</CategoryItem>
