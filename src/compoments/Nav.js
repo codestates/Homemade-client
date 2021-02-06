@@ -11,6 +11,7 @@ import SignUpForm from "./SignUpForm";
 export default function Nav() {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignUp] = useState(false);
+  const [keyword, setKeyword] = useState("");
 
   return (
     <NavWrap>
@@ -36,8 +37,15 @@ export default function Nav() {
           </CategoryMenu>
           <CategoryItem>랭킹</CategoryItem>
           <CategoryInput>
-            <input className="search" type="text" />
-            <FiSearch />
+            <Search
+              name="keyword"
+              value={keyword}
+              onChange={e => setKeyword(e.target.value)}
+              type="text"
+            />
+            <SearchRecipe to={`/search?q=${keyword}`}>
+              <FiSearch />
+            </SearchRecipe>
           </CategoryInput>
           <CategoryItem>
             <MyPageLink to="/userinfo">
@@ -56,18 +64,15 @@ export default function Nav() {
     </NavWrap>
   );
 }
-
 const NavWrap = styled.header`
   width: 100%
   height: 6rem;
 `;
-
 const TopBar = styled.article`
   width: 100%;
   height: 2rem;
   background-color: #f0f0f0;
 `;
-
 const Info = styled.section`
   width: 1020px;
   height: 2rem;
@@ -79,7 +84,6 @@ const Info = styled.section`
     width: 80%;
   }
 `;
-
 const InfoBtn = styled.button`
   color: #6f6f6f;
   font-size: 0.8rem;
@@ -97,7 +101,6 @@ const InfoBtn = styled.button`
     outline: none;
   }
 `;
-
 const BottomBar = styled.article`
   svg {
     font-size: 2rem;
@@ -106,7 +109,6 @@ const BottomBar = styled.article`
   height: 4rem;
   background-color: #9a8b80;
 `;
-
 const Category = styled.section`
   width: 1020px;
   height: 100%;
@@ -115,7 +117,6 @@ const Category = styled.section`
   color: white;
   font-size: 1.1rem;
 `;
-
 const CategoryItem = styled.div`
   max-width: 168px;
   cursor: pointer;
@@ -132,14 +133,12 @@ const CategoryItem = styled.div`
     color: ${darken(0.1, `#6f6f6f`)};
   }
 `;
-
 const Logo = styled(CategoryItem.withComponent(Link))`
   color: white;
   text-decoration: none;
   width: 168px;
   font-size: 1.3rem;
 `;
-
 const MyPageLink = styled(Link)`
   color: white;
   &:hover {
@@ -149,7 +148,11 @@ const MyPageLink = styled(Link)`
     color: ${darken(0.1, `#6f6f6f`)};
   }
 `;
-
+const SearchRecipe = styled(Link)`
+  &:active {
+    color: ${darken(0.1, `#6f6f6f`)};
+  }
+`;
 const CategoryMenu = styled(CategoryItem)`
   width: 168px;
   span {
@@ -166,29 +169,30 @@ const CategoryMenu = styled(CategoryItem)`
     }
   }
 `;
-
 const CategoryInput = styled.span`
   position: relative;
   flex: 4;
   display: flex;
   width: 100%;
-  input {
-    outline: none;
-    width: 90%;
-    height: 36px;
-    border-radius: 8px;
-    border: 0.5px solid #6f6f6f;
-    margin-top: 14px;
-  }
   svg {
     font-size: 1.6rem;
     position: absolute;
     top: 18px;
     right: 50px;
     color: black;
+    &:active {
+      color: ${darken(0.1, `#6f6f6f`)};
+    }
   }
 `;
-
+const Search = styled.input`
+  outline: none;
+  width: 90%;
+  height: 36px;
+  border-radius: 8px;
+  border: 0.5px solid #6f6f6f;
+  margin-top: 14px;
+`;
 const DropDownMenu = styled.div`
   display: none;
   position: absolute;
@@ -198,7 +202,6 @@ const DropDownMenu = styled.div`
   z-index: 1;
   transform: translateY(1rem);
 `;
-
 const DropDownContent = styled(Link)`
   color: black;
   padding: 12px 16px;
