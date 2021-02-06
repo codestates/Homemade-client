@@ -2,7 +2,13 @@ import React from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Nav } from "./compoments/index";
-import { Main, UserInfo, SubmitRecipe, RecipesContainer } from "./pages/index";
+import {
+  Main,
+  UserInfo,
+  SubmitRecipe,
+  RecipeDescription,
+  RecipesContainer,
+} from "./pages/index";
 
 function App() {
   return (
@@ -19,6 +25,9 @@ function App() {
           </Route>
           <Route exact path="/postrecipe">
             <SubmitRecipe />
+          </Route>
+          <Route exact path="/recipe/:id">
+            <RecipeDescription />
           </Route>
           <Route path="/search">
             <RecipesContainer />
