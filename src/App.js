@@ -2,7 +2,7 @@ import React from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Nav } from "./compoments/index";
-import { Main, UserInfo, SubmitRecipe, RecipeDescription } from "./pages/index";
+import { Main, UserInfo, SubmitRecipe, RecipesContainer } from "./pages/index";
 
 function App() {
   return (
@@ -20,29 +20,25 @@ function App() {
           <Route exact path="/postrecipe">
             <SubmitRecipe />
           </Route>
-          <Route exact path="/recipe/:id">
-            <RecipeDescription />
+          <Route path="/search">
+            <RecipesContainer />
           </Route>
         </Switch>
       </Container>
     </Router>
   );
 }
-
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
-
   body {
     margin: 0;
     padding: 0;
   }
 `;
-
 const Container = styled.div`
   width: 80vw;
   margin: 0 auto;
 `;
-
 export default App;
