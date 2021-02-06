@@ -44,7 +44,7 @@ const RecipeWrap = styled.div`
   display: inline-block;
   width: 272px;
   height: 342px;
-  margin: 0.5rem;
+  margin: 2rem;
   img {
     width: 210px;
     height: 210px;
