@@ -28,7 +28,7 @@ export default function RecipeList({ recipes }) {
 RecipeList.propTypes = {
   recipes: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
       thumnailUrl: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       rate: PropTypes.string.isRequired,
