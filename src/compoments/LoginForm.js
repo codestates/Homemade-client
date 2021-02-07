@@ -1,6 +1,74 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+
+export default function LoginForm({ show, isShow }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleEmail = event => {
+    setEmail(event.target.value);
+  };
+  const handlePassword = event => {
+    setPassword(event.target.value);
+  };
+  if (!show) {
+    return null;
+  }
+  const signinRequestHandler = () => {
+    console.log("서버로 로그인 요청");
+    // axios
+    //     .post(
+    //       "https://localhost:4000/signin",
+    //       { email, password },
+    //       { headers: { "Content-Type": "application/json" }, withCredentials: true }
+    //     )
+    //     .then((res) => {
+    //       this.props.loginHandler(res.data);
+    //     })
+    //     .catch((err) => console.log(err));
+    // }
+  };
+  return (
+    <DarkBackground>
+      <LoginFormStyle>
+        <Close onClick={() => isShow(false)}>닫기</Close>
+        <h3>로그인</h3>
+        <form>
+          <input
+            type="text"
+            name="eamil"
+            value={email}
+            placeholder="email 을 입력하세요"
+            onChange={handleEmail}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            value={password}
+            placeholder="비밀번호를 입력하세요"
+            onChange={handlePassword}
+            required
+          />
+          <div>
+            <a href="/">비밀번호 찾기 </a>
+          </div>
+          <input
+            onClick={signinRequestHandler}
+            type="submit"
+            className="button"
+            value="로그인"
+          />
+        </form>
+      </LoginFormStyle>
+    </DarkBackground>
+  );
+}
+
+LoginForm.propTypes = {
+  show: PropTypes.bool.isRequired,
+  isShow: PropTypes.func.isRequired,
+};
 
 // Login form 주변영역
 const DarkBackground = styled.div`
@@ -64,19 +132,19 @@ const LoginFormStyle = styled.div`
 `;
 
 // LoginForm 버튼
-const Button = styled.button`
-  border-radius: 4px;
-  font-weight: bold;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  margin-top: 3px;
-  display: block;
-  width: 100%;
-  height: 40px;
-  background: blueviolet;
-  color: white;
-  border: 1px solid lightgray;
-`;
+// const Button = styled.button`
+//   border-radius: 4px;
+//   font-weight: bold;
+//   padding-left: 1rem;
+//   padding-right: 1rem;
+//   margin-top: 3px;
+//   display: block;
+//   width: 100%;
+//   height: 40px;
+//   background: blueviolet;
+//   color: white;
+//   border: 1px solid lightgray;
+// `;
 
 const Close = styled.span`
   position: absolute;
@@ -84,45 +152,3 @@ const Close = styled.span`
   top: 16px;
   cursor: pointer;
 `;
-
-function LoginForm({ show, isShow }) {
-  if (!show) {
-    return null;
-  }
-
-  return (
-    <DarkBackground>
-      <LoginFormStyle>
-        <Close onClick={() => isShow(false)}>닫기</Close>
-        <h3>로그인</h3>
-        <form>
-          <input
-            type="text"
-            name="eamil"
-            placeholder="email 을 입력하세요"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="비밀번호를 입력하세요"
-            required
-          />
-          <div>
-            <a href="/">회원 id 찾기 </a>
-            <a href="/">비밀번호 찾기 </a>
-          </div>
-          <input type="submit" className="button" value="로그인" />
-          <Button type="button">회원가입</Button>
-        </form>
-      </LoginFormStyle>
-    </DarkBackground>
-  );
-}
-
-export default LoginForm;
-
-LoginForm.propTypes = {
-  show: PropTypes.bool.isRequired,
-  isShow: PropTypes.func.isRequired,
-};
