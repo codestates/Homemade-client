@@ -7,7 +7,7 @@ const RecipeListContainer = styled.div`
   position: relative;
   margin-top: 10px;
   width: 100%;
-  height: calc(100vh - 6rem);
+  height: 100%;
 `;
 const RecipeListWrap = styled.div`
   display: flex;
@@ -28,7 +28,7 @@ export default function RecipeList({ recipes }) {
 RecipeList.propTypes = {
   recipes: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
       thumnailUrl: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       rate: PropTypes.string.isRequired,
