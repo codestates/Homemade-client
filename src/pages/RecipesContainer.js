@@ -24,11 +24,13 @@ export default function RecipesContainer() {
     .fill(firstPage)
     .map((el, idx) => el + idx);
 
-  const query = Object.entries(params)
-    .map(el => el.join("="))
-    .join("&");
-  const queryWithoutPage = query.slice(0, query.indexOf("page=") + 5);
+  let query;
 
+  if (Object.keys(params).includes("q")) {
+    query = `q=${params.q}&page=`;
+  } else {
+    query = `category=${params.category}&page=`;
+  }
   return (
     <>
       <Result>{result}에 대한 결과입니다.</Result>
@@ -39,9 +41,7 @@ export default function RecipesContainer() {
             ""
           ) : (
             <PageItem>
-              <Link to={`/search?${queryWithoutPage}${firstPage - 1}`}>
-                &lt;
-              </Link>
+              <Link to={`/search?${query}${firstPage - 1}`}>&lt;</Link>
             </PageItem>
           )}
           {currentPages.map(el => {
@@ -49,16 +49,14 @@ export default function RecipesContainer() {
               el > recipesPerPage ? (
               ""
             ) : (
-              <PageItem current={currentpage === el}>
-                <Link to={`/search?${queryWithoutPage}${el}`}>{el}</Link>
+              <PageItem key={el} current={currentpage === el}>
+                <Link to={`/search?${query}${el}`}>{el}</Link>
               </PageItem>
             );
           })}
           {recipesPerPage >= firstPage + 9 && (
             <PageItem>
-              <Link to={`/search?${queryWithoutPage}${firstPage + 10}`}>
-                &gt;
-              </Link>
+              <Link to={`/search?${query}${firstPage + 10}`}>&gt;</Link>
             </PageItem>
           )}
         </PageWrap>
