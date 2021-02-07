@@ -10,8 +10,31 @@ function Information({ userinfo, myrecipes }) {
   const [avatarModify, setAvatarModify] = useState(false);
   const [passwordModify, setPasswordModify] = useState(false);
   const [mobileModify, setMobileModify] = useState(false);
-
+  // 비밀번호 변경에대한 상태
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+  const [message, setMessage] = useState("");
+  const [isValidPassword, setIsValidPassword] = useState(false);
+  // 비밀번호 일치여부 판단
+  const handleConfirmPassword = event => {
+    const { value } = event.target;
+    setPassword(value);
+  };
+  const handleConfirmrePassword = event => {
+    const { value } = event.target;
+    setPasswordCheck(value);
+    if (value !== password) {
+      setMessage("비밀번호 불일치");
+      setIsValidPassword(false);
+    } else if (value === " ") {
+      setMessage("");
+    } else if (value === password) {
+      setMessage("비밀번호 일치");
+      setIsValidPassword(true);
+    }
+  };
   // 유저의 아바타가 등록유무에 따른 버튼 이름 변경
+
   const checkUserAvartar = isAvatar => {
     if (isAvatar) {
       return "이미지 변경";
@@ -91,16 +114,21 @@ function Information({ userinfo, myrecipes }) {
                     type="password"
                     name="password"
                     className="new-password"
+                    value={password}
                     placeholder="새로운 비밀번호"
+                    onChange={handleConfirmPassword}
                     required
                   />
                   <input
                     type="password"
                     name="password-check"
                     className="new-password"
+                    value={passwordCheck}
                     placeholder="새로운 비밀번호 확인 "
+                    onChange={handleConfirmrePassword}
                     required
-                  />
+                  />{" "}
+                  <Error check={isValidPassword}>{message}</Error>
                 </div>
               ) : (
                 <td className="user-info">********</td>
@@ -361,5 +389,9 @@ const RecipeCard = styled.div`
   margin: 20px;
   display: inline-block;
 `;
-
+const Error = styled.span`
+  font-size: 0.8rem;
+  float: left;
+  color: ${props => (props.check ? "green" : "red")};
+`;
 export default Information;
