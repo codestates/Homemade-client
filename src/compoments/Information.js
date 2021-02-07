@@ -1,11 +1,7 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-/* eslint-disable react/button-has-type */
-/* eslint-disable jsx-a11y/alt-text */
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import recipes from "../assets/recipes";
+import PropTypes from "prop-types";
 
 function Information({ userinfo, myrecipes }) {
   const { name, avatar, email, nickname, mobile } = userinfo;
@@ -14,6 +10,7 @@ function Information({ userinfo, myrecipes }) {
   const [avatarModify, setAvatarModify] = useState(false);
   const [passwordModify, setPasswordModify] = useState(false);
   const [mobileModify, setMobileModify] = useState(false);
+
   // 유저의 아바타가 등록유무에 따른 버튼 이름 변경
   const checkUserAvartar = isAvatar => {
     if (isAvatar) {
@@ -190,7 +187,11 @@ function Information({ userinfo, myrecipes }) {
           <RecipeCard>
             <CreatedAt>{recipe.created_at}</CreatedAt>
             <RecipeImg className="recipe" to={`/recipe/${recipe.id}`}>
-              <img className="thumbnail" src={recipe.thumbnail_uri} />
+              <img
+                className="thumbnail"
+                src={recipe.thumbnail_uri}
+                alt={recipe.title}
+              />
             </RecipeImg>
             <div> {recipe.title}</div>
           </RecipeCard>
@@ -241,7 +242,21 @@ Information.defaultProps = {
     },
   ],
 };
-
+Information.propTypes = {
+  userinfo: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    nickname: PropTypes.string.isRequired,
+    mobile: PropTypes.string.isRequired,
+  }),
+  myrecipes: PropTypes.arrayOf({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    thumbnail_uri: PropTypes.string.isRequired,
+    created_at: PropTypes.string.isRequired,
+  }),
+};
 const Background = styled.div`
   width: 100%;
   display: block;
