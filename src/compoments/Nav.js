@@ -37,19 +37,19 @@ export default function Nav({ isLogin, setIsLogin }) {
             <MdMenu />
             <span>카테고리</span>
             <DropDownMenu>
-              <DropDownContent to={`/search?category=${categories[0]}`}>
+              <DropDownContent to={`/search?category=${categories[0]}&page=1`}>
                 한식
               </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[1]}`}>
+              <DropDownContent to={`/search?category=${categories[1]}&page=1`}>
                 중식
               </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[2]}`}>
+              <DropDownContent to={`/search?category=${categories[2]}&page=1`}>
                 양식
               </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[3]}`}>
+              <DropDownContent to={`/search?category=${categories[3]}&page=1`}>
                 일식
               </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[4]}`}>
+              <DropDownContent to={`/search?category=${categories[4]}&page=1`}>
                 음료/술
               </DropDownContent>
             </DropDownMenu>
@@ -62,7 +62,7 @@ export default function Nav({ isLogin, setIsLogin }) {
               onChange={e => setKeyword(e.target.value)}
               type="text"
             />
-            <SearchRecipe to={`/search?q=${keyword}`}>
+            <SearchRecipe to={`/search?q=${keyword}&page=1`}>
               <FiSearch />
             </SearchRecipe>
           </CategoryInput>
