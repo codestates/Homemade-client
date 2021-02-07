@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { darken, lighten } from "polished";
@@ -8,7 +9,7 @@ import { HiOutlinePencil } from "react-icons/hi";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 
-export default function Nav() {
+export default function Nav({ isLogin, setIsLogin }) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignUp] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -19,8 +20,14 @@ export default function Nav() {
     <NavWrap>
       <TopBar>
         <Info>
-          <InfoBtn onClick={() => setShowSignUp(true)}>회원가입</InfoBtn>
-          <InfoBtn onClick={() => setShowLogin(true)}>로그인</InfoBtn>
+          {isLogin ? (
+            <InfoBtn onClick={() => setIsLogin(false)}>로그아웃</InfoBtn>
+          ) : (
+            <>
+              <InfoBtn onClick={() => setShowSignUp(true)}>회원가입</InfoBtn>
+              <InfoBtn onClick={() => setShowLogin(true)}>로그인</InfoBtn>
+            </>
+          )}
         </Info>
       </TopBar>
       <BottomBar>
@@ -30,19 +37,19 @@ export default function Nav() {
             <MdMenu />
             <span>카테고리</span>
             <DropDownMenu>
-              <DropDownContent to={`/search?category=${categories[0]}`}>
+              <DropDownContent to={`/search?category=${categories[0]}&page=1`}>
                 한식
               </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[1]}`}>
+              <DropDownContent to={`/search?category=${categories[1]}&page=1`}>
                 중식
               </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[2]}`}>
+              <DropDownContent to={`/search?category=${categories[2]}&page=1`}>
                 양식
               </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[3]}`}>
+              <DropDownContent to={`/search?category=${categories[3]}&page=1`}>
                 일식
               </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[4]}`}>
+              <DropDownContent to={`/search?category=${categories[4]}&page=1`}>
                 음료/술
               </DropDownContent>
             </DropDownMenu>
@@ -55,7 +62,7 @@ export default function Nav() {
               onChange={e => setKeyword(e.target.value)}
               type="text"
             />
-            <SearchRecipe to={`/search?q=${keyword}`}>
+            <SearchRecipe to={`/search?q=${keyword}&page=1`}>
               <FiSearch />
             </SearchRecipe>
           </CategoryInput>
@@ -76,6 +83,12 @@ export default function Nav() {
     </NavWrap>
   );
 }
+
+Nav.propTypes = {
+  isLogin: PropTypes.bool.isRequired,
+  setIsLogin: PropTypes.func.isRequired,
+};
+
 const NavWrap = styled.header`
   width: 100%
   height: 6rem;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Nav } from "./compoments/index";
@@ -11,9 +11,10 @@ import {
 } from "./pages/index";
 
 function App() {
+  const [isLogin, setIsLogin] = useState(false);
   return (
     <Router>
-      <Nav />
+      <Nav isLogin={isLogin} setInLogin={setIsLogin} />
       <GlobalStyle />
       <Container className="App">
         <Switch>
