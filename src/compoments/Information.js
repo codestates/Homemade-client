@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 function Information({ userinfo, myrecipes }) {
+  // Carousel 한 화면에 보여질 recipe의 수
+  const TOTAL_SLIDES = Math.floor(myrecipes.length / 4);
   const { name, avatar, email, nickname, mobile } = userinfo;
   const myRecipes = myrecipes.length > 0 ? myrecipes.length : 0;
   // 회원정보 변경에대한 상태
@@ -15,10 +17,40 @@ function Information({ userinfo, myrecipes }) {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [message, setMessage] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
+  // carousel 상태
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slideRef = useRef(null);
+  // carousel의 다음 슬라이드
+  const nextSlide = () => {
+    if (currentSlide >= TOTAL_SLIDES) {
+      // 더 이상 넘어갈 슬라이드가 없으면 슬라이드를 초기화합니다.
+      setCurrentSlide(0);
+    } else {
+      setCurrentSlide(currentSlide + 1);
+    }
+  };
+  // carousel의 이전 슬라이드
+  const prevSlide = () => {
+    if (currentSlide === 0) {
+      setCurrentSlide(TOTAL_SLIDES);
+    } else {
+      setCurrentSlide(currentSlide - 1);
+    }
+  };
   // 비밀번호 일치여부 판단
+  //! 비밀번호 , 비밀번호 확인 input 태그에 똑같은 조건이 모두 있어야 함.
   const handleConfirmPassword = event => {
     const { value } = event.target;
     setPassword(value);
+    if (value !== password) {
+      setMessage("비밀번호 불일치");
+      setIsValidPassword(false);
+    } else if (value === " ") {
+      setMessage("");
+    } else if (value === password) {
+      setMessage("비밀번호 일치");
+      setIsValidPassword(true);
+    }
   };
   const handleConfirmrePassword = event => {
     const { value } = event.target;
@@ -33,8 +65,11 @@ function Information({ userinfo, myrecipes }) {
       setIsValidPassword(true);
     }
   };
+  useEffect(() => {
+    slideRef.current.style.transition = "all 0.5s ease-in-out";
+    slideRef.current.style.transform = `translateX(-${currentSlide}00%)`;
+  }, [currentSlide]);
   // 유저의 아바타가 등록유무에 따른 버튼 이름 변경
-
   const checkUserAvartar = isAvatar => {
     if (isAvatar) {
       return "이미지 변경";
@@ -209,8 +244,35 @@ function Information({ userinfo, myrecipes }) {
           </Link>
         </UserInfoStyle>
       </UserinfoContainer>
-      <h4>My Recipe : {myRecipes} 개</h4>
-      {myrecipes.map(recipe => {
+      <MyrecipesTitle>My Recipe </MyrecipesTitle>
+      <RecipeQuantity>총 : {myRecipes} 개</RecipeQuantity>
+      <Container>
+        <SliderContainer ref={slideRef}>
+          {myrecipes.map(recipe => {
+            return (
+              <RecipeCard key={recipe.id}>
+                <CreatedAt>{recipe.created_at}</CreatedAt>
+                <RecipeImg className="recipe" to={`/recipe/${recipe.id}`}>
+                  <img
+                    className="thumbnail"
+                    src={recipe.thumbnail_uri}
+                    alt={recipe.title}
+                  />
+                </RecipeImg>
+                <div> {recipe.title}</div>
+              </RecipeCard>
+            );
+          })}
+        </SliderContainer>
+        <Pages>
+          {`${TOTAL_SLIDES + 1} 페이지 중 ${currentSlide + 1} 페이지`}
+        </Pages>
+        <ButtonWrap>
+          <ButtonImg onClick={prevSlide}>Previous Slide</ButtonImg>
+          <ButtonImg onClick={nextSlide}>Next Slide</ButtonImg>
+        </ButtonWrap>
+      </Container>
+      {/* {myrecipes.map(recipe => {
         return (
           <RecipeCard>
             <CreatedAt>{recipe.created_at}</CreatedAt>
@@ -224,7 +286,7 @@ function Information({ userinfo, myrecipes }) {
             <div> {recipe.title}</div>
           </RecipeCard>
         );
-      })}
+      })} */}
     </Background>
   );
 }
@@ -247,6 +309,60 @@ Information.defaultProps = {
     {
       id: 2,
       title: "콜라 만들기",
+      thumbnail_uri: "../images/recipeInfo1.jpg",
+      created_at: "2021-02-02",
+    },
+    {
+      id: 3,
+      title: "우유 만들기",
+      thumbnail_uri: "../images/recipeInfo1.jpg",
+      created_at: "2021-02-02",
+    },
+    {
+      id: 4,
+      title: "닭강정 만들기",
+      thumbnail_uri: "../images/recipeInfo1.jpg",
+      created_at: "2021-02-02",
+    },
+    {
+      id: 5,
+      title: "딸기 만들기",
+      thumbnail_uri: "../images/recipeInfo1.jpg",
+      created_at: "2021-02-02",
+    },
+    {
+      id: 3,
+      title: "우유 만들기",
+      thumbnail_uri: "../images/recipeInfo1.jpg",
+      created_at: "2021-02-02",
+    },
+    {
+      id: 4,
+      title: "닭강정 만들기",
+      thumbnail_uri: "../images/recipeInfo1.jpg",
+      created_at: "2021-02-02",
+    },
+    {
+      id: 5,
+      title: "딸기 만들기",
+      thumbnail_uri: "../images/recipeInfo1.jpg",
+      created_at: "2021-02-02",
+    },
+    {
+      id: 3,
+      title: "우유 만들기",
+      thumbnail_uri: "../images/recipeInfo1.jpg",
+      created_at: "2021-02-02",
+    },
+    {
+      id: 4,
+      title: "닭강정 만들기",
+      thumbnail_uri: "../images/recipeInfo1.jpg",
+      created_at: "2021-02-02",
+    },
+    {
+      id: 5,
+      title: "딸기 만들기",
       thumbnail_uri: "../images/recipeInfo1.jpg",
       created_at: "2021-02-02",
     },
@@ -367,7 +483,7 @@ const Button = styled.button`
 const RecipeImg = styled(Link)`
   display: inline-block;
   img {
-		width: 100%;
+		width: 200px;
     height: 239px;
 `;
 
@@ -393,5 +509,47 @@ const Error = styled.span`
   font-size: 0.8rem;
   float: left;
   color: ${props => (props.check ? "green" : "red")};
+`;
+
+// const CarouselImg = styled.img`
+//   widht: 100%;
+//   height: 30vh;
+// `;
+const Container = styled.div`
+  width: 100%;
+  overflow: hidden; // 선을 넘어간 이미지들은 보이지 않도록 처리합니다.
+`;
+const ButtonWrap = styled.div`
+  text-align: center;
+`;
+const ButtonImg = styled.button`
+  all: unset;
+  border: 1px solid #892ce2;
+  padding: 0.5em 2em;
+  color: #892ce2;
+  border-radius: 10px;
+  &:hover {
+    transition: all 0.3s ease-in-out;
+    background-color: #892ce2;
+    color: #fff;
+  }
+  margin: 20px;
+`;
+const SliderContainer = styled.div`
+  width: 100%;
+  height: 350px;
+  display: flex; //이미지들을 가로로 나열합니다.
+`;
+const Pages = styled.div`
+  text-align: center;
+  font-size: 0.9rem;
+  color: gray;
+`;
+const RecipeQuantity = styled.div`
+  text-align: right;
+`;
+const MyrecipesTitle = styled.div`
+  text-align: center;
+  font-size: 1.5rem;
 `;
 export default Information;
