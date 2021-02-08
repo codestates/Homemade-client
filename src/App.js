@@ -14,7 +14,7 @@ function App() {
   const [isLogin, setIsLogin] = useState(false);
   return (
     <Router>
-      <Nav isLogin={isLogin} setInLogin={setIsLogin} />
+      <Nav isLogin={isLogin} setIsLogin={setIsLogin} />
       <GlobalStyle />
       <Container className="App">
         <Switch>
