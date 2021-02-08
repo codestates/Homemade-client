@@ -12,9 +12,21 @@ import {
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
+
+  const signInHanlder = token => {
+    setAccessToken(token);
+    setIsLogin(true);
+  };
+
+  console.log(accessToken);
   return (
     <Router>
-      <Nav isLogin={isLogin} setIsLogin={setIsLogin} />
+      <Nav
+        isLogin={isLogin}
+        setIsLogin={setIsLogin}
+        signInHanlder={signInHanlder}
+      />
       <GlobalStyle />
       <Container className="App">
         <Switch>

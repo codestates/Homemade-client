@@ -9,7 +9,7 @@ import { HiOutlinePencil } from "react-icons/hi";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 
-export default function Nav({ isLogin, setIsLogin }) {
+export default function Nav({ isLogin, setIsLogin, signInHanlder }) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignUp] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -78,7 +78,11 @@ export default function Nav({ isLogin, setIsLogin }) {
           </CategoryItem>
         </Category>
       </BottomBar>
-      <LoginForm show={showLogin} isShow={setShowLogin} />
+      <LoginForm
+        show={showLogin}
+        isShow={setShowLogin}
+        signInHanlder={signInHanlder}
+      />
       <SignUpForm show={showSignup} isShow={setShowSignUp} />
     </NavWrap>
   );
@@ -87,6 +91,7 @@ export default function Nav({ isLogin, setIsLogin }) {
 Nav.propTypes = {
   isLogin: PropTypes.bool.isRequired,
   setIsLogin: PropTypes.func.isRequired,
+  signInHanlder: PropTypes.func.isRequired,
 };
 
 const NavWrap = styled.header`
