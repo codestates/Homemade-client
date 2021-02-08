@@ -4,7 +4,7 @@ import styled from "styled-components";
 export default function Banner() {
   return (
     <BannerWrap>
-      <BannerImg src="../images/banner.jpg" />
+      <BannerImg src="../images/banner.png" />
     </BannerWrap>
   );
 }
