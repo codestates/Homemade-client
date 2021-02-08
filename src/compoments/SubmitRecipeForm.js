@@ -1,9 +1,38 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import { BsImage } from "react-icons/bs";
 
 export default function SubmitRecipeForm() {
+  const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
+
+  const showImg = (e, idx) => {
+    setPreviews(state => {
+      return [
+        ...state.slice(0, idx),
+        URL.createObjectURL(e.target.files[0]),
+        ...state.slice(idx + 1),
+      ];
+    });
+  };
+
+  const handleChange = (e, idx) => {
+    setImages(state => {
+      return [
+        ...state.slice(0, idx),
+        e.target.files[0],
+        ...state.slice(idx + 1),
+      ];
+    });
+    showImg(e, idx);
+  };
+  const thumbnailRef = useRef();
+
+  const handleUpload = () => {
+    const fd = new FormData();
+    fd.append("images", images);
+    // axios.post('');
+  };
   return (
     <FormContainer>
       <FormTitle>
@@ -52,10 +81,26 @@ export default function SubmitRecipeForm() {
             </Select>
           </div>
         </RecipeInfoWrap>
-        <RecipeThumbnail>
-          <BsImage />
-          <div>대표사진 등록하기</div>
-        </RecipeThumbnail>
+        <RecipePreview>
+          <ImageInput
+            ref={thumbnailRef}
+            type="file"
+            accept="image/*"
+            onChange={e => handleChange(e, 0)}
+          />
+          {previews[0] ? (
+            <Preview active alt="test" src={previews[0]} />
+          ) : (
+            <Preview alt="thumbnail" src={previews[0]} />
+          )}
+          <PickImageButton
+            stlye={previews[0] ? { display: "none" } : { display: "block" }}
+            type="button"
+            onClick={() => thumbnailRef.current.click()}
+          >
+            대표사진 등록
+          </PickImageButton>
+        </RecipePreview>
       </RecipeWrap>
       <RecipeSequenceWrap>
         <RecipeSequence>
@@ -112,7 +157,9 @@ export default function SubmitRecipeForm() {
         </RecipeSequence>
       </RecipeSequenceWrap>
       <RecipeSaveWrap>
-        <SaveBtn type="button">저장하기</SaveBtn>
+        <SaveBtn type="button" onClick={handleUpload}>
+          저장하기
+        </SaveBtn>
       </RecipeSaveWrap>
     </FormContainer>
   );
@@ -149,9 +196,13 @@ const RecipeInfoWrap = styled.div`
   flex: 10;
   border-right: 1px solid #e6e7e8;
 
+  div {
+    height: 120px;
+  }
+
   div + div {
-    margin-top: 1.2rem;
-    margin-bottom: 1.2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   div > label {
@@ -163,22 +214,10 @@ const RecipeInfoWrap = styled.div`
   }
 `;
 
-const RecipeThumbnail = styled.div`
-  padding: 3rem;
-  flex: 2;
-  svg {
-    margin: 0 auto;
-    display: block;
-    font-size: 5rem;
-    padding: 2rem;
-    border: 1px solid #e6e7e8;
-  }
-  div {
-    font-size: 1.2rem;
-    display: block;
-    margin-top: 0.5rem;
-    text-align: center;
-  }
+const RecipePreview = styled.span`
+  flex: 3;
+  padding-top: 3rem;
+  text-align: center;
 `;
 
 const Input = styled.input`
@@ -192,13 +231,14 @@ const Input = styled.input`
   color: #555;
   border: 1px solid #e1e1e1;
   vertical-align: middle;
-  background: #f5f5f5;
+  background-color: #f5f5f5;
   &:focus {
     outline: none;
   }
 `;
 
 const Textarea = styled(Input.withComponent("textarea"))`
+  flex: 10;
   height: 10vh;
   resize: none;
 `;
@@ -230,4 +270,35 @@ const SaveBtn = styled.button`
   background: blueviolet;
   color: white;
   border: 1px solid lightgray;
+`;
+
+const ImageInput = styled.input`
+  display: none;
+`;
+
+const Preview = styled.img`
+  display: none;
+  ${({ active }) =>
+    active &&
+    `
+    display: inline-block;
+    width: 180px;
+    heigth: 180px;
+    max-width: 180px;
+    max-heigth: 180px;
+  `}
+`;
+
+const PickImageButton = styled.button`
+  width: 80%;
+  padding: 0.4rem;
+  border-radius: 4px;
+  border: 1px solid #e1e1e1;
+  background-color: #8a2ce2;
+  color: white;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
 `;
