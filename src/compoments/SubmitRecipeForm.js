@@ -33,6 +33,8 @@ export default function SubmitRecipeForm() {
     fd.append("images", images);
     // axios.post('');
   };
+  const currentSteps = [1, 2, 3, 4, 5];
+
   return (
     <FormContainer>
       <FormTitle>
@@ -104,56 +106,40 @@ export default function SubmitRecipeForm() {
       </RecipeWrap>
       <RecipeSequenceWrap>
         <RecipeSequence>
-          <div>
-            <label htmlFor="recipeStep1">
-              Step 1
-              <Textarea
-                placeholder="예) 고기에 적당한 간을 해주세요."
-                type="textarea"
-                name="recipeSummary"
-              />
-            </label>
-          </div>
-          <div>
-            <label htmlFor="recipeStep2">
-              Step 2
-              <Textarea
-                placeholder="예) 고기에 적당한 간을 해주세요."
-                type="textarea"
-                name="recipeSummary"
-              />
-            </label>
-          </div>
-          <div>
-            <label htmlFor="recipeStep3">
-              Step 3
-              <Textarea
-                placeholder="예) 고기에 적당한 간을 해주세요."
-                type="textarea"
-                name="recipeSummary"
-              />
-            </label>
-          </div>
-          <div>
-            <label htmlFor="recipeStep4">
-              Step 4
-              <Textarea
-                placeholder="예) 고기에 적당한 간을 해주세요."
-                type="textarea"
-                name="recipeSummary"
-              />
-            </label>
-          </div>
-          <div className="lastInfo">
-            <label htmlFor="recipeStep5">
-              Step 5
-              <Textarea
-                placeholder="예) 고기에 적당한 간을 해주세요."
-                type="textarea"
-                name="recipeSummary"
-              />
-            </label>
-          </div>
+          {currentSteps.map(step => {
+            const ref = useRef();
+            return (
+              <StepWrap>
+                <label htmlFor={`recipeStep${step}`}>
+                  Step {step}
+                  <Textarea
+                    placeholder="예) 고기에 적당한 간을 해주세요."
+                    type="textarea"
+                    name="recipeSummary"
+                  />
+                </label>
+                <RecipePreview>
+                  <ImageInput
+                    ref={ref}
+                    type="file"
+                    accept="image/*"
+                    onChange={e => handleChange(e, step)}
+                  />
+                  {previews[step] ? (
+                    <Preview active alt="recipe step" src={previews[step]} />
+                  ) : (
+                    <Preview alt="thumbnail" src={previews[step]} />
+                  )}
+                  <PickImageButton
+                    type="button"
+                    onClick={() => ref.current.click()}
+                  >
+                    사진 등록
+                  </PickImageButton>
+                </RecipePreview>
+              </StepWrap>
+            );
+          })}
         </RecipeSequence>
       </RecipeSequenceWrap>
       <RecipeSaveWrap>
@@ -282,15 +268,15 @@ const Preview = styled.img`
     active &&
     `
     display: inline-block;
-    width: 180px;
-    heigth: 180px;
-    max-width: 180px;
-    max-heigth: 180px;
+    width: 150px;
+    heigth: 150px;
+    max-width: 150px;
+    max-heigth: 150px;
   `}
 `;
 
 const PickImageButton = styled.button`
-  width: 80%;
+  width: 180px;
   padding: 0.4rem;
   border-radius: 4px;
   border: 1px solid #e1e1e1;
@@ -300,5 +286,19 @@ const PickImageButton = styled.button`
 
   &:focus {
     outline: none;
+  }
+`;
+
+const StepWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  label {
+    flex: 10;
+  }
+  textarea {
+    width: 90%;
+  }
+  span {
+    padding: 0;
   }
 `;
