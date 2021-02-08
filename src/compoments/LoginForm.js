@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import axios from "axios";
 import FindPassword from "./FindPassword";
 
-export default function LoginForm({ show, isShow }) {
+export default function LoginForm({ show, isShow, signInHanlder }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isFindPassword, setIsFindPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleEmail = event => {
     setEmail(event.target.value);
   };
@@ -19,23 +22,33 @@ export default function LoginForm({ show, isShow }) {
   if (!show) {
     return null;
   }
-  const signinRequestHandler = () => {
-    console.log("서버로 로그인 요청");
-    alert("로그인 되었습니다");
-    setEmail("");
-    setPassword("");
-    isShow(false);
-    // axios
-    //     .post(
-    //       "https://localhost:4000/signin",
-    //       { email, password },
-    //       { headers: { "Content-Type": "application/json" }, withCredentials: true }
-    //     )
-    //     .then((res) => {
-    //       this.props.loginHandler(res.data);
-    //     })
-    //     .catch((err) => console.log(err));
-    // }
+  const signinRequestHandler = async () => {
+    if (!email || !password) {
+      setErrorMessage("이메일과 패스워드를 모두 입력해 주세요.");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "https://homemade2021.ml/users/signIn",
+        { email, password },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        },
+      );
+      const {
+        data: {
+          data: { accessToken },
+        },
+      } = response;
+      if (accessToken) {
+        signInHanlder(accessToken);
+        isShow(false);
+        setErrorMessage("");
+      }
+    } catch (err) {
+      setErrorMessage("이메일과 비밀번호를 확인해 주세요.");
+    }
   };
   return (
     <DarkBackground>
@@ -68,9 +81,13 @@ export default function LoginForm({ show, isShow }) {
                 required
               />
             </InputWrap>
-
-            <Button onClick={handleFindPassword}>비밀번호 찾기</Button>
-            <Button onClick={signinRequestHandler}>로그인</Button>
+            {errorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : ""}
+            <Button type="button" onClick={handleFindPassword}>
+              비밀번호 찾기
+            </Button>
+            <Button type="button" onClick={signinRequestHandler}>
+              로그인
+            </Button>
           </div>
         </LoginFormStyle>
       )}
@@ -81,6 +98,7 @@ export default function LoginForm({ show, isShow }) {
 LoginForm.propTypes = {
   show: PropTypes.bool.isRequired,
   isShow: PropTypes.func.isRequired,
+  signInHanlder: PropTypes.func.isRequired,
 };
 
 // Login form 주변영역
@@ -165,4 +183,8 @@ const InputWrap = styled.div`
   margin-bottom: 30px;
   font-size: 0.8rem;
   text-align: right;
+`;
+const ErrorMessage = styled.div`
+  color: #ea4435;
+  font-size: 0.8rem;
 `;
