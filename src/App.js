@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import axios from "axios";
 import { Nav } from "./compoments/index";
 import {
   Main,
@@ -12,14 +13,39 @@ import {
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
 
-  const signInHanlder = token => {
-    setAccessToken(token);
+  const signInHanlder = () => {
     setIsLogin(true);
   };
-
-  console.log(accessToken);
+  // 홈페이지 첫 오픈 시 서버측에 accessToken의 유효성을 판단하고,
+  // 이상 없을 시 유저의 로그인 상태를 유지한다.
+  const initializeUserInfo = () => {
+    if (localStorage.getItem("loggedInfo") === null) {
+      return;
+    }
+    const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
+    try {
+      axios
+        .get("https://homemade2021.ml/users/userinfo", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        })
+        .then(() => {
+          JSON.parse(localStorage.getItem("loggedInfo")).isLogged = true;
+          setIsLogin(true);
+        });
+    } catch (err) {
+      console.log("토큰 만료됨.");
+    }
+  };
+  // 홈페이지 오픈시 한번만 실행
+  useEffect(() => {
+    console.log("한번만");
+    initializeUserInfo();
+  }, []);
   return (
     <Router>
       <Nav
