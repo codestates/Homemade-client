@@ -1,40 +1,16 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useRef } from "react";
+/* eslint-disable react/prop-types */
+import React, { useRef } from "react";
 import styled from "styled-components";
 
-export default function SubmitRecipeForm() {
-  const [images, setImages] = useState([]);
-  const [previews, setPreviews] = useState([]);
-
-  const showImg = (e, idx) => {
-    setPreviews(state => {
-      return [
-        ...state.slice(0, idx),
-        URL.createObjectURL(e.target.files[0]),
-        ...state.slice(idx + 1),
-      ];
-    });
-  };
-
-  const handleChange = (e, idx) => {
-    setImages(state => {
-      return [
-        ...state.slice(0, idx),
-        e.target.files[0],
-        ...state.slice(idx + 1),
-      ];
-    });
-    showImg(e, idx);
-  };
+export default function SubmitRecipeForm({
+  previews,
+  handleChange,
+  handleRecipe,
+  handleUpload,
+  currentSteps,
+}) {
   const thumbnailRef = useRef();
-
-  const handleUpload = () => {
-    const fd = new FormData();
-    fd.append("images", images);
-    // axios.post('');
-  };
-  const currentSteps = [1, 2, 3, 4, 5];
-
   return (
     <FormContainer>
       <FormTitle>
@@ -43,38 +19,45 @@ export default function SubmitRecipeForm() {
       <RecipeWrap>
         <RecipeInfoWrap>
           <div>
-            <label htmlFor="recipeTitle">
+            <label htmlFor="title">
               레시피 제목
               <Input
                 placeholder="예) 김치볶음밥 만들기"
                 type="text"
-                name="recipeTitle"
+                name="title"
+                onChange={e => handleRecipe(e)}
               />
             </label>
           </div>
           <div>
-            <label htmlFor="recipeSummary">
+            <label htmlFor="introduction">
               레시피 소개
               <Textarea
                 placeholder="이 레시피의 탄생배경을 적어주세요."
                 type="textarea"
-                name="recipeSummary"
+                name="introduction"
+                onChange={e => handleRecipe(e)}
               />
             </label>
           </div>
           <div>
-            <label htmlFor="recipeSummary">
+            <label htmlFor="ingredient">
               레시피 재료
               <Textarea
                 placeholder="이 레시피의 재료를 적어주세요."
                 type="textarea"
-                name="recipeSummary"
+                name="ingredient"
+                onChange={e => handleRecipe(e)}
               />
             </label>
           </div>
-          <div className="lastInfo">
-            <label htmlFor="recipeCategory">카테고리</label>
-            <Select name="recipeCategory" id="recipeCategory">
+          <div>
+            <label htmlFor="category">카테고리</label>
+            <Select
+              name="category"
+              id="recipeCategory"
+              onChange={e => handleRecipe(e)}
+            >
               <option value="한식">한식</option>
               <option value="중식">중식</option>
               <option value="일식">일식</option>
@@ -84,64 +67,67 @@ export default function SubmitRecipeForm() {
           </div>
         </RecipeInfoWrap>
         <RecipePreview>
-          <ImageInput
-            ref={thumbnailRef}
-            type="file"
-            accept="image/*"
-            onChange={e => handleChange(e, 0)}
-          />
-          {previews[0] ? (
-            <Preview active alt="test" src={previews[0]} />
-          ) : (
-            <Preview alt="thumbnail" src={previews[0]} />
-          )}
-          <PickImageButton
-            stlye={previews[0] ? { display: "none" } : { display: "block" }}
-            type="button"
-            onClick={() => thumbnailRef.current.click()}
-          >
-            대표사진 등록
-          </PickImageButton>
+          <ImageWrap>
+            <ImageInput
+              ref={thumbnailRef}
+              name="thumbnail"
+              type="file"
+              accept="image/*"
+              onChange={e => handleChange(e, 0)}
+            />
+            <Preview active={previews[0]} alt="test" src={previews[0]} />
+            <PickImageButton
+              active={!previews[0]}
+              type="button"
+              onClick={() => thumbnailRef.current.click()}
+            >
+              +
+            </PickImageButton>
+            <Announcement active={!previews[0]}>대표사진 등록하기</Announcement>
+          </ImageWrap>
         </RecipePreview>
       </RecipeWrap>
-      <RecipeSequenceWrap>
-        <RecipeSequence>
-          {currentSteps.map(step => {
-            const ref = useRef();
-            return (
-              <StepWrap>
-                <label htmlFor={`recipeStep${step}`}>
-                  Step {step}
-                  <Textarea
-                    placeholder="예) 고기에 적당한 간을 해주세요."
-                    type="textarea"
-                    name="recipeSummary"
-                  />
-                </label>
-                <RecipePreview>
+      <RecipeSequence>
+        {currentSteps.map(step => {
+          const ref = useRef();
+          return (
+            <StepWrap key={step}>
+              <label htmlFor={`step${step}`}>
+                Step {step}
+                <Textarea
+                  placeholder="예) 고기에 적당한 간을 해주세요."
+                  type="textarea"
+                  name={`step${step}`}
+                  onChange={e => handleRecipe(e)}
+                />
+              </label>
+              <RecipePreview>
+                <ImageWrap>
                   <ImageInput
                     ref={ref}
                     type="file"
                     accept="image/*"
+                    name={`step${step}`}
                     onChange={e => handleChange(e, step)}
                   />
-                  {previews[step] ? (
-                    <Preview active alt="recipe step" src={previews[step]} />
-                  ) : (
-                    <Preview alt="thumbnail" src={previews[step]} />
-                  )}
+                  <Preview
+                    active={previews[step]}
+                    alt="recipe step"
+                    src={previews[step]}
+                  />
                   <PickImageButton
+                    active={!previews[step]}
                     type="button"
                     onClick={() => ref.current.click()}
                   >
-                    사진 등록
+                    +
                   </PickImageButton>
-                </RecipePreview>
-              </StepWrap>
-            );
-          })}
-        </RecipeSequence>
-      </RecipeSequenceWrap>
+                </ImageWrap>
+              </RecipePreview>
+            </StepWrap>
+          );
+        })}
+      </RecipeSequence>
       <RecipeSaveWrap>
         <SaveBtn type="button" onClick={handleUpload}>
           저장하기
@@ -202,8 +188,9 @@ const RecipeInfoWrap = styled.div`
 
 const RecipePreview = styled.span`
   flex: 3;
-  padding-top: 3rem;
+  height: 200px;
   text-align: center;
+  border: 1px solid #e6e7e8;
 `;
 
 const Input = styled.input`
@@ -225,7 +212,7 @@ const Input = styled.input`
 
 const Textarea = styled(Input.withComponent("textarea"))`
   flex: 10;
-  height: 10vh;
+  height: 120px;
   resize: none;
 `;
 
@@ -233,18 +220,20 @@ const Select = styled(Input.withComponent("select"))`
   margin-left: 40px;
 `;
 
-const RecipeSequenceWrap = styled(RecipeWrap)`
+const RecipeSequence = styled.div`
   border-top: 1px solid #e6e7e8;
+  padding-top: 3rem;
+  padding-left: 3rem;
 `;
 
-const RecipeSequence = styled(RecipeInfoWrap)``;
-
-const RecipeSaveWrap = styled(RecipeSequenceWrap)`
+const RecipeSaveWrap = styled.div`
   display: block;
+  width: 100%;
   margin: 0 auto;
 `;
 
 const SaveBtn = styled.button`
+  cursor: pointer;
   border-radius: 4px;
   font-weight: bold;
   padding-left: 1rem;
@@ -267,38 +256,65 @@ const Preview = styled.img`
   ${({ active }) =>
     active &&
     `
-    display: inline-block;
-    width: 150px;
-    heigth: 150px;
-    max-width: 150px;
-    max-heigth: 150px;
+    display:block;
+    width:100%; 
+    height:100%; 
+    object-fit:cover; 
   `}
 `;
 
 const PickImageButton = styled.button`
-  width: 180px;
+  display: none;
+  width: 100%;
+  height: 100%;
+  font-size: 6rem;
   padding: 0.4rem;
   border-radius: 4px;
   border: 1px solid #e1e1e1;
-  background-color: #8a2ce2;
-  color: white;
+  background-color: #f7f7f7;
+  color: #aaaaaa;
   cursor: pointer;
 
   &:focus {
     outline: none;
   }
+
+  ${({ active }) =>
+    active &&
+    `
+    display: inline-block;
+  `}
 `;
 
 const StepWrap = styled.div`
   display: flex;
+  height: 200px;
+  margin-bottom: 3rem;
   flex-direction: row;
   label {
     flex: 10;
   }
   textarea {
+    height: 200px;
     width: 90%;
   }
   span {
     padding: 0;
   }
+`;
+
+const ImageWrap = styled.span`
+  width: 100%
+  heigth: 200px;
+`;
+
+const Announcement = styled.div`
+  display: none;
+  ${({ active }) =>
+    active &&
+    `
+    display:block;
+    margin-top: 2rem;
+  font-size: 1rem;
+  `}
 `;
