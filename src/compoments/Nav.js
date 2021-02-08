@@ -15,13 +15,18 @@ export default function Nav({ isLogin, setIsLogin, signInHanlder }) {
   const [keyword, setKeyword] = useState("");
 
   const categories = ["한식", "중식", "양식", "일식", "음료/술"];
+  // 회원이 로그아웃할 경우 localStorage의 accessToken을 삭제한다
+  const handleLogOut = () => {
+    localStorage.clear();
+    setIsLogin(false);
+  };
 
   return (
     <NavWrap>
       <TopBar>
         <Info>
           {isLogin ? (
-            <InfoBtn onClick={() => setIsLogin(false)}>로그아웃</InfoBtn>
+            <InfoBtn onClick={handleLogOut}>로그아웃</InfoBtn>
           ) : (
             <>
               <InfoBtn onClick={() => setShowSignUp(true)}>회원가입</InfoBtn>
