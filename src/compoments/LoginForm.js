@@ -22,6 +22,8 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
   if (!show) {
     return null;
   }
+  // 정상적으로 로그인 될 경우 localStorage에 accessToken을 저장
+  //! localStorage로 accessToken을 영구보관하여 로그인상태를 유지
   const signinRequestHandler = async () => {
     if (!email || !password) {
       setErrorMessage("이메일과 패스워드를 모두 입력해 주세요.");
@@ -42,6 +44,13 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
         },
       } = response;
       if (accessToken) {
+        localStorage.setItem(
+          "loggedInfo",
+          JSON.stringify({
+            isLogged: true,
+            accessToken,
+          }),
+        );
         signInHanlder(accessToken);
         isShow(false);
         setErrorMessage("");
