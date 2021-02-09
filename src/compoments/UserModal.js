@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 // UserModal 주변영역
 const DarkBackground = styled.div`
@@ -15,7 +16,7 @@ const DarkBackground = styled.div`
 `;
 // UserModal영역
 const UserModalStyle = styled.div`
-  width: 300px;
+  width: 400px;
   padding: 1.5rem;
   background: white;
   border-radius: 5px;
@@ -38,15 +39,19 @@ const Button = styled.button`
   border: 1px solid lightgray;
 `;
 
-function UserModal() {
+export default function UserModal({ closeForm }) {
   return (
     <DarkBackground>
       <UserModalStyle>
         <h3>정상적으로 회원가입이 되었습니다.</h3>
-        <Button type="button">확인</Button>
+        <Button type="button" onClick={closeForm}>
+          확인
+        </Button>
       </UserModalStyle>
     </DarkBackground>
   );
 }
 
-export default UserModal;
+UserModal.propTypes = {
+  closeForm: PropTypes.func.isRequired,
+};
