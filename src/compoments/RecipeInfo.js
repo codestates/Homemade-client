@@ -18,7 +18,8 @@ function RecipeInfo({
   const recipeContent = content.split("//");
 
   const ingredientImg = imageUrls[0];
-  const ingredientContent = recipeContent[0];
+  const introduction = recipeContent[0];
+  const ingredient = recipeContent[1];
   const starRate = Number(rate) * 20;
   return (
     <RecipeContainer>
@@ -29,6 +30,7 @@ function RecipeInfo({
       <Nickname>{nickname}</Nickname>
       <Title>
         {title}
+        <Introduction>{introduction}</Introduction>
         <StarRating>
           <span style={{ width: `${starRate}%` }} />
         </StarRating>
@@ -38,7 +40,7 @@ function RecipeInfo({
         <RecipeImg src={ingredientImg} alt="recipe" />
         <Description>
           <DescriptionTitle>재료</DescriptionTitle>
-          <DescriptionContent>{ingredientContent}</DescriptionContent>
+          <DescriptionContent>{ingredient}</DescriptionContent>
         </Description>
       </Article>
       {imageUrls.map((url, idx) =>
@@ -46,7 +48,7 @@ function RecipeInfo({
           <Article key={`${url + idx}`}>
             <RecipeImg src={url} alt="recipe" />
             <Description>
-              <DescriptionTitle>step {idx + 1}</DescriptionTitle>
+              <DescriptionTitle>step {idx}</DescriptionTitle>
               <DescriptionContent>{recipeContent[idx + 1]}</DescriptionContent>
             </Description>
           </Article>
@@ -175,6 +177,12 @@ const SmallInfo = styled.div`
   font-size: 0.8rem;
   color: #767676;
   text-align: right;
+`;
+
+const Introduction = styled.div`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
 `;
 
 export default RecipeInfo;
