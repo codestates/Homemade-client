@@ -1,11 +1,12 @@
 /* eslint-disable no-restricted-syntax */
 import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-// import axios from "axios";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 import SubmitRecipeForm from "../compoments/SubmitRecipeForm";
 
 export default function SubmitRecipe({ accessToken }) {
-  const [images, setImages] = useState({});
+  const [stepImages, setStepImages] = useState({});
   const [previews, setPreviews] = useState({});
   const [recipe, setRecipe] = useState({
     title: "",
@@ -44,11 +45,10 @@ export default function SubmitRecipe({ accessToken }) {
     const img = {};
     img[name] = image;
 
-    setImages(state => {
+    setStepImages(state => {
       return { ...state, ...img };
     });
     showImg(e);
-    console.log(images);
   };
 
   const handleRecipe = e => {
@@ -66,13 +66,9 @@ export default function SubmitRecipe({ accessToken }) {
 
   const handleUpload = async () => {
     const fd = new FormData();
-    Object.keys(images).forEach(key => {
-      console.log(key);
-      fd.append("imgs", images[key], key);
+    Object.keys(stepImages).forEach(key => {
+      fd.append("imgs", stepImages[key], key);
     });
-    // images.forEach(obj => {
-    //   fd.append("images", obj.image, obj.name);
-    // });
     const {
       introduction,
       ingredient,
@@ -91,35 +87,46 @@ export default function SubmitRecipe({ accessToken }) {
       step4,
       step5,
     ].join("//");
-    for (const pair of fd.entries()) {
-      console.log(`${pair[0]}, ${pair[1]}`);
-    }
-    console.log(content, accessToken);
-    // const response = await axios.post("/", fd, {
-    //   headers: { "Content-Type": "multipart/form-data" },
-    // });
-    // const [thumbnail, ...rest] = response   url이 되돌아오고
-    // rest.map((el.idx) => ({...el, order: idx}))
 
-    // const recipeInfo = {
-    //   thumbnail,
-    //   title: recipe.title,
-    //   images: rest,
-    //   category: recipe.category,
-    //   content
-    // };
+    const imgaeUrls = await axios.post("http://localhost:4000/image", fd, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-    // await axios.post("https://homemade2021.ml/recipes/content", recipeInfo, {
-    //   withCredentials: true,
-    //   headers: {
-    //     authorization: `Bearer ${accessToken}`,
-    //   },
-    // });
+    const {
+      data: { thumbnail, images },
+    } = imgaeUrls;
+
+    const recipeInfo = {
+      thumbnail,
+      title: recipe.title,
+      imageUrl: images,
+      category: recipe.category,
+      content,
+    };
+
+    const data = await axios.post(
+      "http://localhost:4000/recipes/content",
+      recipeInfo,
+      {
+        withCredentials: true,
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+
+    const {
+      data: { id },
+    } = data;
+
+    const history = useHistory();
+
+    history.push(`/recipe/${id}`);
   };
 
   return (
     <SubmitRecipeForm
-      images={images}
+      images={stepImages}
       previews={previews}
       recipe={recipe}
       handleChange={handleChange}
