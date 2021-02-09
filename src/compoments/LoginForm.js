@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
+import KakaoLogin from "react-kakao-login";
 import FindPassword from "./FindPassword";
 
 export default function LoginForm({ show, isShow, signInHanlder }) {
@@ -16,9 +17,19 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
   const handlePassword = event => {
     setPassword(event.target.value);
   };
+  // 로그인 form을 벗어날 경우 input value를 삭제
+  const closeForm = () => {
+    setEmail("");
+    setPassword("");
+    setErrorMessage("");
+    isShow(false);
+  };
   const handleFindPassword = () => {
+    setEmail("");
+    setPassword("");
     setIsFindPassword(true);
   };
+
   if (!show) {
     return null;
   }
@@ -69,7 +80,7 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
         />
       ) : (
         <LoginFormStyle>
-          <Close onClick={() => isShow(false)}>닫기</Close>
+          <Close onClick={closeForm}>닫기</Close>
           <h3>로그인</h3>
           <div>
             <InputWrap>
@@ -91,12 +102,21 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
               />
             </InputWrap>
             {errorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : ""}
-            <Button type="button" onClick={handleFindPassword}>
-              비밀번호 찾기
-            </Button>
-            <Button type="button" onClick={signinRequestHandler}>
-              로그인
-            </Button>
+
+            <ButtonWrap>
+              <Button type="button" onClick={handleFindPassword}>
+                비밀번호 찾기
+              </Button>
+              <Button type="button" onClick={signinRequestHandler}>
+                로그인
+              </Button>
+              <KakaoLogin
+                token={process.env.REACT_APP_KAKAO_JSAVASCRIPT_KEY}
+                onSuccess={console.log}
+                onFail={console.error}
+                onLogout={console.info}
+              />
+            </ButtonWrap>
           </div>
         </LoginFormStyle>
       )}
@@ -173,6 +193,7 @@ const Button = styled.button`
   padding-left: 1rem;
   padding-right: 1rem;
   margin-top: 3px;
+  margin-bottom: 5px;
   display: block;
   width: 100%;
   height: 40px;
@@ -196,4 +217,7 @@ const InputWrap = styled.div`
 const ErrorMessage = styled.div`
   color: #ea4435;
   font-size: 0.8rem;
+`;
+const ButtonWrap = styled.div`
+  text-align: center;
 `;
