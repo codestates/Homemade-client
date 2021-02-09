@@ -1,6 +1,7 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/prop-types */
-import React, { useRef } from "react";
+import React from "react";
 import styled from "styled-components";
 
 export default function SubmitRecipeForm({
@@ -9,8 +10,10 @@ export default function SubmitRecipeForm({
   handleRecipe,
   handleUpload,
   currentSteps,
+  AddStep,
+  stepRefs,
+  thumbnailRef,
 }) {
-  const thumbnailRef = useRef();
   return (
     <FormContainer>
       <FormTitle>
@@ -75,21 +78,26 @@ export default function SubmitRecipeForm({
               accept="image/*"
               onChange={e => handleChange(e, 0)}
             />
-            <Preview active={previews[0]} alt="test" src={previews[0]} />
+            <Preview
+              active={previews.thumbnail}
+              alt="test"
+              src={previews.thumbnail}
+            />
             <PickImageButton
-              active={!previews[0]}
+              active={!previews.thumbnail}
               type="button"
               onClick={() => thumbnailRef.current.click()}
             >
               +
             </PickImageButton>
-            <Announcement active={!previews[0]}>대표사진 등록하기</Announcement>
+            <Announcement active={!previews.thumbnail}>
+              대표사진 등록하기
+            </Announcement>
           </ImageWrap>
         </RecipePreview>
       </RecipeWrap>
       <RecipeSequence>
-        {currentSteps.map(step => {
-          const ref = useRef();
+        {currentSteps.map((step, i) => {
           return (
             <StepWrap key={step}>
               <label htmlFor={`step${step}`}>
@@ -104,21 +112,23 @@ export default function SubmitRecipeForm({
               <RecipePreview>
                 <ImageWrap>
                   <ImageInput
-                    ref={ref}
+                    ref={el => {
+                      stepRefs.current[i] = el;
+                    }}
                     type="file"
                     accept="image/*"
                     name={`step${step}`}
                     onChange={e => handleChange(e, step)}
                   />
                   <Preview
-                    active={previews[step]}
-                    alt="recipe step"
-                    src={previews[step]}
+                    active={previews[`step${step}`]}
+                    alt={`step${step}`}
+                    src={previews[`step${step}`]}
                   />
                   <PickImageButton
                     active={!previews[step]}
                     type="button"
-                    onClick={() => ref.current.click()}
+                    onClick={() => stepRefs.current[i].click()}
                   >
                     +
                   </PickImageButton>
@@ -128,6 +138,9 @@ export default function SubmitRecipeForm({
           );
         })}
       </RecipeSequence>
+      <button type="button" onClick={() => AddStep()}>
+        순서 추가
+      </button>
       <RecipeSaveWrap>
         <SaveBtn type="button" onClick={handleUpload}>
           저장하기

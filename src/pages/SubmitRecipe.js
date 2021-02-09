@@ -1,30 +1,53 @@
-import React, { useState } from "react";
+/* eslint-disable no-restricted-syntax */
+import React, { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import SubmitRecipeForm from "../compoments/SubmitRecipeForm";
 
-export default function SubmitRecipe() {
-  const [images, setImages] = useState([]);
-  const [previews, setPreviews] = useState([]);
+export default function SubmitRecipe({ accessToken }) {
+  const [images, setImages] = useState({});
+  const [previews, setPreviews] = useState({});
   const [recipe, setRecipe] = useState({
     title: "",
     category: "한식",
   });
+  const [currentSteps, setCurrentSteps] = useState([1, 2, 3, 4, 5]);
+  const stepRefs = useRef([]);
+  const thumbnailRef = useRef();
 
-  const showImg = (e, idx) => {
-    setPreviews(state => {
-      return [
-        ...state.slice(0, idx),
-        URL.createObjectURL(e.target.files[0]),
-        ...state.slice(idx + 1),
-      ];
+  useEffect(() => {
+    stepRefs.current = stepRefs.current.slice(0, currentSteps.length);
+  }, [currentSteps]);
+
+  const AddStep = () => {
+    setCurrentSteps(state => {
+      return [...state, state[state.length - 1] + 1];
     });
   };
 
-  const handleChange = (e, idx) => {
-    const img = { name: e.target.name, image: e.target.files[0] };
-    setImages(state => {
-      return [...state.slice(0, idx), img, ...state.slice(idx + 1)];
+  const showImg = e => {
+    const { name } = e.target;
+    const image = URL.createObjectURL(e.target.files[0]);
+
+    const img = {};
+    img[name] = image;
+
+    setPreviews(state => {
+      return { ...state, ...img };
     });
-    showImg(e, idx);
+  };
+
+  const handleChange = e => {
+    const { name } = e.target;
+    const image = e.target.files[0];
+
+    const img = {};
+    img[name] = image;
+
+    setImages(state => {
+      return { ...state, ...img };
+    });
+    showImg(e);
+    console.log(images);
   };
 
   const handleRecipe = e => {
@@ -38,14 +61,16 @@ export default function SubmitRecipe() {
         [name]: value,
       };
     });
-    console.log(recipe);
   };
 
   const handleUpload = async () => {
     const fd = new FormData();
-    images.forEach(obj => {
-      fd.append("images[]", obj.image, obj.name);
+    Object.keys(images).forEach(key => {
+      fd.append(key, images[key], "imgs");
     });
+    // images.forEach(obj => {
+    //   fd.append("images", obj.image, obj.name);
+    // });
     const {
       introduction,
       ingredient,
@@ -64,9 +89,14 @@ export default function SubmitRecipe() {
       step4,
       step5,
     ].join("//");
-    console.log(content);
-    // const response = await  axios.post('', fd,  headers: { 'Content-Type': 'multipart/form-data' },);
+    for (const pair of fd.entries()) {
+      console.log(`${pair[0]}, ${pair[1]}`);
+    }
+    console.log(content, accessToken);
+    // const response = await  axios.post('/', fd,  {headers: { 'Content-Type': 'multipart/form-data' }},);
+    // 서버에서 파일을 받아서 s3에 업로드 -> s3 업로드 url 를 리스폰스로 되돌려주는거죠.
     // const [thumbnail, ...rest] = response   url이 되돌아오고
+    // rest.map((el.idx) => ({...el, order: idx}))
 
     // const recipeInfo = {
     //   thumbnail,
@@ -75,8 +105,14 @@ export default function SubmitRecipe() {
     //   category: recipe.category,
     //   content
     // };
+
+    // await axios.post("https://homemade2021.ml/recipes/content", recipeInfo, {
+    //   withCredentials: true,
+    //   headers: {
+    //     authorization: `Bearer ${accessToken}`,
+    //   },
+    // });
   };
-  const currentSteps = [1, 2, 3, 4, 5];
 
   return (
     <SubmitRecipeForm
@@ -87,6 +123,13 @@ export default function SubmitRecipe() {
       handleRecipe={handleRecipe}
       handleUpload={handleUpload}
       currentSteps={currentSteps}
+      AddStep={AddStep}
+      stepRefs={stepRefs}
+      thumbnailRef={thumbnailRef}
     />
   );
 }
+
+SubmitRecipe.propTypes = {
+  accessToken: PropTypes.string.isRequired,
+};
