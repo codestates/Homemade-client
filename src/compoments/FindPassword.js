@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+// import axios from "axios";
 
 export default function FindPassword({ show, isShow, setIsFindPassword }) {
+  // 비밀번호 찾기 상태
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [mobile, setMobile] = useState("");
+  // eslint-disable-next-line no-unused-vars
+  const [temporarilyEmail, seTemporarilyEmail] = useState("");
   // 비밀번호 변경에 관한 상태
   // TODO : 회원정보의 여부에 따라 passwordChangeState를 true로 변경 필요.
   // eslint-disable-next-line no-unused-vars
-  const [passwordChangeState, setPasswordChangeState] = useState(true);
+  const [passwordChangeState, setPasswordChangeState] = useState(false);
   const [firstPassword, setFirstPassword] = useState("");
   const [lastPassword, setLastPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -23,20 +27,20 @@ export default function FindPassword({ show, isShow, setIsFindPassword }) {
     setEmail(event.target.value);
   };
   // password input 핸들링
-  const handlePassword = event => {
-    setPassword(event.target.value);
+  const handleMobile = event => {
+    setMobile(event.target.value);
   };
   // 닫기버튼, 취소 버튼을 눌렀을 시 핸들링
-  const henadleCancel = () => {
+  const handleCancel = () => {
     setIsFindPassword(false);
     isShow(false);
   };
   // 비밀번호 일치여부 판단
   //! 비밀번호 , 비밀번호 확인 input 태그에 똑같은 조건이 모두 있어야 함.
-  const handleConfirmPassword = event => {
+  const handleFirstPassword = event => {
     const { value } = event.target;
     setFirstPassword(value);
-    if (lastPassword.length > 1) {
+    if (lastPassword.length > 0) {
       if (value !== lastPassword) {
         setMessage("비밀번호 불일치");
         setIsValidPassword(false);
@@ -48,7 +52,7 @@ export default function FindPassword({ show, isShow, setIsFindPassword }) {
       }
     }
   };
-  const handleConfirmrePassword = event => {
+  const handleLastPassword = event => {
     const { value } = event.target;
     setLastPassword(value);
     if (value !== firstPassword) {
@@ -61,31 +65,72 @@ export default function FindPassword({ show, isShow, setIsFindPassword }) {
       setIsValidPassword(true);
     }
   };
+  // 유저의 정보유무확인을 위한 서버통신
+  //! 인증되지 않은 회원이 회원정보를 요청하기 떄문에 토큰이 없음
+  //! 서버 API 작성 후 테스트 필요
   const findReuestPassword = () => {
-    if (isValidPassword) {
-      console.log("서버로 로그인 요청");
-
-      // axios
-      //     .post(
-      //       "https://localhost:4000/signin",
-      //       { email, password },
-      //       { headers: { "Content-Type": "application/json" }, withCredentials: true }
-      //     )
-      //     .then((res) => {
-      //       this.props.loginHandler(res.data);
-      //     })
-      //     .catch((err) => console.log(err));
-      // }
-      return alert("비밀번호가 정상적으로 변경되었습니다.");
+    if (name && email && mobile) {
+      console.log("정상입력");
+      try {
+        // axios
+        //   .post("https://homemade2021.ml/users/", {
+        //     name,
+        //     email,
+        //     mobile,
+        //   })
+        //   .then(() => {
+        setMessage("");
+        seTemporarilyEmail(email);
+        setPasswordChangeState(true);
+        alert("응답");
+        return;
+        // });
+      } catch (err) {
+        alert(err);
+        //   setMessage("회원정보를 찾지 못했습니다.");
+        //   setIsValidPassword(false);
+      }
     }
-    return alert("필수 입력사항을 정확히 입력바랍니다");
+    setMessage("필수 입력사항을 모두입력하세요");
+    setIsValidPassword(false);
+  };
+  // 회원의 비밀번호를 변경요청
+  const changeRequestPassword = () => {
+    if (firstPassword.length === 0 || lastPassword.length === 0) {
+      setMessage("모든 입력사항은 필수입니다.");
+      setIsValidPassword(false);
+      return;
+    }
+    if (firstPassword === lastPassword) {
+      console.log("정상입력");
+      try {
+        // axios
+        //   .post("https://homemade2021.ml/users/", {
+        //    email: temporarilyEmail,
+        // password : lastPassword
+        //   })
+        //   .then(() => {
+        seTemporarilyEmail("");
+        setPasswordChangeState(false);
+        handleCancel(false);
+        alert("응답");
+        return;
+        // });
+      } catch (err) {
+        alert(err);
+        //   setMessage("회원정보를 찾지 못했습니다.");
+        //   setIsValidPassword(false);
+      }
+    }
+    setMessage("비밀번호가 일치하지 않습니다.");
+    setIsValidPassword(false);
   };
   if (!show) {
     return null;
   }
   return (
     <LoginFormStyle>
-      <Close onClick={henadleCancel}>닫기</Close>
+      <Close onClick={handleCancel}>닫기</Close>
       {passwordChangeState ? (
         <div>
           <h3>비밀번호 변경</h3>
@@ -95,8 +140,8 @@ export default function FindPassword({ show, isShow, setIsFindPassword }) {
                 type="password"
                 name="eamil"
                 value={firstPassword}
-                placeholder="비밀번호를 입력하세"
-                onChange={handleConfirmPassword}
+                placeholder="비밀번호를 입력하세요"
+                onChange={handleFirstPassword}
                 required
               />
               <input
@@ -104,13 +149,13 @@ export default function FindPassword({ show, isShow, setIsFindPassword }) {
                 name="password"
                 value={lastPassword}
                 placeholder="비밀번호를 입력하세요"
-                onChange={handleConfirmrePassword}
+                onChange={handleLastPassword}
                 required
               />
               <Error check={isValidPassword}>{message}</Error>
             </InputWrap>
-            <Button onClick={findReuestPassword}>변경</Button>
-            <Button onClick={henadleCancel}>취소</Button>
+            <Button onClick={changeRequestPassword}>변경</Button>
+            <Button onClick={handleCancel}>취소</Button>
           </div>
         </div>
       ) : (
@@ -135,16 +180,17 @@ export default function FindPassword({ show, isShow, setIsFindPassword }) {
                 required
               />
               <input
-                type="password"
-                name="password"
-                value={password}
-                placeholder="비밀번호를 입력하세요"
-                onChange={handlePassword}
+                type="text"
+                name="mobile"
+                value={mobile}
+                placeholder="핸드폰 번호를 입력하세요. '-' 제외"
+                onChange={handleMobile}
                 required
               />
+              <Error check={isValidPassword}>{message}</Error>
             </InputWrap>
             <Button onClick={findReuestPassword}>찾기</Button>
-            <Button onClick={henadleCancel}>취소</Button>
+            <Button onClick={handleCancel}>취소</Button>
           </form>
         </div>
       )}
