@@ -1,114 +1,222 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import axios from "axios";
+import UserModal from "./UserModal";
 
 export default function SignUpForm({ show, isShow }) {
   if (!show) {
     return null;
   }
-  const [password, setPassword] = useState("");
-  const [passwordCheck, setPasswordCheck] = useState("");
+  // input 값 상태
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [nickName, setNickName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [firstPassword, setFirstPassword] = useState("");
+  const [lastPassword, setLastPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
 
-  // 비밀번호 일치여부 판단
-  const handleConfirmPassword = event => {
-    const { value } = event.target;
-    setPassword(value);
+  const [signUpModal, setSignUpModal] = useState(false);
+
+  const handleName = event => {
+    setName(event.target.value);
   };
-  const handleConfirmrePassword = event => {
+  const handleEmail = event => {
+    setEmail(event.target.value);
+  };
+  const handleNickName = event => {
+    setNickName(event.target.value);
+  };
+  const handleMobile = event => {
+    setMobile(event.target.value);
+  };
+  const closeForm = () => {
+    setName("");
+    setEmail("");
+    setNickName("");
+    setMobile("");
+    setMessage("");
+    isShow(false);
+  };
+
+  // 비밀번호 일치여부 판단
+  //! 비밀번호 , 비밀번호 확인 input 태그에 똑같은 조건이 모두 있어야 함.
+  const handleFirstPassword = event => {
     const { value } = event.target;
-    setPasswordCheck(value);
-    if (value !== password) {
+    setFirstPassword(value);
+    if (lastPassword.length > 0) {
+      if (value !== lastPassword) {
+        setMessage("비밀번호 불일치");
+        setIsValidPassword(false);
+      } else if (lastPassword === "") {
+        setMessage("");
+      } else if (value === lastPassword) {
+        setMessage("비밀번호 일치");
+        setIsValidPassword(true);
+      }
+    }
+  };
+  const handleLastPassword = event => {
+    const { value } = event.target;
+    setLastPassword(value);
+    if (value !== firstPassword) {
       setMessage("비밀번호 불일치");
       setIsValidPassword(false);
-    } else if (value === " ") {
+    } else if (firstPassword === " ") {
       setMessage("");
-    } else if (value === password) {
+    } else if (value === firstPassword) {
       setMessage("비밀번호 일치");
       setIsValidPassword(true);
     }
   };
-
+  // email 중복여부 체크
+  const handleRequestCheckEmail = () => {
+    try {
+      axios.post(
+        "https://homemade2021.ml/users/signIn",
+        { email },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        },
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // 회원등록 요청
+  const handleRequestSignUp = () => {
+    try {
+      axios
+        .post(
+          "https://homemade2021.ml/users/signup",
+          {
+            name,
+            email,
+            password: lastPassword,
+            nickname: nickName,
+            mobile,
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          },
+        )
+        .then(res => {
+          setSignUpModal(true);
+          return console.log(res);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   useEffect(() => {});
 
   return (
     <DarkBackground>
-      <SignUpFormStyle>
-        <h3>회원가입</h3>
-        <p id="notification">모든항목은 필수입력 사항입니다.</p>
-        <form>
-          <table id="signup-form-table">
-            <tr>
-              <td className="label">이름</td>
-              <td className="input-tag">
-                <input type="text" name="name" required />
-              </td>
-            </tr>
-            <tr>
-              <td className="label">eamil</td>
-              <td className="input-tag">
-                <input type="text" name="eamil" required />
-              </td>
-              <td>
-                <Button id="overlapping-button">중복확인 </Button>
-              </td>
-            </tr>
-            <tr>
-              <td className="label">비밀번호</td>
-              <td className="input-tag">
+      {signUpModal ? (
+        <UserModal closeForm={closeForm} />
+      ) : (
+        <SignUpFormStyle>
+          <h3>회원가입</h3>
+          <p id="notification">모든항목은 필수입력 사항입니다.</p>
+          <UserInfoTable id="signup-form-table">
+            <TableRow>
+              <TableData className="label">이름</TableData>
+              <TableData className="input-tag">
+                <input type="text" name="name" onChange={handleName} required />
+              </TableData>
+            </TableRow>
+            <TableRow>
+              <TableData className="label">eamil</TableData>
+              <TableData className="input-tag">
+                <input
+                  type="text"
+                  name="eamil"
+                  onChange={handleEmail}
+                  placeholder="email은 로그인시 id로 사용됩니다"
+                  required
+                />
+              </TableData>
+              <TableData>
+                <Button
+                  id="overlapping-button"
+                  onClick={handleRequestCheckEmail}
+                >
+                  중복확인{" "}
+                </Button>
+              </TableData>
+            </TableRow>
+            <TableRow>
+              <TableData className="label">비밀번호</TableData>
+              <TableData className="input-tag">
                 <input
                   type="password"
                   name="firstPassword"
                   placeholder="비밀번호를 입력하세요"
-                  value={password}
-                  onChange={handleConfirmPassword}
+                  value={firstPassword}
+                  onChange={handleFirstPassword}
                   required
                 />
-              </td>
-            </tr>
-            <tr>
-              <td className="label">비밀번호 확인</td>
-              <td className="input-tag">
+              </TableData>
+            </TableRow>
+            <TableRow>
+              <TableData className="label">비밀번호 확인</TableData>
+              <TableData className="input-tag">
                 <input
                   type="password"
                   name="lastPassword"
                   placeholder="비밀번호를 입력하세요"
-                  value={passwordCheck}
-                  onChange={handleConfirmrePassword}
+                  value={lastPassword}
+                  onChange={handleLastPassword}
                   required
                 />
-              </td>
-              <td>
+              </TableData>
+              <TableData>
                 <Error check={isValidPassword}>{message}</Error>
-              </td>
-            </tr>
-            <tr>
-              <td className="label">닉네임</td>
-              <td className="input-tag">
-                <input type="text" name="password" required />
-              </td>
-            </tr>
-            <tr>
-              <td className="label">핸드폰 번호</td>
-              <td className="input-tag">
+              </TableData>
+            </TableRow>
+            <TableRow>
+              <TableData className="label">닉네임</TableData>
+              <TableData className="input-tag">
+                <input
+                  type="text"
+                  name="password"
+                  onChange={handleNickName}
+                  required
+                />
+              </TableData>
+            </TableRow>
+            <TableRow>
+              <TableData className="label">핸드폰 번호</TableData>
+              <TableData className="input-tag">
                 <input
                   type="text"
                   name="mobile"
+                  onChange={handleMobile}
                   placeholder="'-' 는 제외한 숫자만 입력바랍니다"
                   required
                 />
-              </td>
-            </tr>
-          </table>
-          <div id="button-wrap">
-            <input type="submit" id="sign-up" value="가입하기" />
-            <Button type="button" onClick={() => isShow(false)}>
-              취소
-            </Button>
-          </div>
-        </form>
-      </SignUpFormStyle>
+              </TableData>
+            </TableRow>
+            <TableRow>
+              <TableData />
+              <TableData className="input-tag">
+                <ButtonWrap>
+                  <Button type="button" onClick={handleRequestSignUp}>
+                    가입하기
+                  </Button>
+                  <Button type="button" onClick={() => isShow(false)}>
+                    취소
+                  </Button>
+                </ButtonWrap>
+              </TableData>
+            </TableRow>
+          </UserInfoTable>
+        </SignUpFormStyle>
+      )}
     </DarkBackground>
   );
 }
@@ -146,9 +254,9 @@ const SignUpFormStyle = styled.div`
   }
   p {
     font-size: 1.125rem;
+    padding-right: 20px;
   }
   input {
-    margin-top: 5px;
     display: block;
     width: 100%;
     height: 40px;
@@ -176,19 +284,8 @@ const SignUpFormStyle = styled.div`
     background: blueviolet;
     color: white;
   }
-  .label {
-    font-size: 0.9rem;
-    text-align: left;
-  }
-  .input-tag {
-    width: 200px;
-  }
   table {
     width: 100%;
-  }
-  #overlapping-button {
-    margin-left: 10px;
-    width: 100px;
   }
   #notification {
     font-size: 0.8rem;
@@ -207,7 +304,6 @@ const Button = styled.button`
   padding-right: 1rem;
   margin-top: 3px;
   display: inline;
-  width: 200px;
   height: 40px;
   background: blueviolet;
   color: white;
@@ -217,4 +313,21 @@ const Error = styled.span`
   font-size: 0.7rem;
   float: left;
   color: ${props => (props.check ? "green" : "red")};
+`;
+const TableRow = styled.tr`
+  margin-top: 7px;
+`;
+const TableData = styled.td``;
+const UserInfoTable = styled.table`
+  .label {
+    text-align: left;
+    padding-left: 50px;
+    width: 150px;
+  }
+  input {
+    padding-left: 10px;
+  }
+`;
+const ButtonWrap = styled.div`
+  margin-top: 33px;
 `;
