@@ -83,7 +83,7 @@ function Information({ userinfo, myrecipes }) {
           <h3>회원정보</h3>
           <table id="signup-form-table">
             <tr>
-              <td className="label">아바타</td>
+              <td className="label">프로필 사진</td>
               <td id="avatar-area" className="label">
                 {/* 유저가 저장해 놓은 이미지가 없을경우 기본 이미지를 print */}
                 {avatarModify ? (
