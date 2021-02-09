@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+// import axios from "axios";
 import SubmitRecipeForm from "../compoments/SubmitRecipeForm";
 
 export default function SubmitRecipe({ accessToken }) {
@@ -66,7 +67,8 @@ export default function SubmitRecipe({ accessToken }) {
   const handleUpload = async () => {
     const fd = new FormData();
     Object.keys(images).forEach(key => {
-      fd.append(key, images[key], "imgs");
+      console.log(key);
+      fd.append("imgs", images[key], key);
     });
     // images.forEach(obj => {
     //   fd.append("images", obj.image, obj.name);
@@ -93,8 +95,9 @@ export default function SubmitRecipe({ accessToken }) {
       console.log(`${pair[0]}, ${pair[1]}`);
     }
     console.log(content, accessToken);
-    // const response = await  axios.post('/', fd,  {headers: { 'Content-Type': 'multipart/form-data' }},);
-    // 서버에서 파일을 받아서 s3에 업로드 -> s3 업로드 url 를 리스폰스로 되돌려주는거죠.
+    // const response = await axios.post("/", fd, {
+    //   headers: { "Content-Type": "multipart/form-data" },
+    // });
     // const [thumbnail, ...rest] = response   url이 되돌아오고
     // rest.map((el.idx) => ({...el, order: idx}))
 

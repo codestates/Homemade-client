@@ -83,13 +83,13 @@ export default function SubmitRecipeForm({
               alt="test"
               src={previews.thumbnail}
             />
-            <PickImageButton
+            <PickImageBtn
               active={!previews.thumbnail}
               type="button"
               onClick={() => thumbnailRef.current.click()}
             >
               +
-            </PickImageButton>
+            </PickImageBtn>
             <Announcement active={!previews.thumbnail}>
               대표사진 등록하기
             </Announcement>
@@ -125,22 +125,22 @@ export default function SubmitRecipeForm({
                     alt={`step${step}`}
                     src={previews[`step${step}`]}
                   />
-                  <PickImageButton
-                    active={!previews[step]}
+                  <PickImageBtn
+                    active={!previews[`step${step}`]}
                     type="button"
                     onClick={() => stepRefs.current[i].click()}
                   >
                     +
-                  </PickImageButton>
+                  </PickImageBtn>
                 </ImageWrap>
               </RecipePreview>
             </StepWrap>
           );
         })}
       </RecipeSequence>
-      <button type="button" onClick={() => AddStep()}>
+      <AddStepBtn type="button" onClick={() => AddStep()}>
         순서 추가
-      </button>
+      </AddStepBtn>
       <RecipeSaveWrap>
         <SaveBtn type="button" onClick={handleUpload}>
           저장하기
@@ -276,7 +276,7 @@ const Preview = styled.img`
   `}
 `;
 
-const PickImageButton = styled.button`
+const PickImageBtn = styled.button`
   display: none;
   width: 100%;
   height: 100%;
@@ -328,6 +328,12 @@ const Announcement = styled.div`
     `
     display:block;
     margin-top: 2rem;
-  font-size: 1rem;
+    font-size: 1rem;
   `}
+`;
+
+const AddStepBtn = styled(SaveBtn)`
+  width: 20%;
+  margin: 0 auto;
+  margin-bottom: 3rem;
 `;
