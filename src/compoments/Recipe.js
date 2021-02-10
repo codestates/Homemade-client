@@ -1,26 +1,27 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable camelcase */
 import React from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 export default function Recipe({ recipe }) {
-  const { id, title, thumnailUrl, userName, rate, views } = recipe;
+  const { id, title, rate, thumbnail_url, nickname, views } = recipe;
   const starRate = Number(rate) * 20;
   return (
     <RecipeWrap to={`/recipe/${id}`}>
       <Thumnail>
-        <img src={thumnailUrl} alt={title} />
+        <img src={thumbnail_url || "../images/recipe1.jpg"} alt={title} />
       </Thumnail>
       <RecipeInfo>
-        <Title>{title}</Title>
-        <UserName>{userName}</UserName>
+        <Title>{title || "무제"}</Title>
+        <UserName>{nickname || "anonymous"}</UserName>
         <div>
           <StarRating>
             <span
-              style={{ width: `${starRate}%` }}
+              style={{ width: `${starRate || 50}%` }}
               className="star-ratings-sprite-rating"
             />
-          </StarRating>{" "}
+          </StarRating>
           &nbsp;
           <span>view: {views}</span>
         </div>
@@ -29,29 +30,13 @@ export default function Recipe({ recipe }) {
   );
 }
 
-Recipe.propTypes = {
-  recipe: PropTypes.arrayOf(
-    PropTypes.shape({
-      thumnailUrl: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      rate: PropTypes.string.isRequired,
-      views: PropTypes.string.isRequired,
-      userName: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-};
-
 const RecipeWrap = styled(Link)`
   color: black;
   text-decoration: none;
   display: inline-block;
-  width: 272px;
-  height: 342px;
+  width: 80%;
+  height: 350px;
   margin: 2rem;
-  img {
-    width: 210px;
-    height: 210px;
-  }
 `;
 
 const Thumnail = styled.div`

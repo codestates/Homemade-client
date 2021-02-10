@@ -1,33 +1,41 @@
-import React from "react";
+/* eslint-disable camelcase */
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import RecipeInfo from "../compoments/RecipeInfo";
-import recipe from "../assets/recipe";
-
-const {
-  title,
-  thumbnailUrl,
-  imageUrls,
-  content,
-  nickname,
-  avatarUrl,
-  views,
-  rate,
-  createdAt,
-} = recipe;
 
 export default function RecipeDescription() {
+  const { id } = useParams();
+
+  const [recipe, setRecipe] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(async () => {
+    try {
+      const data = await axios.get(
+        `https://homemade2021.ml/recipes/recipe/${id}`,
+      );
+      const res = data.data.data.recipe;
+
+      setRecipe(res);
+      setIsLoading(false);
+    } catch (err) {
+      setErrorMessage("레시피를 불러오지 못했습니다.");
+    }
+    return () => {
+      setIsLoading(true);
+      setRecipe({});
+    };
+  }, []);
+
   return (
     <>
-      <RecipeInfo
-        title={title}
-        thumbnailUrl={thumbnailUrl}
-        createdAt={createdAt}
-        imageUrls={imageUrls}
-        content={content}
-        views={views}
-        rate={rate}
-        nickname={nickname}
-        avatarUrl={avatarUrl}
-      />
+      {isLoading ? (
+        <div>loading...{errorMessage ? <div>{errorMessage}</div> : ""}</div>
+      ) : (
+        <RecipeInfo recipe={recipe} />
+      )}
     </>
   );
 }

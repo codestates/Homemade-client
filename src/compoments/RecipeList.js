@@ -1,20 +1,10 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import Recipe from "./Recipe";
 
-const RecipeListContainer = styled.div`
-  position: relative;
-  margin-top: 10px;
-  width: 100%;
-  height: 100%;
-`;
-const RecipeListWrap = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-`;
 export default function RecipeList({ recipes }) {
+  console.log("이거", recipes);
   return (
     <RecipeListContainer>
       <RecipeListWrap>
@@ -25,16 +15,12 @@ export default function RecipeList({ recipes }) {
     </RecipeListContainer>
   );
 }
-RecipeList.propTypes = {
-  recipes: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      thumnailUrl: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      rate: PropTypes.string.isRequired,
-      views: PropTypes.string.isRequired,
-      userName: PropTypes.string.isRequired,
-      createdAt: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-};
+const RecipeListContainer = styled.div`
+  position: relative;
+  margin-top: 10px;
+  height: 100%;
+`;
+const RecipeListWrap = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+`;

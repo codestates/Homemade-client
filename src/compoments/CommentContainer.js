@@ -31,7 +31,7 @@ export default function CommentContainer({ comments }) {
       text: input,
       rate: rating,
     };
-    console.log("실행");
+
     await axios.post(`https://homemade2021.ml/recipes/comment`, comment, {
       headers: {
         "Content-Type": "application/json",
@@ -141,6 +141,10 @@ const CommentButton = styled.button`
   top: -46px;
   border: 1px solid #cccccc;
   background-color: white;
+  cursor: pointer;
+  &:focus {
+    outline: none;
+  }
 `;
 
 const RateContainer = styled.div`
