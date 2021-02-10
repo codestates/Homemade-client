@@ -1,11 +1,18 @@
 /* eslint-disable no-restricted-syntax */
 import React, { useState, useRef, useEffect } from "react";
-import PropTypes from "prop-types";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import SubmitRecipeForm from "../compoments/SubmitRecipeForm";
 
-export default function SubmitRecipe({ accessToken }) {
+export default function SubmitRecipe() {
+  const { accessToken, isLogged } = JSON.parse(
+    localStorage.getItem("loggedInfo"),
+  );
+  const history = useHistory();
+  if (!isLogged) {
+    history.push("/");
+  }
+  const categories = ["한식", "중식", "일식", "양식", "음료/술"];
   const [stepImages, setStepImages] = useState({});
   const [previews, setPreviews] = useState({});
   const [recipe, setRecipe] = useState({
@@ -15,6 +22,7 @@ export default function SubmitRecipe({ accessToken }) {
   const [currentSteps, setCurrentSteps] = useState([1, 2, 3, 4, 5]);
   const stepRefs = useRef([]);
   const thumbnailRef = useRef();
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     stepRefs.current = stepRefs.current.slice(0, currentSteps.length);
@@ -69,59 +77,69 @@ export default function SubmitRecipe({ accessToken }) {
     Object.keys(stepImages).forEach(key => {
       fd.append("imgs", stepImages[key], key);
     });
-    const {
-      introduction,
-      ingredient,
-      step1,
-      step2,
-      step3,
-      step4,
-      step5,
-    } = recipe;
-    const content = [
-      introduction,
-      ingredient,
-      step1,
-      step2,
-      step3,
-      step4,
-      step5,
-    ].join("//");
+    const content = Object.keys(recipe)
+      .filter(el => el !== "title" && el !== "category")
+      .sort()
+      .sort((a, b) => b.length - a.length)
+      .map(el => recipe[el])
+      .join("//");
 
-    const imgaeUrls = await axios.post("http://localhost:4000/image", fd, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    if (
+      Object.keys(recipe).length < 9 ||
+      Object.keys(recipe).length - 3 !== Object.keys(stepImages).length
+    ) {
+      setErrorMessage("모든 항목을 입력해 주세요.");
+      return;
+    }
 
-    const {
-      data: { thumbnail, images },
-    } = imgaeUrls;
+    try {
+      const imageUrls = await axios.post("https://homemade2021.ml/image", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-    const recipeInfo = {
-      thumbnail,
-      title: recipe.title,
-      imageUrl: images,
-      category: recipe.category,
-      content,
-    };
+      const {
+        data: { thumbnail, images },
+      } = imageUrls;
 
-    const data = await axios.post(
-      "http://localhost:4000/recipes/content",
-      recipeInfo,
-      {
-        withCredentials: true,
-        headers: {
-          authorization: `Bearer ${accessToken}`,
+      const recipeInfo = {
+        thumbnail,
+        title: recipe.title,
+        imageUrl: images,
+        categoryId: categories.indexOf(recipe.category) + 1,
+        content,
+      };
+
+      const data = await axios.post(
+        "https://homemade2021.ml/recipes/content",
+        recipeInfo,
+        {
+          withCredentials: true,
+          headers: {
+            authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
         },
-      },
-    );
+      );
 
-    const {
-      data: { id },
-    } = data;
+      const {
+        data: {
+          data: { id },
+        },
+      } = data;
 
-    const history = useHistory();
-
-    history.push(`/recipe/${id}`);
+      if (id) {
+        setStepImages({});
+        setPreviews({});
+        setRecipe({ title: "", category: "한식" });
+        setCurrentSteps([1, 2, 3, 4, 5]);
+        setErrorMessage("");
+        history.push(`/recipe/${id}`);
+      } else {
+        setErrorMessage("레시피 등록이 되지 않았습니다.");
+      }
+    } catch (err) {
+      setErrorMessage("레시피 등록이 되지 않았습니다.");
+    }
   };
 
   return (
@@ -136,10 +154,7 @@ export default function SubmitRecipe({ accessToken }) {
       AddStep={AddStep}
       stepRefs={stepRefs}
       thumbnailRef={thumbnailRef}
+      errorMessage={errorMessage}
     />
   );
 }
-
-SubmitRecipe.propTypes = {
-  accessToken: PropTypes.string.isRequired,
-};
