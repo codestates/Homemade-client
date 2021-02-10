@@ -8,6 +8,8 @@ import RecipeInfo from "./RecipeInfo";
 import SignUpForm from "./SignUpForm";
 import SubmitRecipeForm from "./SubmitRecipeForm";
 import UserModal from "./UserModal";
+import Loader from "./Loader";
+import Banner from "./Banner";
 
 export {
   Comment,
@@ -20,4 +22,6 @@ export {
   SignUpForm,
   SubmitRecipeForm,
   UserModal,
+  Loader,
+  Banner,
 };
