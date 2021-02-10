@@ -329,7 +329,7 @@ const Announcement = styled.div`
     active &&
     `
     display:block;
-    margin-top: 2rem;
+    margin-top: 1rem;
     font-size: 1rem;
   `}
 `;

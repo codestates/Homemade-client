@@ -84,6 +84,14 @@ export default function SubmitRecipe() {
       .map(el => recipe[el])
       .join("//");
 
+    if (
+      Object.keys(recipe).length < 9 ||
+      Object.keys(recipe).length - 3 !== Object.keys(stepImages).length
+    ) {
+      setErrorMessage("모든 항목을 입력해 주세요.");
+      return;
+    }
+
     try {
       const imageUrls = await axios.post("https://homemade2021.ml/image", fd, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -114,10 +122,21 @@ export default function SubmitRecipe() {
       );
 
       const {
-        data: { id },
+        data: {
+          data: { id },
+        },
       } = data;
 
-      history.push(`/recipe/${id}`);
+      if (id) {
+        setStepImages({});
+        setPreviews({});
+        setRecipe({ title: "", category: "한식" });
+        setCurrentSteps([1, 2, 3, 4, 5]);
+        setErrorMessage("");
+        history.push(`/recipe/${id}`);
+      } else {
+        setErrorMessage("레시피 등록이 되지 않았습니다.");
+      }
     } catch (err) {
       setErrorMessage("레시피 등록이 되지 않았습니다.");
     }
