@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { lighten, darken } from "polished";
@@ -9,9 +9,13 @@ import Comment from "./Comment";
 export default function CommentContainer({ comments }) {
   const [input, setInput] = useState("");
   const [rating, setRating] = useState(3);
+  const accessToken = useRef(null);
 
   const { id } = useParams();
-  const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
+
+  if (localStorage.getItem("loggedInfo")) {
+    accessToken.current = JSON.parse(localStorage.getItem("loggedInfo"));
+  }
 
   const handleDecrease = () => {
     setRating(state => state - 1);
@@ -80,7 +84,11 @@ export default function CommentContainer({ comments }) {
             placeholder="댓글을 남겨주세요."
             onChange={e => handleChange(e)}
           />
-          <CommentButton onClick={handleSubmit} type="button" disabled={!input}>
+          <CommentButton
+            onClick={handleSubmit}
+            type="button"
+            disabled={!input || !accessToken.current}
+          >
             등록
           </CommentButton>
         </InputWrap>
