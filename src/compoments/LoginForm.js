@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
-import KakaoLogin from "react-kakao-login";
+// import KakaoLogin from "react-kakao-login";
 import FindPassword from "./FindPassword";
 
 export default function LoginForm({ show, isShow, signInHanlder }) {
@@ -10,7 +10,6 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
   const [password, setPassword] = useState("");
   const [isFindPassword, setIsFindPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
   const handleEmail = event => {
     setEmail(event.target.value);
   };
@@ -55,17 +54,29 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
         },
       } = response;
       if (accessToken) {
-        localStorage.setItem(
-          "loggedInfo",
-          JSON.stringify({
-            isLogged: true,
-            accessToken,
-          }),
-        );
         signInHanlder(accessToken);
         isShow(false);
         setErrorMessage("");
       }
+      await axios
+        .get("https://homemade2021.ml/users/userinfo", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        })
+        .then(res => {
+          const { id } = res.data.data.userInfo;
+          localStorage.setItem(
+            "loggedInfo",
+            JSON.stringify({
+              id,
+              isLogged: true,
+              accessToken,
+            }),
+          );
+        });
     } catch (err) {
       setErrorMessage("이메일과 비밀번호를 확인해 주세요.");
     }
@@ -110,12 +121,12 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
               <Button type="button" onClick={signinRequestHandler}>
                 로그인
               </Button>
-              <KakaoLogin
+              {/* <KakaoLogin
                 token={process.env.REACT_APP_KAKAO_JSAVASCRIPT_KEY}
                 onSuccess={console.log}
                 onFail={console.error}
                 onLogout={console.info}
-              />
+              /> */}
             </ButtonWrap>
           </div>
         </LoginFormStyle>
