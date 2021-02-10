@@ -9,13 +9,12 @@ import Comment from "./Comment";
 export default function CommentContainer({ comments }) {
   const [input, setInput] = useState("");
   const [rating, setRating] = useState(3);
-  const accessToken = useRef(null);
+  const accessToken = useRef(
+    localStorage.getItem("loggedInfo") &&
+      JSON.parse(localStorage.getItem("loggedInfo")).accessToken,
+  );
 
   const { id } = useParams();
-
-  if (localStorage.getItem("loggedInfo")) {
-    accessToken.current = JSON.parse(localStorage.getItem("loggedInfo"));
-  }
 
   const handleDecrease = () => {
     setRating(state => state - 1);
@@ -34,12 +33,13 @@ export default function CommentContainer({ comments }) {
       id,
       text: input,
       rate: rating,
+      userId: 1, // 이거 테스트용
     };
 
     await axios.post(`https://homemade2021.ml/recipes/comment`, comment, {
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken}`,
+        authorization: `Bearer ${accessToken.current}`,
       },
       withCredentials: true,
     });
@@ -81,6 +81,7 @@ export default function CommentContainer({ comments }) {
           <CommentInput
             type="textarea"
             name="commentInput"
+            value={input}
             placeholder="댓글을 남겨주세요."
             onChange={e => handleChange(e)}
           />

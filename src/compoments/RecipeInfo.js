@@ -5,11 +5,9 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { darken, lighten } from "polished";
 import CommentContainer from "./CommentContainer";
-import comments from "../assets/comments";
 
 function RecipeInfo({ recipe }) {
   const {
-    id,
     title,
     createdAt,
     thumbnail_url,
@@ -18,10 +16,10 @@ function RecipeInfo({ recipe }) {
     image_urls,
     content,
     username,
+    comments,
     avatarUrl,
   } = recipe;
   const recipeContent = content.split("//");
-  console.log(id);
   const introduction = recipeContent[0];
   const ingredient = recipeContent[1];
   const starRate = Number(rate) * 20;
