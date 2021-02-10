@@ -1,74 +1,62 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import axios from "axios";
 
-function Information({ userinfo, myrecipes }) {
-  // Carousel 한 화면에 보여질 recipe의 수
-  const TOTAL_SLIDES = Math.floor(myrecipes.length / 4);
-  const { name, avatar, email, nickname, mobile } = userinfo;
-  const myRecipes = myrecipes.length > 0 ? myrecipes.length : 0;
+// eslint-disable-next-line no-unused-vars
+function Information() {
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    email: "",
+    avatar: "",
+    nickname: "",
+    mobile: "",
+  });
+  const [image, setImage] = useState({
+    file: "",
+    previewURL: "",
+  });
   // 회원정보 변경에대한 상태
   const [avatarModify, setAvatarModify] = useState(false);
   const [passwordModify, setPasswordModify] = useState(false);
   const [mobileModify, setMobileModify] = useState(false);
   // 비밀번호 변경에대한 상태
-  const [password, setPassword] = useState("");
-  const [passwordCheck, setPasswordCheck] = useState("");
+  const [firstPassword, setFirstPassword] = useState("");
+  const [lastPassword, setLastPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [mobileNumber, setMobile] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
-  // carousel 상태
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slideRef = useRef(null);
-  // carousel의 다음 슬라이드
-  const nextSlide = () => {
-    if (currentSlide >= TOTAL_SLIDES) {
-      // 더 이상 넘어갈 슬라이드가 없으면 슬라이드를 초기화합니다.
-      setCurrentSlide(0);
-    } else {
-      setCurrentSlide(currentSlide + 1);
-    }
-  };
-  // carousel의 이전 슬라이드
-  const prevSlide = () => {
-    if (currentSlide === 0) {
-      setCurrentSlide(TOTAL_SLIDES);
-    } else {
-      setCurrentSlide(currentSlide - 1);
-    }
-  };
+  // 비밀번호 일치여부 판단
   // 비밀번호 일치여부 판단
   //! 비밀번호 , 비밀번호 확인 input 태그에 똑같은 조건이 모두 있어야 함.
-  const handleConfirmPassword = event => {
+  const handleFirstPassword = event => {
     const { value } = event.target;
-    setPassword(value);
-    if (value !== password) {
+    setFirstPassword(value);
+    if (lastPassword.length > 0) {
+      if (value !== lastPassword) {
+        setMessage("비밀번호 불일치");
+        setIsValidPassword(false);
+      } else if (value === " ") {
+        setMessage("");
+      } else if (value === lastPassword) {
+        setMessage("비밀번호 일치");
+        setIsValidPassword(true);
+      }
+    }
+  };
+  const handleLastPassword = event => {
+    const { value } = event.target;
+    setLastPassword(value);
+    if (value !== firstPassword) {
       setMessage("비밀번호 불일치");
       setIsValidPassword(false);
     } else if (value === " ") {
       setMessage("");
-    } else if (value === password) {
+    } else if (value === firstPassword) {
       setMessage("비밀번호 일치");
       setIsValidPassword(true);
     }
   };
-  const handleConfirmrePassword = event => {
-    const { value } = event.target;
-    setPasswordCheck(value);
-    if (value !== password) {
-      setMessage("비밀번호 불일치");
-      setIsValidPassword(false);
-    } else if (value === " ") {
-      setMessage("");
-    } else if (value === password) {
-      setMessage("비밀번호 일치");
-      setIsValidPassword(true);
-    }
-  };
-  useEffect(() => {
-    slideRef.current.style.transition = "all 0.5s ease-in-out";
-    slideRef.current.style.transform = `translateX(-${currentSlide}00%)`;
-  }, [currentSlide]);
   // 유저의 아바타가 등록유무에 따른 버튼 이름 변경
   const checkUserAvartar = isAvatar => {
     if (isAvatar) {
@@ -76,22 +64,160 @@ function Information({ userinfo, myrecipes }) {
     }
     return "이미지 등록";
   };
+  const handleMobile = event => {
+    const { value } = event.target;
+    setMobile(value);
+  };
+  // 비밀번호 입력값 초기화
+  const handleInitializePassword = () => {
+    setPasswordModify(false);
+    setFirstPassword("");
+    setLastPassword("");
+    setMessage("");
+  };
+  // 전화번호 입력값 초기
+  const handleInitializeMobile = () => {
+    setMobileModify(false);
+  };
+  const handleFileOnChange = event => {
+    event.preventDefault();
+    const reader = new FileReader();
+    const file = event.target.files[0];
+    reader.onloadend = () => {
+      setImage({
+        file,
+        previewURL: reader.result,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+  const handleReqeustUploadAvatar = () => {
+    const formData = new FormData();
+    formData.append("uploadImages", image.file, image.file.name);
+    const config = {
+      headers: {
+        "content-type": "multipart/fomr-data",
+      },
+    };
+    axios.patch("https://homemade2021.ml/users/userinfo", formData, config);
+  };
+  const handleRequestUserInfo = () => {
+    const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
+    try {
+      axios
+        .get("https://homemade2021.ml/users/userinfo", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        })
+        .then(res => {
+          const {
+            name,
+            email,
+            nickname,
+            mobile,
+            avatar,
+          } = res.data.data.userInfo;
+          setUserInfo({
+            name,
+            email,
+            nickname,
+            mobile,
+            avatar,
+          });
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleRequestPasswordModify = () => {
+    const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
+    try {
+      axios
+        .patch(
+          "https://homemade2021.ml/users/uuserinfo",
+          {
+            password: lastPassword,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          },
+        )
+        .then(res => {
+          console.log(res, "정상");
+          handleInitializePassword();
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleRequestMobileModify = () => {
+    const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
+    try {
+      axios
+        .patch(
+          "https://homemade2021.ml/users/uuserinfo",
+          {
+            mobile: mobileNumber,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          },
+        )
+        .then(res => {
+          console.log(res, "정상");
+          handleInitializePassword();
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    handleRequestUserInfo();
+  }, []);
   return (
     <Background>
       <UserinfoContainer>
         <UserInfoStyle>
           <h3>회원정보</h3>
-          <table id="signup-form-table">
-            <tr>
-              <td className="label">프로필 사진</td>
-              <td id="avatar-area" className="label">
+          <Container>
+            <AvatarContainer>
+              <h4>프로필 사진</h4>
+              <ProfileImg>
                 {/* 유저가 저장해 놓은 이미지가 없을경우 기본 이미지를 print */}
                 {avatarModify ? (
-                  <input type="text" placeholder="수정할 이미지" />
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      name="profile_img"
+                      onChange={handleFileOnChange}
+                    />
+                    <Avatar
+                      className="profile_preview"
+                      src={image.previewURL}
+                      alt="default_img"
+                    />
+                  </div>
                 ) : (
                   <div>
-                    {avatar ? (
-                      <Avatar src={avatar} id="avater" className="avatar-tag" />
+                    {userInfo.avatar ? (
+                      <Avatar
+                        src={userInfo.avatar}
+                        id="avater"
+                        className="avatar-tag"
+                      />
                     ) : (
                       <Avatar
                         src="../images/defaultUserAvatar.png"
@@ -101,13 +227,11 @@ function Information({ userinfo, myrecipes }) {
                     )}
                   </div>
                 )}
-              </td>
-              <td className="td-button">
                 {avatarModify ? (
                   <div>
                     <Button
                       className="avatar-changed-button"
-                      onClick={() => setAvatarModify(true)}
+                      onClick={handleReqeustUploadAvatar}
                     >
                       등록
                     </Button>
@@ -124,169 +248,134 @@ function Information({ userinfo, myrecipes }) {
                     onClick={() => setAvatarModify(true)}
                   >
                     {/* 이미지 등록 or 이미지 변경 */}
-                    {checkUserAvartar(avatar)}
+                    {checkUserAvartar(userInfo.avatar)}
                   </Button>
                 )}
-              </td>
-            </tr>
-            <tr>
-              <td className="label">이름</td>
-              <td className="user-info">{name}</td>
-            </tr>
-            <tr>
-              <td className="label">eamil</td>
-              <td className="user-info">{email}</td>
-            </tr>
-            <tr>
-              <td className="label">닉네임</td>
-              <td className="user-info">{nickname}</td>
-            </tr>
-            <tr>
-              <td className="label">비밀번호</td>
-              {passwordModify ? (
-                <div>
-                  <input
-                    type="password"
-                    name="password"
-                    className="new-password"
-                    value={password}
-                    placeholder="새로운 비밀번호"
-                    onChange={handleConfirmPassword}
-                    required
-                  />
-                  <input
-                    type="password"
-                    name="password-check"
-                    className="new-password"
-                    value={passwordCheck}
-                    placeholder="새로운 비밀번호 확인 "
-                    onChange={handleConfirmrePassword}
-                    required
-                  />{" "}
-                  <Error check={isValidPassword}>{message}</Error>
-                </div>
-              ) : (
-                <td className="user-info">********</td>
-              )}
-              <td className="td-button">
-                {/* 비밀번호 변경버튼을 눌렀을 경우  */}
+              </ProfileImg>
+            </AvatarContainer>
+            <UserInfoTable id="signup-form-table">
+              <TableRow>
+                <TableData className="label">이름</TableData>
+                <TableData className="user-info">{userInfo.name}</TableData>
+                <TableData />
+              </TableRow>
+              <TableRow>
+                <TableData className="label">eamil</TableData>
+                <TableData className="user-info">{userInfo.email}</TableData>
+                <TableData />
+              </TableRow>
+              <TableRow>
+                <TableData className="label">닉네임</TableData>
+                <TableData className="user-info">{userInfo.nickname}</TableData>
+                <TableData />
+              </TableRow>
+              <TableRow>
+                <TableData className="label">비밀번호</TableData>
                 {passwordModify ? (
                   <div>
-                    {/* TODO : 비동기 및 수직 방향 정렬필요 */}
-                    <Button
-                      className="changed-Button"
-                      onClick={() => setPasswordModify(false)}
-                    >
-                      {" "}
-                      변경{" "}
-                    </Button>
-                    <Button
-                      className="changed-Button"
-                      onClick={() => setPasswordModify(false)}
-                    >
-                      {" "}
-                      취소{" "}
-                    </Button>
+                    <input
+                      type="password"
+                      name="password"
+                      className="new-password"
+                      value={firstPassword}
+                      placeholder="새로운 비밀번호"
+                      onChange={handleFirstPassword}
+                      required
+                    />
+                    <input
+                      type="password"
+                      name="password-check"
+                      className="new-password"
+                      value={lastPassword}
+                      placeholder="새로운 비밀번호 확인 "
+                      onChange={handleLastPassword}
+                      required
+                    />{" "}
+                    <Error check={isValidPassword}>{message}</Error>
                   </div>
                 ) : (
-                  <Button
-                    id="password-change-button"
-                    onClick={() => setPasswordModify(true)}
-                  >
-                    {" "}
-                    비밀번호변경{" "}
-                  </Button>
+                  <TableData className="user-info">********</TableData>
                 )}
-              </td>
-            </tr>
-            <tr>
-              <td className="label">전화번호</td>
-              {mobileModify ? (
-                <input
-                  type="text"
-                  name="mobile-modify"
-                  placeholder="'-' 는 제외한 숫자만 입력바랍니다"
-                  required
-                />
-              ) : (
-                <td className="user-info">{mobile}</td>
-              )}
-              <td className="td-button">
-                {/* 핸드폰번호 변경  */}
-                {mobileModify ? (
-                  <div>
+                <TableData className="td-button">
+                  {/* 비밀번호 변경버튼을 눌렀을 경우  */}
+                  {passwordModify ? (
+                    <div>
+                      {/* TODO : 비동기 및 수직 방향 정렬필요 */}
+                      <Button
+                        className="changed-Button"
+                        onClick={handleRequestPasswordModify}
+                      >
+                        {" "}
+                        변경{" "}
+                      </Button>
+                      <Button
+                        className="changed-Button"
+                        onClick={handleInitializePassword}
+                      >
+                        {" "}
+                        취소{" "}
+                      </Button>
+                    </div>
+                  ) : (
                     <Button
-                      className="changed-Button"
+                      id="password-change-button"
+                      onClick={() => setPasswordModify(true)}
+                    >
+                      {" "}
+                      비밀번호변경{" "}
+                    </Button>
+                  )}
+                </TableData>
+              </TableRow>
+              <TableRow>
+                <TableData className="label">전화번호</TableData>
+                {mobileModify ? (
+                  <input
+                    type="text"
+                    name="mobile-modify"
+                    onChange={handleMobile}
+                    placeholder="'-' 는 제외한 숫자만 입력바랍니다"
+                    required
+                  />
+                ) : (
+                  <TableData className="user-info">{userInfo.mobile}</TableData>
+                )}
+                <TableData className="td-button">
+                  {/* 핸드폰번호 변경  */}
+                  {mobileModify ? (
+                    <div>
+                      <Button
+                        className="changed-Button"
+                        onClick={handleRequestMobileModify}
+                      >
+                        변경
+                      </Button>
+                      <Button
+                        className="changed-Button"
+                        onClick={handleInitializeMobile}
+                      >
+                        취소
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      id="mobile-change-button"
                       onClick={() => setMobileModify(true)}
                     >
-                      변경
+                      번호변경{" "}
                     </Button>
-                    <Button
-                      className="changed-Button"
-                      onClick={() => setMobileModify(false)}
-                    >
-                      취소
-                    </Button>
-                  </div>
-                ) : (
-                  <Button
-                    id="mobile-change-button"
-                    onClick={() => setMobileModify(true)}
-                  >
-                    번호변경{" "}
-                  </Button>
-                )}
-              </td>
-            </tr>
-          </table>
-          <Link to="/">
-            <Button id="cancel-button">취소</Button>
-          </Link>
+                  )}
+                </TableData>
+              </TableRow>
+              <TableRow>
+                <TableData />
+                <TableData />
+                <TableData />
+              </TableRow>
+            </UserInfoTable>
+          </Container>
         </UserInfoStyle>
       </UserinfoContainer>
-      <MyrecipesTitle>My Recipe </MyrecipesTitle>
-      <RecipeQuantity>총 : {myRecipes} 개</RecipeQuantity>
-      <Container>
-        <SliderContainer ref={slideRef}>
-          {myrecipes.map(recipe => {
-            return (
-              <RecipeCard key={recipe.id}>
-                <CreatedAt>{recipe.created_at}</CreatedAt>
-                <RecipeImg className="recipe" to={`/recipe/${recipe.id}`}>
-                  <img
-                    className="thumbnail"
-                    src={recipe.thumbnail_uri}
-                    alt={recipe.title}
-                  />
-                </RecipeImg>
-                <div> {recipe.title}</div>
-              </RecipeCard>
-            );
-          })}
-        </SliderContainer>
-        <Pages>
-          {`${TOTAL_SLIDES + 1} 페이지 중 ${currentSlide + 1} 페이지`}
-        </Pages>
-        <ButtonWrap>
-          <ButtonImg onClick={prevSlide}>Previous Slide</ButtonImg>
-          <ButtonImg onClick={nextSlide}>Next Slide</ButtonImg>
-        </ButtonWrap>
-      </Container>
-      {/* {myrecipes.map(recipe => {
-        return (
-          <RecipeCard>
-            <CreatedAt>{recipe.created_at}</CreatedAt>
-            <RecipeImg className="recipe" to={`/recipe/${recipe.id}`}>
-              <img
-                className="thumbnail"
-                src={recipe.thumbnail_uri}
-                alt={recipe.title}
-              />
-            </RecipeImg>
-            <div> {recipe.title}</div>
-          </RecipeCard>
-        );
-      })} */}
     </Background>
   );
 }
@@ -299,92 +388,6 @@ Information.defaultProps = {
     avatar: "../images/avatar1.jpg",
     mobile: "010-1234-1234",
   },
-  myrecipes: [
-    {
-      id: 1,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 2,
-      title: "콜라 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 3,
-      title: "우유 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 4,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 5,
-      title: "딸기 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 3,
-      title: "우유 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 4,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 5,
-      title: "딸기 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 3,
-      title: "우유 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 4,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 5,
-      title: "딸기 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 3,
-      title: "우유 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 4,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 5,
-      title: "딸기 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-  ],
 };
 Information.propTypes = {
   userinfo: PropTypes.shape({
@@ -393,12 +396,6 @@ Information.propTypes = {
     email: PropTypes.string.isRequired,
     nickname: PropTypes.string.isRequired,
     mobile: PropTypes.string.isRequired,
-  }),
-  myrecipes: PropTypes.arrayOf({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    thumbnail_uri: PropTypes.string.isRequired,
-    created_at: PropTypes.string.isRequired,
   }),
 };
 const Background = styled.div`
@@ -429,40 +426,21 @@ const UserInfoStyle = styled.div`
     height: 40px;
     border: 1px solid lightgray;
     border-radius: 3px;
+    margin-bottom: 5px;
   }
   .label {
     font-size: 0.9rem;
     text-align: left;
     height: 40px;
-  }
-  table {
-    width: 100%;
-  }
-  #avater {
-    width: 50%;
-    height: 150px;
+    width: 100px;
   }
   .td-button {
-    text-align: right;
-  }
-  #cancel-button {
-    margin-top: 20px;
-    width: 100%;
-  }
-  .changed-Button {
-    width: 60px;
-  }
-  .avatar-tag {
-    display: inline-block;
-  }
-  .avatar-changed-button {
-    width: 60px;
+    text-align: -webkit-right;
+    width: 120px;
   }
   .user-info {
     color: gray;
-  }
-  #avatar-area {
-    text-align: center;
+    width: 200px;
   }
 `;
 // 버튼
@@ -471,85 +449,51 @@ const Button = styled.button`
   font-weight: bold;
   padding-left: 1rem;
   padding-right: 1rem;
-  margin-top: 3px;
-  display: inline;
-  width: 120px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: inline-block;
   height: 40px;
   background: blueviolet;
   color: white;
   border: 1px solid lightgray;
 `;
-// recipeList 영역
-const RecipeImg = styled(Link)`
-  display: inline-block;
-  img {
-		width: 200px;
-    height: 239px;
-`;
-
 const Avatar = styled.img`
-  width: 50%;
-  height: 150px;
+  height: 216px;
+  border-radius: 10px;
 `;
 const UserinfoContainer = styled.div`
   text-align: -webkit-center;
-`;
-const CreatedAt = styled.div`
-  text-align: right;
-  font-size: 0.8rem;
-`;
-
-const RecipeCard = styled.div`
-  width: 200px;
-  height: 200px;
-  margin: 20px;
-  display: inline-block;
+  bakcground: white;
 `;
 const Error = styled.span`
   font-size: 0.8rem;
   float: left;
   color: ${props => (props.check ? "green" : "red")};
 `;
+const TableRow = styled.tr`
+  border-top: 1px solid lightgray;
+`;
 
-// const CarouselImg = styled.img`
-//   widht: 100%;
-//   height: 30vh;
-// `;
+const TableData = styled.td``;
+const UserInfoTable = styled.table`
+  border-collapse: collapse;
+  border-top: 1px solid lightgray;
+	display: inline-block;
+	margin-top: 60px;
+v
+`;
+const AvatarContainer = styled.span`
+  height: 390px;
+  display: inline-block;
+  margin-right: 30px;
+`;
 const Container = styled.div`
-  width: 100%;
-  overflow: hidden; // 선을 넘어간 이미지들은 보이지 않도록 처리합니다.
+  display: inline-flex;
+  border-bottom: 1px solid gray;
 `;
-const ButtonWrap = styled.div`
-  text-align: center;
-`;
-const ButtonImg = styled.button`
-  all: unset;
-  border: 1px solid #892ce2;
-  padding: 0.5em 2em;
-  color: #892ce2;
+const ProfileImg = styled.div`
   border-radius: 10px;
-  &:hover {
-    transition: all 0.3s ease-in-out;
-    background-color: #892ce2;
-    color: #fff;
-  }
-  margin: 20px;
+  width: 211px;
 `;
-const SliderContainer = styled.div`
-  width: 100%;
-  height: 350px;
-  display: flex; //이미지들을 가로로 나열합니다.
-`;
-const Pages = styled.div`
-  text-align: center;
-  font-size: 0.9rem;
-  color: gray;
-`;
-const RecipeQuantity = styled.div`
-  text-align: right;
-`;
-const MyrecipesTitle = styled.div`
-  text-align: center;
-  font-size: 1.5rem;
-`;
+
 export default Information;
