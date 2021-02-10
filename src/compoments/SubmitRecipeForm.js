@@ -13,6 +13,7 @@ export default function SubmitRecipeForm({
   AddStep,
   stepRefs,
   thumbnailRef,
+  errorMessage,
 }) {
   return (
     <FormContainer>
@@ -142,6 +143,7 @@ export default function SubmitRecipeForm({
         순서 추가
       </AddStepBtn>
       <RecipeSaveWrap>
+        <ErrorMessage>{errorMessage || ""}</ErrorMessage>
         <SaveBtn type="button" onClick={handleUpload}>
           저장하기
         </SaveBtn>
@@ -336,4 +338,9 @@ const AddStepBtn = styled(SaveBtn)`
   width: 20%;
   margin: 0 auto;
   margin-bottom: 3rem;
+`;
+
+const ErrorMessage = styled.div`
+  color: #f40310;
+  text-align: center;
 `;
