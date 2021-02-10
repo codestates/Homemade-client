@@ -1,17 +1,20 @@
 /* eslint-disable no-restricted-syntax */
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 import SubmitRecipeForm from "../compoments/SubmitRecipeForm";
 
 export default function SubmitRecipe() {
-  const { accessToken, isLogged } = JSON.parse(
-    localStorage.getItem("loggedInfo"),
+  const accessToken = useRef(
+    localStorage.getItem("loggedInfo") &&
+      JSON.parse(localStorage.getItem("loggedInfo")).accessToken,
   );
   const history = useHistory();
-  if (!isLogged) {
-    history.push("/");
+
+  if (!accessToken.current) {
+    return <Redirect to="/" />;
   }
+
   const categories = ["한식", "중식", "일식", "양식", "음료/술"];
   const [stepImages, setStepImages] = useState({});
   const [previews, setPreviews] = useState({});
@@ -95,8 +98,6 @@ export default function SubmitRecipe() {
       .map(el => recipe[el])
       .join("//");
 
-    console.log("content", content);
-
     if (
       Object.keys(recipe).length < 9 ||
       Object.keys(recipe).length - 3 !== Object.keys(stepImages).length
@@ -128,7 +129,7 @@ export default function SubmitRecipe() {
         {
           withCredentials: true,
           headers: {
-            authorization: `Bearer ${accessToken}`,
+            authorization: `Bearer ${accessToken.current}`,
             "Content-Type": "application/json",
           },
         },
