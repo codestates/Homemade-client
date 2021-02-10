@@ -28,10 +28,21 @@ export default function SubmitRecipe() {
     stepRefs.current = stepRefs.current.slice(0, currentSteps.length);
   }, [currentSteps]);
 
-  const AddStep = () => {
+  const addStep = () => {
     setCurrentSteps(state => {
       return [...state, state[state.length - 1] + 1];
     });
+  };
+
+  const deleteImage = name => {
+    const tempImages = { ...stepImages };
+    const tempPreviews = { ...previews };
+
+    delete tempImages[name];
+    delete tempPreviews[name];
+
+    setStepImages(tempImages);
+    setPreviews(tempPreviews);
   };
 
   const showImg = e => {
@@ -83,6 +94,8 @@ export default function SubmitRecipe() {
       .sort((a, b) => b.length - a.length)
       .map(el => recipe[el])
       .join("//");
+
+    console.log("content", content);
 
     if (
       Object.keys(recipe).length < 9 ||
@@ -144,6 +157,7 @@ export default function SubmitRecipe() {
 
   return (
     <SubmitRecipeForm
+      deleteImage={deleteImage}
       images={stepImages}
       previews={previews}
       recipe={recipe}
@@ -151,7 +165,7 @@ export default function SubmitRecipe() {
       handleRecipe={handleRecipe}
       handleUpload={handleUpload}
       currentSteps={currentSteps}
-      AddStep={AddStep}
+      addStep={addStep}
       stepRefs={stepRefs}
       thumbnailRef={thumbnailRef}
       errorMessage={errorMessage}

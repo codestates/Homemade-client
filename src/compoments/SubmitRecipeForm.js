@@ -5,12 +5,13 @@ import React from "react";
 import styled from "styled-components";
 
 export default function SubmitRecipeForm({
+  deleteImage,
   previews,
   handleChange,
   handleRecipe,
   handleUpload,
   currentSteps,
-  AddStep,
+  addStep,
   stepRefs,
   thumbnailRef,
   errorMessage,
@@ -79,6 +80,11 @@ export default function SubmitRecipeForm({
               accept="image/*"
               onChange={e => handleChange(e, 0)}
             />
+            <DeleteImageBtn
+              type="button"
+              onClick={() => deleteImage("thumbnail")}
+              active={previews.thumbnail}
+            />
             <Preview
               active={previews.thumbnail}
               alt="test"
@@ -121,6 +127,11 @@ export default function SubmitRecipeForm({
                     name={`step${step}`}
                     onChange={e => handleChange(e, step)}
                   />
+                  <DeleteImageBtn
+                    type="button"
+                    onClick={() => deleteImage(`step${step}`)}
+                    active={previews[`step${step}`]}
+                  />
                   <Preview
                     active={previews[`step${step}`]}
                     alt={`step${step}`}
@@ -139,7 +150,7 @@ export default function SubmitRecipeForm({
           );
         })}
       </RecipeSequence>
-      <AddStepBtn type="button" onClick={() => AddStep()}>
+      <AddStepBtn type="button" onClick={() => addStep()}>
         순서 추가
       </AddStepBtn>
       <RecipeSaveWrap>
@@ -319,6 +330,7 @@ const StepWrap = styled.div`
 `;
 
 const ImageWrap = styled.span`
+  position: relative;
   width: 100%
   heigth: 200px;
 `;
@@ -343,4 +355,31 @@ const AddStepBtn = styled(SaveBtn)`
 const ErrorMessage = styled.div`
   color: #f40310;
   text-align: center;
+`;
+
+const DeleteImageBtn = styled.button`
+  display: none;
+  ${({ active }) =>
+    active &&
+    `
+      position: absolute;
+      z-index: 2;
+      display: block;
+      padding: 0.5rem;
+      border: none;
+      &:before {
+        content: "x";
+        color: #000000;
+        font-weight: 300;
+        cursor: pointer;
+      }
+      &:focus {
+        outline: none;        
+      }
+      &:hover {
+        transform: scale(1.5);
+        transition: .5s;
+      }
+    }
+  `}
 `;
