@@ -13,7 +13,11 @@ import {
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
-
+  // 회원이 로그아웃할 경우 localStorage의 accessToken을 삭제한다
+  const handleLogOut = () => {
+    localStorage.clear();
+    setIsLogin(false);
+  };
   const signInHanlder = () => {
     setIsLogin(true);
   };
@@ -52,6 +56,7 @@ function App() {
         isLogin={isLogin}
         setIsLogin={setIsLogin}
         signInHanlder={signInHanlder}
+        handleLogOut={handleLogOut}
       />
       <GlobalStyle />
       <Container className="App">
@@ -60,7 +65,7 @@ function App() {
             <Main />
           </Route>
           <Route exact path="/userinfo">
-            <UserInfo />
+            <UserInfo handleLogOut={handleLogOut} />
           </Route>
           <Route exact path="/postrecipe">
             <SubmitRecipe />
