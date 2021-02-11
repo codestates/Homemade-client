@@ -42,21 +42,14 @@ export default function Nav({ isLogin, setIsLogin, signInHanlder }) {
             <MdMenu />
             <span>카테고리</span>
             <DropDownMenu>
-              <DropDownContent to={`/search?category=${categories[0]}&page=1`}>
-                한식
-              </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[1]}&page=1`}>
-                중식
-              </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[2]}&page=1`}>
-                양식
-              </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[3]}&page=1`}>
-                일식
-              </DropDownContent>
-              <DropDownContent to={`/search?category=${categories[4]}&page=1`}>
-                음료/술
-              </DropDownContent>
+              {categories.map((category, idx) => (
+                <DropDownContent
+                  key={category}
+                  to={`/search?category=${categories[idx]}&page=1`}
+                >
+                  {category}
+                </DropDownContent>
+              ))}
             </DropDownMenu>
           </CategoryMenu>
           <CategoryItem>랭킹</CategoryItem>
