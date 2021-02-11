@@ -1,20 +1,27 @@
-import React, { useState, useRef } from "react";
+/* eslint-disable camelcase */
+/* eslint-disable react/prop-types */
+import React, { useState } from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { lighten, darken } from "polished";
-import { useParams } from "react-router-dom";
-import axios from "axios";
 import Comment from "./Comment";
 
-export default function CommentContainer({ comments }) {
+export default function CommentContainer({
+  myId,
+  savedComments,
+  handleSubmit,
+  deleteComment,
+  accessToken,
+  updateComment,
+}) {
   const [input, setInput] = useState("");
   const [rating, setRating] = useState(3);
-  const accessToken = useRef(
-    localStorage.getItem("loggedInfo") &&
-      JSON.parse(localStorage.getItem("loggedInfo")).accessToken,
-  );
 
-  const { id } = useParams();
+  const submitComment = (comment, rate) => {
+    handleSubmit(comment, rate);
+    setInput("");
+    setRating(3);
+  };
 
   const handleDecrease = () => {
     setRating(state => state - 1);
@@ -28,40 +35,35 @@ export default function CommentContainer({ comments }) {
     setInput(e.target.value);
   };
 
-  const handleSubmit = async () => {
-    const comment = {
-      id,
-      text: input,
-      rate: rating,
-      userId: 1, // 이거 테스트용
-    };
-
-    await axios.post(`https://homemade2021.ml/recipes/comment`, comment, {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${accessToken.current}`,
-      },
-      withCredentials: true,
-    });
-
-    setInput("");
-    setRating(3);
-  };
   return (
     <CommentWrap>
-      {comments.map(comment => {
-        const { nickname, createdAt, text, rate } = comment;
-        return (
-          <Comment
-            key={comment.id}
-            nickname={nickname}
-            createdAt={createdAt}
-            text={text}
-            value={input}
-            rate={rate}
-          />
-        );
-      })}
+      {savedComments
+        ? savedComments.map(comment => {
+            const {
+              userId,
+              nickname,
+              createdAt,
+              created_At,
+              text,
+              rate,
+            } = comment;
+            return (
+              <Comment
+                key={comment.id}
+                myId={myId}
+                commentId={comment.id}
+                userId={userId}
+                nickname={nickname}
+                createdAt={createdAt || created_At}
+                text={text}
+                value={input}
+                rate={rate}
+                deleteComment={deleteComment}
+                updateComment={updateComment}
+              />
+            );
+          })
+        : ""}
       <CommentInputForm>
         <RateContainer>
           <SetRatingBtn
@@ -86,9 +88,9 @@ export default function CommentContainer({ comments }) {
             onChange={e => handleChange(e)}
           />
           <CommentButton
-            onClick={handleSubmit}
+            onClick={() => submitComment(input, rating)}
             type="button"
-            disabled={!input || !accessToken.current}
+            disabled={!input || !accessToken}
           >
             등록
           </CommentButton>
@@ -98,17 +100,17 @@ export default function CommentContainer({ comments }) {
   );
 }
 
-CommentContainer.propTypes = {
-  comments: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      nickname: PropTypes.string.isRequired,
-      createdAt: PropTypes.string.isRequired,
-      text: PropTypes.string.isRequired,
-      rate: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-};
+// CommentContainer.propTypes = {
+//   comments: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       id: PropTypes.number.isRequired,
+//       nickname: PropTypes.string.isRequired,
+//       createdAt: PropTypes.string.isRequired,
+//       text: PropTypes.string.isRequired,
+//       rate: PropTypes.string.isRequired,
+//     }),
+//   ).isRequired,
+// };
 
 const CommentWrap = styled.div`
   width: 720px;

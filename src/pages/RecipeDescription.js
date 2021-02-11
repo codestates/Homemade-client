@@ -10,14 +10,14 @@ export default function RecipeDescription() {
       JSON.parse(localStorage.getItem("loggedInfo")).accessToken,
   );
 
-  const { id } = useParams();
+  const contentId = useParams().id;
+  const history = useHistory();
+
   const [userId, setUserId] = useState(null);
   const [recipe, setRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-
-  const history = useHistory();
-
+  const [savedComments, setSavedComments] = useState(null);
   const deleteContent = async recipeId => {
     try {
       await axios({
@@ -32,6 +32,82 @@ export default function RecipeDescription() {
       });
 
       history.push("/");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updateComment = async (nickname, commentId, text) => {
+    try {
+      const res = await axios.patch(
+        "https://homemade2021.ml/users/ucomment",
+        {
+          nickname,
+          commentId,
+          text,
+          contentId,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            authorization: `Bearer ${accessToken.current}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      const updatedComment = res.data.data.commentInfo;
+      setSavedComments(comments =>
+        comments.map(comment =>
+          comment.id === updatedComment.id ? updatedComment : comment,
+        ),
+      );
+
+      console.log("업뎃");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const deleteComment = async commentId => {
+    try {
+      await axios({
+        url: "https://homemade2021.ml/recipes/dcomment",
+        method: "delete",
+        data: { id: commentId },
+        headers: {
+          withCredentials: "true",
+          authorization: `Bearer ${accessToken.current}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setSavedComments(state => state.filter(el => el.id !== commentId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSubmit = async (text, rating) => {
+    const comment = {
+      id: contentId,
+      text,
+      rate: rating,
+    };
+    try {
+      const data = await axios.post(
+        `https://homemade2021.ml/recipes/comment`,
+        comment,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${accessToken.current}`,
+          },
+          withCredentials: true,
+        },
+      );
+      const newComment = data.data.data.commentInfo;
+      console.log("nnn", newComment);
+      setSavedComments(state => [...state, newComment]);
     } catch (err) {
       console.error(err);
     }
@@ -52,12 +128,14 @@ export default function RecipeDescription() {
       }
 
       const data = await axios.get(
-        `https://homemade2021.ml/recipes/recipe/${id}`,
+        `https://homemade2021.ml/recipes/recipe/${contentId}`,
       );
+
       const recipeData = data.data.data.recipe;
 
       setRecipe(recipeData);
       setIsLoading(false);
+      setSavedComments(recipeData.comments);
     } catch (err) {
       setErrorMessage("레시피를 불러오지 못했습니다.");
     }
@@ -74,8 +152,14 @@ export default function RecipeDescription() {
       ) : (
         <RecipeInfo
           recipe={recipe}
-          userId={userId}
+          myId={userId}
           deleteContent={deleteContent}
+          accessToken={accessToken}
+          contentId={contentId}
+          savedComments={savedComments}
+          deleteComment={deleteComment}
+          handleSubmit={handleSubmit}
+          updateComment={updateComment}
         />
       )}
     </>

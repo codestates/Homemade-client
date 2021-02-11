@@ -6,7 +6,17 @@ import { Link } from "react-router-dom";
 import { darken, lighten } from "polished";
 import CommentContainer from "./CommentContainer";
 
-function RecipeInfo({ recipe, userId, deleteContent }) {
+function RecipeInfo({
+  recipe,
+  myId,
+  deleteContent,
+  accessToken,
+  contentId,
+  savedComments,
+  deleteComment,
+  handleSubmit,
+  updateComment,
+}) {
   const {
     id,
     title,
@@ -17,13 +27,14 @@ function RecipeInfo({ recipe, userId, deleteContent }) {
     image_urls,
     content,
     username,
-    comments,
     avatarUrl,
   } = recipe;
+
   const recipeContent = content.split("//");
   const introduction = recipeContent[0];
   const ingredient = recipeContent[1];
   const starRate = Number(rate) * 20;
+
   return (
     <RecipeContainer>
       <Thumbnail src={thumbnail_url} alt="recipe" />
@@ -34,13 +45,16 @@ function RecipeInfo({ recipe, userId, deleteContent }) {
         />
       </AvatarWrap>
       <UserName>{username}</UserName>
-      <Handler active={userId === recipe.userId}>
+      <Handler active={myId === recipe.userId}>
         <DeleteContentBtn onClick={() => deleteContent(id)}>
           삭제
         </DeleteContentBtn>
-        <Link to="/">수정</Link>
+        <Link
+          to={{ pathname: "/updaterecipe", state: { recipe, contentId: id } }}
+        >
+          수정
+        </Link>
       </Handler>
-
       <Title>
         {title}
         <Introduction>{introduction}</Introduction>
@@ -64,7 +78,15 @@ function RecipeInfo({ recipe, userId, deleteContent }) {
           </Description>
         </Article>
       ))}
-      <CommentContainer comments={comments} />
+      <CommentContainer
+        myId={myId}
+        savedComments={savedComments}
+        contentId={contentId}
+        handleSubmit={handleSubmit}
+        deleteComment={deleteComment}
+        accessToken={accessToken}
+        updateComment={updateComment}
+      />
       <SmallInfo>view: {views}</SmallInfo>
     </RecipeContainer>
   );
