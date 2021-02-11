@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Recipe from "./Recipe";
 
 export default function RecipeList({ recipes }) {
-  console.log("이거", recipes);
   return (
     <RecipeListContainer>
       <RecipeListWrap>

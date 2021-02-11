@@ -1,27 +1,28 @@
 /* eslint-disable no-restricted-syntax */
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { useHistory, Redirect } from "react-router-dom";
-import SubmitRecipeForm from "../compoments/SubmitRecipeForm";
+import { useHistory, Redirect, useLocation } from "react-router-dom";
+import UpdateRecipeForm from "../compoments/UpdateRecipeForm";
 
-export default function SubmitRecipe() {
+export default function UpdateRecipe() {
   const accessToken = useRef(
     localStorage.getItem("loggedInfo") &&
       JSON.parse(localStorage.getItem("loggedInfo")).accessToken,
   );
   const history = useHistory();
+  const location = useLocation();
 
   if (!accessToken.current) {
     return <Redirect to="/" />;
   }
 
-  const categories = ["한식", "중식", "일식", "양식", "음료/술"];
   const [stepImages, setStepImages] = useState({});
   const [previews, setPreviews] = useState({});
   const [recipe, setRecipe] = useState({
     title: "",
     category: "한식",
   });
+
   const [currentSteps, setCurrentSteps] = useState([1, 2, 3, 4, 5]);
   const stepRefs = useRef([]);
   const thumbnailRef = useRef();
@@ -115,16 +116,18 @@ export default function SubmitRecipe() {
         data: { thumbnail, images },
       } = imageUrls;
 
+      const { contentId } = location.state;
+
       const recipeInfo = {
-        thumbnail,
+        contentId,
+        thumbnailUrl: thumbnail,
         title: recipe.title,
         imageUrl: images,
-        categoryId: categories.indexOf(recipe.category) + 1,
-        content,
+        contents: content,
       };
 
-      const data = await axios.post(
-        "https://homemade2021.ml/recipes/content",
+      const data = await axios.patch(
+        "https://homemade2021.ml/users/ucontent",
         recipeInfo,
         {
           withCredentials: true,
@@ -157,7 +160,7 @@ export default function SubmitRecipe() {
   };
 
   return (
-    <SubmitRecipeForm
+    <UpdateRecipeForm
       deleteImage={deleteImage}
       images={stepImages}
       previews={previews}

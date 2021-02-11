@@ -5,9 +5,18 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { darken, lighten } from "polished";
 import CommentContainer from "./CommentContainer";
-import comments from "../assets/comments";
 
-function RecipeInfo({ recipe }) {
+function RecipeInfo({
+  recipe,
+  myId,
+  deleteContent,
+  accessToken,
+  contentId,
+  savedComments,
+  deleteComment,
+  handleSubmit,
+  updateComment,
+}) {
   const {
     id,
     title,
@@ -20,11 +29,12 @@ function RecipeInfo({ recipe }) {
     username,
     avatarUrl,
   } = recipe;
+
   const recipeContent = content.split("//");
-  console.log(id);
   const introduction = recipeContent[0];
   const ingredient = recipeContent[1];
   const starRate = Number(rate) * 20;
+
   return (
     <RecipeContainer>
       <Thumbnail src={thumbnail_url} alt="recipe" />
@@ -35,11 +45,16 @@ function RecipeInfo({ recipe }) {
         />
       </AvatarWrap>
       <UserName>{username}</UserName>
-      <Handler>
-        <Link to="/">삭제</Link>
-        <Link to="/">수정</Link>
+      <Handler active={myId === recipe.userId}>
+        <DeleteContentBtn onClick={() => deleteContent(id)}>
+          삭제
+        </DeleteContentBtn>
+        <Link
+          to={{ pathname: "/updaterecipe", state: { recipe, contentId: id } }}
+        >
+          수정
+        </Link>
       </Handler>
-
       <Title>
         {title}
         <Introduction>{introduction}</Introduction>
@@ -63,7 +78,15 @@ function RecipeInfo({ recipe }) {
           </Description>
         </Article>
       ))}
-      <CommentContainer comments={comments} />
+      <CommentContainer
+        myId={myId}
+        savedComments={savedComments}
+        contentId={contentId}
+        handleSubmit={handleSubmit}
+        deleteComment={deleteComment}
+        accessToken={accessToken}
+        updateComment={updateComment}
+      />
       <SmallInfo>view: {views}</SmallInfo>
     </RecipeContainer>
   );
@@ -205,9 +228,9 @@ const Introduction = styled.div`
 `;
 
 const Handler = styled.div`
-  display: flex;
-  flex-direction: row-reverse;
-  a {
+  display: none;
+  a,
+  span {
     font-size: 1rem;
     margin-left: 0.4rem;
     text-decoration: none;
@@ -219,6 +242,17 @@ const Handler = styled.div`
       color: ${darken(0.1, `#6f6f6f`)};
     }
   }
+
+  ${({ active }) =>
+    active &&
+    `
+    display: flex;
+    flex-direction: row-reverse;
+    `}
+`;
+
+const DeleteContentBtn = styled.span`
+  cursor: pointer;
 `;
 
 export default RecipeInfo;

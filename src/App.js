@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle } from "styled-components";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import axios from "axios";
 import { Nav } from "./compoments/index";
 import {
@@ -9,6 +14,7 @@ import {
   SubmitRecipe,
   RecipeDescription,
   RecipesContainer,
+  UpdateRecipe,
 } from "./pages/index";
 
 function App() {
@@ -70,12 +76,16 @@ function App() {
           <Route exact path="/postrecipe">
             <SubmitRecipe />
           </Route>
+          <Route exact path="/updaterecipe">
+            <UpdateRecipe />
+          </Route>
           <Route exact path="/recipe/:id">
             <RecipeDescription />
           </Route>
           <Route path="/search">
             <RecipesContainer />
           </Route>
+          <Redirect path="/" />
         </Switch>
       </Container>
     </Router>

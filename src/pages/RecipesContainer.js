@@ -27,7 +27,7 @@ export default function RecipesContainer() {
   let query;
 
   if (Object.keys(params).includes("q")) {
-    query = `q=${params.q}&page=`;
+    query = `q=${params.q || " "}&page=`;
   } else {
     query = `category=${params.category}&page=`;
   }
@@ -37,12 +37,15 @@ export default function RecipesContainer() {
   useEffect(async () => {
     try {
       setIsLoading(true);
+
       const data = await axios.get(
         `https://homemade2021.ml/recipes/recipes?${queryParam}`,
       );
+
       const { recipes, contentSum } = data.data.data;
-      setRecipeList(recipes);
+
       allListLength.current = contentSum;
+      setRecipeList(recipes);
       setIsLoading(false);
     } catch (err) {
       console.log("error 발생");
