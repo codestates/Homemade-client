@@ -6,8 +6,9 @@ import { Link } from "react-router-dom";
 import { darken, lighten } from "polished";
 import CommentContainer from "./CommentContainer";
 
-function RecipeInfo({ recipe }) {
+function RecipeInfo({ recipe, userId, deleteContent }) {
   const {
+    id,
     title,
     createdAt,
     thumbnail_url,
@@ -33,8 +34,10 @@ function RecipeInfo({ recipe }) {
         />
       </AvatarWrap>
       <UserName>{username}</UserName>
-      <Handler>
-        <Link to="/">삭제</Link>
+      <Handler active={userId === recipe.userId}>
+        <DeleteContentBtn onClick={() => deleteContent(id)}>
+          삭제
+        </DeleteContentBtn>
         <Link to="/">수정</Link>
       </Handler>
 
@@ -203,9 +206,9 @@ const Introduction = styled.div`
 `;
 
 const Handler = styled.div`
-  display: flex;
-  flex-direction: row-reverse;
-  a {
+  display: none;
+  a,
+  span {
     font-size: 1rem;
     margin-left: 0.4rem;
     text-decoration: none;
@@ -217,6 +220,17 @@ const Handler = styled.div`
       color: ${darken(0.1, `#6f6f6f`)};
     }
   }
+
+  ${({ active }) =>
+    active &&
+    `
+    display: flex;
+    flex-direction: row-reverse;
+    `}
+`;
+
+const DeleteContentBtn = styled.span`
+  cursor: pointer;
 `;
 
 export default RecipeInfo;
