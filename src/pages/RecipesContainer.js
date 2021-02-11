@@ -27,7 +27,7 @@ export default function RecipesContainer() {
   let query;
 
   if (Object.keys(params).includes("q")) {
-    query = `q=${params.q}&page=`;
+    query = `q=${params.q || " "}&page=`;
   } else {
     query = `category=${params.category}&page=`;
   }
