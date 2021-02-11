@@ -9,17 +9,12 @@ import { HiOutlinePencil } from "react-icons/hi";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 
-export default function Nav({ isLogin, setIsLogin, signInHanlder }) {
+export default function Nav({ isLogin, signInHanlder, handleLogOut }) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignUp] = useState(false);
   const [keyword, setKeyword] = useState("");
 
   const categories = ["한식", "중식", "양식", "일식", "음료/술"];
-  // 회원이 로그아웃할 경우 localStorage의 accessToken을 삭제한다
-  const handleLogOut = () => {
-    localStorage.clear();
-    setIsLogin(false);
-  };
 
   return (
     <NavWrap>
@@ -95,8 +90,8 @@ export default function Nav({ isLogin, setIsLogin, signInHanlder }) {
 
 Nav.propTypes = {
   isLogin: PropTypes.bool.isRequired,
-  setIsLogin: PropTypes.func.isRequired,
   signInHanlder: PropTypes.func.isRequired,
+  handleLogOut: PropTypes.func.isRequired,
 };
 
 const NavWrap = styled.header`

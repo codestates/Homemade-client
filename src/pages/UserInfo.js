@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import Information from "../compoments/Information";
 import UserRecipe from "../compoments/UserRecipe";
 
-export default function UserInfo() {
+// eslint-disable-next-line no-unused-vars
+export default function UserInfo({ handleLogOut }) {
   const menuList = {
-    0: <Information />,
+    0: <Information handleLogOut={handleLogOut} />,
     1: <UserRecipe />,
   };
   const [menu, setMenu] = useState(0);
@@ -41,12 +43,16 @@ export default function UserInfo() {
           >
             내 레시피
           </Button>
+          {/* <Button type="button"> {prop}</Button> */}
         </MenuButton>
         <ViewComponent>{menuList[menu]}</ViewComponent>
       </MenuContainer>
     </>
   );
 }
+UserInfo.propTypes = {
+  handleLogOut: PropTypes.func.isRequired,
+};
 const MenuContainer = styled.div`
   border: 1px solid lightgray;
   border-radius: 0px 0px 10px 10px;

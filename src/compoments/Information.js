@@ -1,10 +1,18 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-unused-vars */
+/* eslint-disable consistent-return */
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
-
+import { useHistory } from "react-router-dom";
+import NorificationModal from "./NotificationModal";
 // eslint-disable-next-line no-unused-vars
-function Information() {
+
+function Information({ handleLogOut }) {
+  const [modalMessage, setModalMessage] = useState("");
+  const history = useHistory();
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -16,6 +24,8 @@ function Information() {
     file: "",
     previewURL: "",
   });
+  const [modalVisible, setModalVisible] = useState(false);
+
   // 회원정보 변경에대한 상태
   const [avatarModify, setAvatarModify] = useState(false);
   const [passwordModify, setPasswordModify] = useState(false);
@@ -27,8 +37,28 @@ function Information() {
   const [mobileNumber, setMobile] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
   // 비밀번호 일치여부 판단
-  // 비밀번호 일치여부 판단
   //! 비밀번호 , 비밀번호 확인 input 태그에 똑같은 조건이 모두 있어야 함.
+  const openModal = buttonName => {
+    if (buttonName === "withdraw") {
+      setModalMessage("회원탈퇴 되었습니다.");
+    }
+    if (buttonName === "changePassword") {
+      setModalMessage("비밀번호가 변경 되었습니다.");
+    }
+    if (buttonName === "mobileChange") {
+      setModalMessage("전화번호가 변경 되었습니다.");
+    }
+    if (buttonName === "avatarChange") {
+      setModalMessage("프로필 사진이 변경 되었습니다.");
+    }
+    if (buttonName === "test") {
+      setModalMessage("프로필 사진이 변경 되었습니다.");
+    }
+    setModalVisible(true);
+  };
+  const closeModal = () => {
+    setModalVisible(false);
+  };
   const handleFirstPassword = event => {
     const { value } = event.target;
     setFirstPassword(value);
@@ -91,15 +121,60 @@ function Information() {
     };
     reader.readAsDataURL(file);
   };
-  const handleReqeustUploadAvatar = () => {
+  const handleReqeustUploadAvatar = async () => {
+    const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
     const formData = new FormData();
-    formData.append("uploadImages", image.file, image.file.name);
+    formData.append("img", image.file);
     const config = {
       headers: {
-        "content-type": "multipart/fomr-data",
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     };
-    axios.patch("https://homemade2021.ml/users/userinfo", formData, config);
+    await axios
+      .post("https://homemade2021.ml/avatarimage", formData, config)
+      .then(res => {
+        const { avatarurl } = res.data;
+        setUserInfo({
+          avatar: avatarurl,
+        });
+        axios
+          .patch(
+            "https://homemade2021.ml/users/uuserinfo",
+            {
+              avatar: avatarurl,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            },
+          )
+          .then(userInfoResponse => {
+            const {
+              name,
+              email,
+              nickname,
+              mobile,
+              avatar_url,
+            } = userInfoResponse.data.data.userInfo;
+            setUserInfo({
+              name,
+              email,
+              nickname,
+              mobile,
+              avatar: avatar_url,
+            });
+            openModal("avatarChange");
+          });
+        console.log(userInfo.avatar, "url 받아와서 상태 업데이트 시");
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   const handleRequestUserInfo = () => {
     const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
@@ -118,14 +193,14 @@ function Information() {
             email,
             nickname,
             mobile,
-            avatar,
+            avatar_url,
           } = res.data.data.userInfo;
           setUserInfo({
             name,
             email,
             nickname,
             mobile,
-            avatar,
+            avatar: avatar_url,
           });
         });
     } catch (err) {
@@ -149,8 +224,8 @@ function Information() {
             withCredentials: true,
           },
         )
-        .then(res => {
-          console.log(res, "정상");
+        .then(() => {
+          openModal("changePassword");
           handleInitializePassword();
         });
     } catch (err) {
@@ -174,15 +249,31 @@ function Information() {
             withCredentials: true,
           },
         )
-        .then(res => {
-          console.log(res, "정상");
-          handleInitializePassword();
+        .then(() => {
+          openModal("mobileChange");
         });
     } catch (err) {
       console.log(err);
     }
   };
-
+  const handleRequestwithdraw = async () => {
+    const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
+    const respeonse = await axios.delete(
+      "https://homemade2021.ml/users/duser",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      },
+    );
+    if (respeonse) {
+      openModal("withdraw");
+      handleLogOut();
+      history.push("/");
+    }
+  };
   useEffect(() => {
     handleRequestUserInfo();
   }, []);
@@ -200,19 +291,30 @@ function Information() {
                   <div>
                     <input
                       type="file"
+                      id="input_file"
                       accept="image/*"
                       name="profile_img"
                       onChange={handleFileOnChange}
                     />
-                    <Avatar
-                      className="profile_preview"
-                      src={image.previewURL}
-                      alt="default_img"
-                    />
+                    {userInfo.avatar !== undefined ? (
+                      <Avatar
+                        className="profile_preview"
+                        src={
+                          image.previewURL ? image.previewURL : userInfo.avatar
+                        }
+                        alt="default_img"
+                      />
+                    ) : (
+                      <Avatar
+                        className="profile_preview"
+                        src="../images/defaultUserAvatar.png"
+                        alt="default_img"
+                      />
+                    )}
                   </div>
                 ) : (
                   <div>
-                    {userInfo.avatar ? (
+                    {userInfo.avatar !== undefined ? (
                       <Avatar
                         src={userInfo.avatar}
                         id="avater"
@@ -229,8 +331,11 @@ function Information() {
                 )}
                 {avatarModify ? (
                   <div>
+                    <UploadButton htmlFor="input_file">파일검색</UploadButton>
+
                     <Button
                       className="avatar-changed-button"
+                      name="avatarChange"
                       onClick={handleReqeustUploadAvatar}
                     >
                       등록
@@ -303,6 +408,7 @@ function Information() {
                       {/* TODO : 비동기 및 수직 방향 정렬필요 */}
                       <Button
                         className="changed-Button"
+                        name="changePassword"
                         onClick={handleRequestPasswordModify}
                       >
                         {" "}
@@ -346,6 +452,7 @@ function Information() {
                     <div>
                       <Button
                         className="changed-Button"
+                        name="mobileChange"
                         onClick={handleRequestMobileModify}
                       >
                         변경
@@ -369,13 +476,32 @@ function Information() {
               </TableRow>
               <TableRow>
                 <TableData />
-                <TableData />
+                <TableData id="withdraw">
+                  <Button
+                    type="button"
+                    name="withdraw"
+                    onClick={handleRequestwithdraw}
+                  >
+                    회원탈퇴
+                  </Button>
+                  <Button type="button" name="test" onClick={openModal}>
+                    모달확인
+                  </Button>
+                </TableData>
                 <TableData />
               </TableRow>
             </UserInfoTable>
           </Container>
         </UserInfoStyle>
       </UserinfoContainer>
+      <NorificationModal
+        visible={modalVisible}
+        closeable
+        maskClosable
+        onClose={closeModal}
+      >
+        <h3>{modalMessage}</h3>
+      </NorificationModal>
     </Background>
   );
 }
@@ -385,7 +511,7 @@ Information.defaultProps = {
     name: "김코딩",
     email: "kim@naver.com",
     nickname: "백종원제자",
-    avatar: "../images/avatar1.jpg",
+    avatar: "",
     mobile: "010-1234-1234",
   },
 };
@@ -397,6 +523,7 @@ Information.propTypes = {
     nickname: PropTypes.string.isRequired,
     mobile: PropTypes.string.isRequired,
   }),
+  handleLogOut: PropTypes.func.isRequired,
 };
 const Background = styled.div`
   width: 100%;
@@ -441,6 +568,12 @@ const UserInfoStyle = styled.div`
   .user-info {
     color: gray;
     width: 200px;
+  }
+  #withdraw {
+    text-align: center;
+  }
+  #input_file {
+    display: none;
   }
 `;
 // 버튼
@@ -489,11 +622,28 @@ const AvatarContainer = styled.span`
 `;
 const Container = styled.div`
   display: inline-flex;
-  border-bottom: 1px solid gray;
 `;
 const ProfileImg = styled.div`
   border-radius: 10px;
   width: 211px;
+`;
+const FileInput = styled.input`
+  display: none;
+`;
+const UploadButton = styled.label`
+  width: 100%;
+  display: inline-block;
+  padding: 0.5em 0.75em;
+  color: #999;
+  font-size: inherit;
+  line-height: normal;
+  vertical-align: middle;
+  background-color: #e24897;
+  cursor: pointer;
+  border: 1px solid #ebebeb;
+  border-bottom-color: #e2e2e2;
+  border-radius: 0.25em;
+  color: white;
 `;
 
 export default Information;
