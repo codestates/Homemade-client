@@ -484,9 +484,6 @@ function Information({ handleLogOut }) {
                   >
                     회원탈퇴
                   </Button>
-                  <Button type="button" name="test" onClick={openModal}>
-                    모달확인
-                  </Button>
                 </TableData>
                 <TableData />
               </TableRow>
