@@ -51,6 +51,7 @@ export default function NorificationModal({
             </CloseButton>
           )}
           {children}
+          <ConfirmButton onClick={close}>확인</ConfirmButton>
         </ModalInner>
       </ModalWrapper>
     </Portal>
@@ -104,10 +105,24 @@ const ModalInner = styled.div`
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);
   background-color: #fff;
   border-radius: 10px;
+  text-align-last: center;
+
   width: 360px;
   max-width: 480px;
   top: 50%;
   transform: translateY(-50%);
   margin: 0 auto;
   padding: 20px 20px;
+`;
+const ConfirmButton = styled.button`
+  border: 1px solid #892ce2;
+  padding: 0.5em 2em;
+  color: #892ce2;
+  border-radius: 10px;
+  background: white;
+  &:hover {
+    transition: all 0.3s ease-in-out;
+    background-color: #892ce2;
+    color: #fff;
+  }
 `;
