@@ -61,8 +61,6 @@ export default function RecipeDescription() {
           comment.id === updatedComment.id ? updatedComment : comment,
         ),
       );
-
-      console.log("업뎃");
     } catch (err) {
       console.error(err);
     }
@@ -143,7 +141,7 @@ export default function RecipeDescription() {
       setIsLoading(true);
       setRecipe({});
     };
-  }, []);
+  }, [savedComments]);
 
   return (
     <>
