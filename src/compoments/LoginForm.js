@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
 // import KakaoLogin from "react-kakao-login";
+import { BiExit } from "react-icons/bi";
 import FindPassword from "./FindPassword";
 
 export default function LoginForm({ show, isShow, signInHanlder }) {
@@ -16,19 +17,20 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
   const handlePassword = event => {
     setPassword(event.target.value);
   };
-  // 로그인 form을 벗어날 경우 input value를 삭제
-  const closeForm = () => {
-    setEmail("");
-    setPassword("");
-    setErrorMessage("");
-    isShow(false);
-  };
+
   const handleFindPassword = () => {
     setEmail("");
     setPassword("");
     setIsFindPassword(true);
   };
-
+  // 로그인 form을 벗어날 경우 input value를 삭제
+  const closeForm = () => {
+    setEmail("");
+    setPassword("");
+    setErrorMessage("");
+    handleFindPassword();
+    isShow(false);
+  };
   if (!show) {
     return null;
   }
@@ -91,7 +93,9 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
         />
       ) : (
         <LoginFormStyle>
-          <Close onClick={closeForm}>닫기</Close>
+          <Close onClick={closeForm}>
+            <BiExit size="24" />
+          </Close>
           <h3>로그인</h3>
           <div>
             <InputWrap>
@@ -115,12 +119,12 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
             {errorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : ""}
 
             <ButtonWrap>
-              <Button type="button" onClick={handleFindPassword}>
-                비밀번호 찾기
-              </Button>
               <Button type="button" onClick={signinRequestHandler}>
                 로그인
               </Button>
+              <FindButton type="button" onClick={handleFindPassword}>
+                비밀번호 찾기
+              </FindButton>
               {/* <KakaoLogin
                 token={process.env.REACT_APP_KAKAO_JSAVASCRIPT_KEY}
                 onSuccess={console.log}
@@ -231,4 +235,17 @@ const ErrorMessage = styled.div`
 `;
 const ButtonWrap = styled.div`
   text-align: center;
+`;
+const FindButton = styled.button`
+  border: 1px solid #892ce2;
+  padding: 0.5em 2em;
+  color: #892ce2;
+  border-radius: 10px;
+  background: white;
+  &:hover {
+    transition: all 0.3s ease-in-out;
+    background-color: #892ce2;
+    color: #fff;
+  }
+  margin: 20px;
 `;
