@@ -49,11 +49,7 @@ function RecipeInfo({
         <DeleteContentBtn onClick={() => deleteContent(id)}>
           삭제
         </DeleteContentBtn>
-        <Link
-          to={{ pathname: "/updaterecipe", state: { recipe, contentId: id } }}
-        >
-          수정
-        </Link>
+        <Link to={{ pathname: "/updaterecipe", state: { recipe } }}>수정</Link>
       </Handler>
       <Title>
         {title}

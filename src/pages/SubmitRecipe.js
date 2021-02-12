@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { useHistory, Redirect } from "react-router-dom";
+import { useHistory, Redirect, useLocation } from "react-router-dom";
 import SubmitRecipeForm from "../compoments/SubmitRecipeForm";
 
 export default function SubmitRecipe() {
@@ -10,6 +10,7 @@ export default function SubmitRecipe() {
       JSON.parse(localStorage.getItem("loggedInfo")).accessToken,
   );
   const history = useHistory();
+  const location = useLocation();
 
   if (!accessToken.current) {
     return <Redirect to="/" />;
@@ -26,6 +27,29 @@ export default function SubmitRecipe() {
   const stepRefs = useRef([]);
   const thumbnailRef = useRef();
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (location.state) {
+      const currentRecipe = location.state.recipe;
+
+      const currentRecipeContent = currentRecipe.content.split("//");
+      const currentRecipeCategory = currentRecipe.categoryName;
+      const currentRecipeTitle = currentRecipe.title;
+      const currentRecipeIntroduction = currentRecipeContent.shift();
+      const currentRecipeIngredient = currentRecipeContent.shift();
+      const tempRecipe = {
+        title: currentRecipeTitle,
+        category: currentRecipeCategory,
+        introduction: currentRecipeIntroduction,
+        ingredient: currentRecipeIngredient,
+      };
+      currentRecipeContent.forEach((step, idx) => {
+        tempRecipe[`step${idx + 1}`] = step;
+      });
+
+      setRecipe(tempRecipe);
+    }
+  }, []);
 
   useEffect(() => {
     stepRefs.current = stepRefs.current.slice(0, currentSteps.length);
@@ -123,33 +147,71 @@ export default function SubmitRecipe() {
         content,
       };
 
-      const data = await axios.post(
-        "https://homemade2021.ml/recipes/content",
-        recipeInfo,
-        {
-          withCredentials: true,
-          headers: {
-            authorization: `Bearer ${accessToken.current}`,
-            "Content-Type": "application/json",
+      console.log(recipeInfo);
+
+      if (location.state) {
+        recipeInfo.contentId = location.state.recipe.id;
+        const data = await axios.patch(
+          "https://homemade2021.ml/users/ucontent",
+          recipeInfo,
+          {
+            withCredentials: true,
+            headers: {
+              authorization: `Bearer ${accessToken.current}`,
+              "Content-Type": "application/json",
+            },
           },
-        },
-      );
+        );
 
-      const {
-        data: {
-          data: { id },
-        },
-      } = data;
+        const {
+          data: {
+            data: {
+              contentInfo: { id },
+            },
+          },
+        } = data;
 
-      if (id) {
-        setStepImages({});
-        setPreviews({});
-        setRecipe({ title: "", category: "한식" });
-        setCurrentSteps([1, 2, 3, 4, 5]);
-        setErrorMessage("");
-        history.push(`/recipe/${id}`);
+        if (id) {
+          setStepImages({});
+          setPreviews({});
+          setRecipe({ title: "", category: "한식" });
+          setCurrentSteps([1, 2, 3, 4, 5]);
+          setErrorMessage("");
+          history.push(`/recipe/${id}`);
+        } else {
+          setErrorMessage("레시피 등록이 되지 않았습니다.");
+        }
       } else {
-        setErrorMessage("레시피 등록이 되지 않았습니다.");
+        const data = await axios.post(
+          "https://homemade2021.ml/recipes/content",
+          recipeInfo,
+          {
+            withCredentials: true,
+            headers: {
+              authorization: `Bearer ${accessToken.current}`,
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        console.log(data);
+
+        const {
+          data: {
+            data: { id },
+          },
+        } = data;
+
+        if (id) {
+          setStepImages({});
+          setPreviews({});
+          setRecipe({ title: "", category: "한식" });
+          setCurrentSteps([1, 2, 3, 4, 5]);
+          setErrorMessage("");
+          history.push(`/recipe/${id}`);
+        } else {
+          setErrorMessage("레시피 등록이 되지 않았습니다.");
+        }
       }
     } catch (err) {
       setErrorMessage("레시피 등록이 되지 않았습니다.");
