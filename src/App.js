@@ -14,7 +14,6 @@ import {
   SubmitRecipe,
   RecipeDescription,
   RecipesContainer,
-  UpdateRecipe,
 } from "./pages/index";
 
 function App() {
@@ -77,7 +76,7 @@ function App() {
             <SubmitRecipe />
           </Route>
           <Route exact path="/updaterecipe">
-            <UpdateRecipe />
+            <SubmitRecipe />
           </Route>
           <Route exact path="/recipe/:id">
             <RecipeDescription />

@@ -15,6 +15,7 @@ export default function SubmitRecipeForm({
   stepRefs,
   thumbnailRef,
   errorMessage,
+  recipe,
 }) {
   return (
     <FormContainer>
@@ -30,6 +31,7 @@ export default function SubmitRecipeForm({
                 placeholder="예) 김치볶음밥 만들기"
                 type="text"
                 name="title"
+                value={recipe.title || ""}
                 onChange={e => handleRecipe(e)}
               />
             </label>
@@ -41,6 +43,7 @@ export default function SubmitRecipeForm({
                 placeholder="이 레시피의 탄생배경을 적어주세요."
                 type="textarea"
                 name="introduction"
+                value={recipe.introduction || ""}
                 onChange={e => handleRecipe(e)}
               />
             </label>
@@ -52,6 +55,7 @@ export default function SubmitRecipeForm({
                 placeholder="이 레시피의 재료를 적어주세요."
                 type="textarea"
                 name="ingredient"
+                value={recipe.ingredient || ""}
                 onChange={e => handleRecipe(e)}
               />
             </label>
@@ -113,6 +117,7 @@ export default function SubmitRecipeForm({
                   placeholder="예) 고기에 적당한 간을 해주세요."
                   type="textarea"
                   name={`step${step}`}
+                  value={recipe[`step${step}`] || ""}
                   onChange={e => handleRecipe(e)}
                 />
               </label>
