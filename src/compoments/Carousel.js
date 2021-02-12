@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import styled from "styled-components";
+import { darken, lighten } from "polished";
 import Recipe from "./Recipe";
 
 export default function Carousel({ recipes }) {
@@ -41,7 +42,7 @@ export default function Carousel({ recipes }) {
         &lt;
       </Button>
       {recipeToDisplay.map(recipeInfo => (
-        <Recipe key={recipeInfo} recipe={recipeInfo} />
+        <Recipe key={recipeInfo.id} recipe={recipeInfo} />
       ))}
       <Button type="button" onClick={nextSlide} right>
         &gt;
@@ -57,13 +58,19 @@ const CarouselContainer = styled.div`
 const Button = styled.button`
   border: none;
   cursor: pointer;
-  background-color: #f6f7fb;
+  background-color: transparent;
   position: absolute;
   top: 40%;
   transform: translateY(-40%);
   font-size: 3rem;
   &:focus {
     outline: none;
+  }
+  &:hover {
+    color: ${lighten(0.1, `#6f6f6f`)};
+  }
+  &:active {
+    color: ${darken(0.1, `#6f6f6f`)};
   }
   ${({ left }) =>
     left &&
