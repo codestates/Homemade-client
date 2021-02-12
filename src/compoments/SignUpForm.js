@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
 import UserModal from "./UserModal";
+import NorificationModal from "./NotificationModal";
 
 export default function SignUpForm({ show, isShow }) {
   if (!show) {
@@ -11,15 +12,28 @@ export default function SignUpForm({ show, isShow }) {
   // input 값 상태
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [isUsableEmail, setIsUsableEmail] = useState(false);
   const [nickName, setNickName] = useState("");
   const [mobile, setMobile] = useState("");
   const [firstPassword, setFirstPassword] = useState("");
   const [lastPassword, setLastPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
-
   const [signUpModal, setSignUpModal] = useState(false);
-
+  // modal 상태
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  // modal창 종료
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+  // modal창 오픈 시
+  // const openModal = buttonName => {
+  //   if (buttonName === "overlapping-button") {
+  //     setModalMessage("사용할 수 있는 email입니다.");
+  // 	}
+  //   setModalVisible(true);
+  // };
   const handleName = event => {
     setName(event.target.value);
   };
@@ -73,43 +87,65 @@ export default function SignUpForm({ show, isShow }) {
   };
   // email 중복여부 체크
   const handleRequestCheckEmail = () => {
-    try {
-      axios.post(
-        "https://homemade2021.ml/users/signIn",
-        { email },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        },
-      );
-    } catch (err) {
-      console.log(err);
+    console.log(email);
+    if (email !== "") {
+      try {
+        axios
+          .post("https://homemade2021.ml/users/checkemail", {
+            email,
+          })
+          .then(() => {
+            setIsUsableEmail(true);
+            setModalMessage("사용할 수 있는 email입니다");
+            setModalVisible(true);
+          })
+          .catch(() => {
+            setModalMessage("email이 중복됩니다");
+            setModalVisible(true);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+      return;
     }
+    setModalMessage("email을 입력해주세요.");
+    setModalVisible(true);
   };
   // 회원등록 요청
   const handleRequestSignUp = () => {
-    try {
-      axios
-        .post(
-          "https://homemade2021.ml/users/signup",
-          {
-            name,
-            email,
-            password: lastPassword,
-            nickname: nickName,
-            mobile,
-          },
-          {
-            headers: { "Content-Type": "application/json" },
-            withCredentials: true,
-          },
-        )
-        .then(res => {
-          setSignUpModal(true);
-          return console.log(res);
-        });
-    } catch (err) {
-      console.log(err);
+    if ((name, lastPassword, isUsableEmail, nickName, mobile)) {
+      try {
+        axios
+          .post(
+            "https://homemade2021.ml/users/signup",
+            {
+              name,
+              email,
+              password: lastPassword,
+              nickname: nickName,
+              mobile,
+            },
+            {
+              headers: { "Content-Type": "application/json" },
+              withCredentials: true,
+            },
+          )
+          .then(res => {
+            setSignUpModal(true);
+            return console.log(res);
+          });
+      } catch (err) {
+        setModalMessage("이미 동일한 email이 존재합니다");
+        setModalVisible(true);
+      }
+    } else {
+      setModalMessage("모든 입력사항은 필수 입니다.");
+      setModalVisible(true);
+      return;
+    }
+    if (!isUsableEmail) {
+      setModalMessage("email 중복을 확인 해주세요.");
+      setModalVisible(true);
     }
   };
   useEffect(() => {});
@@ -205,7 +241,11 @@ export default function SignUpForm({ show, isShow }) {
               <TableData />
               <TableData className="input-tag">
                 <ButtonWrap>
-                  <Button type="button" onClick={handleRequestSignUp}>
+                  <Button
+                    id="signUp-button"
+                    type="button"
+                    onClick={handleRequestSignUp}
+                  >
                     가입하기
                   </Button>
                   <Button type="button" onClick={() => isShow(false)}>
@@ -217,6 +257,14 @@ export default function SignUpForm({ show, isShow }) {
           </UserInfoTable>
         </SignUpFormStyle>
       )}
+      <NorificationModal
+        visible={modalVisible}
+        closeable
+        maskClosable
+        onClose={closeModal}
+      >
+        <h3>{modalMessage}</h3>
+      </NorificationModal>
     </DarkBackground>
   );
 }
