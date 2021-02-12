@@ -15,7 +15,7 @@ export default function Comment({
   updateComment,
 }) {
   const [activeUpdate, setActiveUpdate] = useState(false);
-  const [updatedText, setUpdatedText] = useState("");
+  const [updatedText, setUpdatedText] = useState(text);
   const starRate = Number(rate) * 20;
 
   const handleUpdate = tempText => {
@@ -53,7 +53,7 @@ export default function Comment({
           <UpdateBtn onClick={() => handleUpdate(updatedText)} type="button">
             저장
           </UpdateBtn>
-          <CloseBtn>취소</CloseBtn>
+          <CloseBtn onClick={() => setActiveUpdate(false)}>취소</CloseBtn>
         </UpdateDiv>
       ) : (
         <Text>{text}</Text>
