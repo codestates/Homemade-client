@@ -36,8 +36,8 @@ function Information({ handleLogOut }) {
   const [message, setMessage] = useState("");
   const [mobileNumber, setMobile] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
-  // 비밀번호 일치여부 판단
-  //! 비밀번호 , 비밀번호 확인 input 태그에 똑같은 조건이 모두 있어야 함.
+
+  // modal창 오픈 시
   const openModal = buttonName => {
     if (buttonName === "withdraw") {
       setModalMessage("회원탈퇴 되었습니다.");
@@ -56,9 +56,12 @@ function Information({ handleLogOut }) {
     }
     setModalVisible(true);
   };
+  // modal창 종료
   const closeModal = () => {
     setModalVisible(false);
   };
+  // 비밀번호 일치여부 판단
+  //! 비밀번호 , 비밀번호 확인 input 태그에 똑같은 조건이 모두 있어야 함.
   const handleFirstPassword = event => {
     const { value } = event.target;
     setFirstPassword(value);
@@ -169,6 +172,7 @@ function Information({ handleLogOut }) {
               avatar: avatar_url,
             });
             openModal("avatarChange");
+            setAvatarModify(false);
           });
         console.log(userInfo.avatar, "url 받아와서 상태 업데이트 시");
       })
@@ -251,6 +255,7 @@ function Information({ handleLogOut }) {
         )
         .then(() => {
           openModal("mobileChange");
+          handleInitializeMobile();
         });
     } catch (err) {
       console.log(err);
@@ -628,19 +633,17 @@ const FileInput = styled.input`
   display: none;
 `;
 const UploadButton = styled.label`
+  border: 1px solid #892ce2;
+  padding: 0.5em 2em;
+  color: #892ce2;
+  border-radius: 10px;
+  display: block;
   width: 100%;
-  display: inline-block;
-  padding: 0.5em 0.75em;
-  color: #999;
-  font-size: inherit;
-  line-height: normal;
-  vertical-align: middle;
-  background-color: #e24897;
-  cursor: pointer;
-  border: 1px solid #ebebeb;
-  border-bottom-color: #e2e2e2;
-  border-radius: 0.25em;
-  color: white;
+  background: white;
+  &:hover {
+    transition: all 0.3s ease-in-out;
+    background-color: #892ce2;
+    color: #fff;
+  }
 `;
-
 export default Information;
