@@ -18,6 +18,7 @@ export default function RecipeDescription() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [savedComments, setSavedComments] = useState(null);
+
   const deleteContent = async recipeId => {
     try {
       await axios({
@@ -104,7 +105,6 @@ export default function RecipeDescription() {
         },
       );
       const newComment = data.data.data.commentInfo;
-      console.log("nnn", newComment);
       setSavedComments(state => [...state, newComment]);
     } catch (err) {
       console.error(err);
@@ -112,25 +112,23 @@ export default function RecipeDescription() {
   };
 
   useEffect(async () => {
-    try {
-      if (accessToken) {
-        const myInfo = await axios.get(
-          `https://homemade2021.ml/users/userInfo`,
-          {
-            headers: {
-              authorization: `Bearer ${accessToken.current}`,
-            },
-          },
-        );
-        setUserId(myInfo.data.data.userInfo.id);
-      }
+    if (accessToken) {
+      const myInfo = await axios.get(`https://homemade2021.ml/users/userInfo`, {
+        headers: {
+          authorization: `Bearer ${accessToken.current}`,
+        },
+      });
+      setUserId(myInfo.data.data.userInfo.id);
+    }
+  }, []);
 
+  useEffect(async () => {
+    try {
       const data = await axios.get(
         `https://homemade2021.ml/recipes/recipe/${contentId}`,
       );
 
       const recipeData = data.data.data.recipe;
-
       setRecipe(recipeData);
       setIsLoading(false);
       setSavedComments(recipeData.comments);
@@ -141,7 +139,7 @@ export default function RecipeDescription() {
       setIsLoading(true);
       setRecipe({});
     };
-  }, [savedComments]);
+  }, []);
 
   return (
     <>
