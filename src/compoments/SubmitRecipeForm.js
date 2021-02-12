@@ -19,13 +19,13 @@ export default function SubmitRecipeForm({
 }) {
   return (
     <FormContainer>
-      <FormTitle>
+      <Title>
         <h3>레시피 등록</h3>
-      </FormTitle>
+      </Title>
       <RecipeWrap>
         <RecipeInfoWrap>
           <div>
-            <label htmlFor="title">
+            <Label htmlFor="title">
               레시피 제목
               <Input
                 placeholder="예) 김치볶음밥 만들기"
@@ -34,10 +34,10 @@ export default function SubmitRecipeForm({
                 value={recipe.title || ""}
                 onChange={e => handleRecipe(e)}
               />
-            </label>
+            </Label>
           </div>
           <div>
-            <label htmlFor="introduction">
+            <Label htmlFor="introduction">
               레시피 소개
               <Textarea
                 placeholder="이 레시피의 탄생배경을 적어주세요."
@@ -46,10 +46,10 @@ export default function SubmitRecipeForm({
                 value={recipe.introduction || ""}
                 onChange={e => handleRecipe(e)}
               />
-            </label>
+            </Label>
           </div>
           <div>
-            <label htmlFor="ingredient">
+            <Label htmlFor="ingredient">
               레시피 재료
               <Textarea
                 placeholder="이 레시피의 재료를 적어주세요."
@@ -58,10 +58,10 @@ export default function SubmitRecipeForm({
                 value={recipe.ingredient || ""}
                 onChange={e => handleRecipe(e)}
               />
-            </label>
+            </Label>
           </div>
           <div>
-            <label htmlFor="category">카테고리</label>
+            <Label htmlFor="category">카테고리</Label>
             <Select
               name="category"
               id="recipeCategory"
@@ -75,7 +75,7 @@ export default function SubmitRecipeForm({
             </Select>
           </div>
         </RecipeInfoWrap>
-        <RecipePreview>
+        <Image thumbnail>
           <ImageWrap>
             <ImageInput
               ref={thumbnailRef}
@@ -105,13 +105,13 @@ export default function SubmitRecipeForm({
               대표사진 등록하기
             </Announcement>
           </ImageWrap>
-        </RecipePreview>
+        </Image>
       </RecipeWrap>
       <RecipeSequence>
         {currentSteps.map((step, i) => {
           return (
             <StepWrap key={step}>
-              <label htmlFor={`step${step}`}>
+              <Label htmlFor={`step${step}`}>
                 Step {step}
                 <Textarea
                   placeholder="예) 고기에 적당한 간을 해주세요."
@@ -120,8 +120,8 @@ export default function SubmitRecipeForm({
                   value={recipe[`step${step}`] || ""}
                   onChange={e => handleRecipe(e)}
                 />
-              </label>
-              <RecipePreview>
+              </Label>
+              <Image>
                 <ImageWrap>
                   <ImageInput
                     ref={el => {
@@ -150,7 +150,7 @@ export default function SubmitRecipeForm({
                     +
                   </PickImageBtn>
                 </ImageWrap>
-              </RecipePreview>
+              </Image>
             </StepWrap>
           );
         })}
@@ -170,15 +170,16 @@ export default function SubmitRecipeForm({
 
 const FormContainer = styled.div`
   margin: 0 auto;
-  width: 1080px;
+  margin-bottom: 3rem;
+  width: 60%;
   height: 100%;
   border: solid 1px #e6e7e8;
   display: flex;
   flex-direction: column;
-  font-size: 1.4rem;
 `;
 
-const FormTitle = styled.div`
+const Title = styled.div`
+  position: relative;
   background-color: #f8f8f8;
   padding: 0.5rem;
   border: 1px solid #e6e7e8;
@@ -188,20 +189,13 @@ const FormTitle = styled.div`
 `;
 
 const RecipeWrap = styled.div`
-  width: 100%;
-  height: 100%;
   display: flex;
 `;
 
 const RecipeInfoWrap = styled.div`
   padding-top: 3rem;
-  padding-left: 3rem;
+  padding-left: 2rem;
   flex: 10;
-  border-right: 1px solid #e6e7e8;
-
-  div {
-    height: 120px;
-  }
 
   div + div {
     margin-top: 2rem;
@@ -212,22 +206,25 @@ const RecipeInfoWrap = styled.div`
     position: relative;
     top: 1.5px;
   }
-  .lastInfo {
-    margin-bottom: 3rem;
-  }
 `;
 
-const RecipePreview = styled.span`
+const Image = styled.span`
   flex: 3;
   height: 200px;
   text-align: center;
   border: 1px solid #e6e7e8;
+
+  ${({ thumbnail }) =>
+    thumbnail &&
+    `
+    margin-top: 3rem;
+  `}
 `;
 
 const Input = styled.input`
   margin-left: 1rem;
-  width: 70%;
-  font-size: 1.4rem;
+  width: 80%;
+  font-size: 1rem;
   font-weight: 500;
   padding: 6px 12px;
   height: 5vh;
@@ -239,10 +236,22 @@ const Input = styled.input`
   &:focus {
     outline: none;
   }
+  ${({ empty }) =>
+    empty &&
+    `
+    border: 1px solid #B91F1F;
+    background-color:#FEEFF4
+  `}
+`;
+
+const Label = styled.label`
+  flex: 10;
+  font-size: 1.2rem;
 `;
 
 const Textarea = styled(Input.withComponent("textarea"))`
   flex: 10;
+  font-size: 1.2rem;
   height: 120px;
   resize: none;
 `;
@@ -254,7 +263,7 @@ const Select = styled(Input.withComponent("select"))`
 const RecipeSequence = styled.div`
   border-top: 1px solid #e6e7e8;
   padding-top: 3rem;
-  padding-left: 3rem;
+  padding-left: 2rem;
 `;
 
 const RecipeSaveWrap = styled.div`
@@ -269,13 +278,15 @@ const SaveBtn = styled.button`
   font-weight: bold;
   padding-left: 1rem;
   padding-right: 1rem;
+  font-size: 0.9rem;
   margin-top: 3px;
   display: block;
   width: 100%;
   height: 48px;
-  background: blueviolet;
+  background: #76a264;
   color: white;
   border: 1px solid lightgray;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 `;
 
 const ImageInput = styled.input`
@@ -322,12 +333,9 @@ const StepWrap = styled.div`
   height: 200px;
   margin-bottom: 3rem;
   flex-direction: row;
-  label {
-    flex: 10;
-  }
   textarea {
     height: 200px;
-    width: 90%;
+    width: 85%;
   }
   span {
     padding: 0;
@@ -347,7 +355,7 @@ const Announcement = styled.div`
     `
     display:block;
     margin-top: 1rem;
-    font-size: 1rem;
+    font-size: 1.2rem;
   `}
 `;
 
