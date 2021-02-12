@@ -18,8 +18,8 @@ export default function Comment({
   const [updatedText, setUpdatedText] = useState(text);
   const starRate = Number(rate) * 20;
 
-  const handleUpdate = tempText => {
-    updateComment(nickname, commentId, tempText);
+  const handleUpdate = async tempText => {
+    await updateComment(nickname, commentId, tempText);
     setActiveUpdate(false);
   };
 
