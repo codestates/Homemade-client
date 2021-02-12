@@ -100,7 +100,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 const Container = styled.div`
-  width: 80vw;
+  width: 100%;
   margin: 0 auto;
 `;
 export default App;

@@ -21,10 +21,10 @@ function RecipeInfo({
     id,
     title,
     createdAt,
-    thumbnail_url,
+    thumbnailUrl,
     rate,
     views,
-    image_urls,
+    imageUrls,
     content,
     username,
     avatarUrl,
@@ -37,7 +37,10 @@ function RecipeInfo({
 
   return (
     <RecipeContainer>
-      <Thumbnail src={thumbnail_url} alt="recipe" />
+      <Thumbnail
+        src={thumbnailUrl || "../images/recipeInfo1.jpg"}
+        alt="recipe"
+      />
       <AvatarWrap>
         <Avatar
           src={avatarUrl || "../images/defaultUserAvatar.png"}
@@ -57,7 +60,7 @@ function RecipeInfo({
         <StarRating>
           <span style={{ width: `${starRate}%` }} />
         </StarRating>
-        <SmallInfo>{createdAt}</SmallInfo>
+        <SmallInfo>{createdAt.slice(0, 10)}</SmallInfo>
       </Title>
       <Article>
         <Description>
@@ -65,7 +68,7 @@ function RecipeInfo({
           <DescriptionContent ingredient>{ingredient}</DescriptionContent>
         </Description>
       </Article>
-      {image_urls.map((url, idx) => (
+      {imageUrls.map((url, idx) => (
         <Article key={`${url + idx}`}>
           <RecipeImg src={url} alt="recipe" />
           <Description>
