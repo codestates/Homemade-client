@@ -41,7 +41,7 @@ export default function RecipesContainer() {
       const data = await axios.get(
         `https://homemade2021.ml/recipes/recipes?${queryParam}`,
       );
-
+      console.log("data", data);
       const { recipes, contentSum } = data.data.data;
 
       allListLength.current = contentSum;

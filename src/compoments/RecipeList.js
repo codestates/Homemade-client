@@ -16,8 +16,9 @@ export default function RecipeList({ recipes }) {
 }
 const RecipeListContainer = styled.div`
   position: relative;
-  margin-top: 10px;
   height: 100%;
+  width: 80vw;
+  margin: 10px auto;
 `;
 const RecipeListWrap = styled.div`
   display: grid;

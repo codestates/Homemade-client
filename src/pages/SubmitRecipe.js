@@ -9,6 +9,7 @@ export default function SubmitRecipe() {
     localStorage.getItem("loggedInfo") &&
       JSON.parse(localStorage.getItem("loggedInfo")).accessToken,
   );
+
   const history = useHistory();
   const location = useLocation();
 
@@ -17,19 +18,22 @@ export default function SubmitRecipe() {
   }
 
   const categories = ["한식", "중식", "일식", "양식", "음료/술"];
-  const [stepImages, setStepImages] = useState({});
+
+  const [images, setImages] = useState({});
   const [previews, setPreviews] = useState({});
   const [recipe, setRecipe] = useState({
     title: "",
     category: "한식",
   });
-  const [currentSteps, setCurrentSteps] = useState([1, 2, 3, 4, 5]);
+
+  const [currentSteps, setCurrentSteps] = useState([1, 2, 3]);
   const stepRefs = useRef([]);
   const thumbnailRef = useRef();
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (location.state) {
+      console.log(location.state);
       const currentRecipe = location.state.recipe;
 
       const currentRecipeContent = currentRecipe.content.split("//");
@@ -47,8 +51,19 @@ export default function SubmitRecipe() {
         tempRecipe[`step${idx + 1}`] = step;
       });
 
+      const currentRecipePreview = { thumbnail: currentRecipe.thumbnailUrl };
+      currentRecipe.imageUrls.forEach((url, idx) => {
+        currentRecipePreview[`step${idx + 1}`] = url;
+      });
+
+      setPreviews(currentRecipePreview);
       setRecipe(tempRecipe);
     }
+    return () =>
+      setRecipe({
+        title: "",
+        category: "한식",
+      });
   }, []);
 
   useEffect(() => {
@@ -62,13 +77,13 @@ export default function SubmitRecipe() {
   };
 
   const deleteImage = name => {
-    const tempImages = { ...stepImages };
+    const tempImages = { ...images };
     const tempPreviews = { ...previews };
 
     delete tempImages[name];
     delete tempPreviews[name];
 
-    setStepImages(tempImages);
+    setImages(tempImages);
     setPreviews(tempPreviews);
   };
 
@@ -91,7 +106,7 @@ export default function SubmitRecipe() {
     const img = {};
     img[name] = image;
 
-    setStepImages(state => {
+    setImages(state => {
       return { ...state, ...img };
     });
     showImg(e);
@@ -101,7 +116,7 @@ export default function SubmitRecipe() {
     const {
       target: { name, value },
     } = e;
-
+    console.log("recipe", recipe);
     setRecipe(state => {
       return {
         ...state,
@@ -112,9 +127,11 @@ export default function SubmitRecipe() {
 
   const handleUpload = async () => {
     const fd = new FormData();
-    Object.keys(stepImages).forEach(key => {
-      fd.append("imgs", stepImages[key], key);
+
+    Object.keys(images).forEach(key => {
+      fd.append("imgs", images[key], key);
     });
+
     const content = Object.keys(recipe)
       .filter(el => el !== "title" && el !== "category")
       .sort()
@@ -123,35 +140,40 @@ export default function SubmitRecipe() {
       .join("//");
 
     if (
-      Object.keys(recipe).length < 9 ||
-      Object.keys(recipe).length - 3 !== Object.keys(stepImages).length
+      Object.keys(recipe).length < 6 ||
+      Object.keys(recipe).length - 3 !== Object.keys(previews).length
     ) {
       setErrorMessage("모든 항목을 입력해 주세요.");
       return;
     }
 
     try {
-      const imageUrls = await axios.post("https://homemade2021.ml/image", fd, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      const {
-        data: { thumbnail, images },
-      } = imageUrls;
-
-      const recipeInfo = {
-        thumbnail,
-        title: recipe.title,
-        imageUrl: images,
-        categoryId: categories.indexOf(recipe.category) + 1,
-        content,
-      };
-
-      console.log(recipeInfo);
-
       if (location.state) {
-        recipeInfo.contentId = location.state.recipe.id;
-        const data = await axios.patch(
+        const imageUrls = await axios.post(
+          "https://homemade2021.ml/image",
+          fd,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          },
+        );
+        const stepImageUrls = [];
+
+        const updatedImageUrls = { ...previews };
+        imageUrls.data.images.forEach(el => {
+          const [[key, value]] = Object.entries(el);
+          updatedImageUrls[key] = value;
+        });
+
+        const recipeInfo = {
+          thumbnailUrl: imageUrls.thumbnail,
+          title: recipe.title,
+          imageUrls: stepImageUrls,
+          categoryId: categories.indexOf(recipe.category) + 1,
+          contents: content,
+          contentId: location.state.recipe.id,
+        };
+
+        const response = await axios.patch(
           "https://homemade2021.ml/users/ucontent",
           recipeInfo,
           {
@@ -169,10 +191,10 @@ export default function SubmitRecipe() {
               contentInfo: { id },
             },
           },
-        } = data;
+        } = response;
 
         if (id) {
-          setStepImages({});
+          setImages({});
           setPreviews({});
           setRecipe({ title: "", category: "한식" });
           setCurrentSteps([1, 2, 3, 4, 5]);
@@ -182,7 +204,31 @@ export default function SubmitRecipe() {
           setErrorMessage("레시피 등록이 되지 않았습니다.");
         }
       } else {
-        const data = await axios.post(
+        const imageUrls = await axios.post(
+          "https://homemade2021.ml/image",
+          fd,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          },
+        );
+
+        const { data } = imageUrls;
+
+        const stepImageUrls = [];
+        data.images.forEach(el => {
+          const [value] = Object.values(el);
+          stepImageUrls.push(value);
+        });
+
+        const recipeInfo = {
+          thumbnailUrl: data.thumbnail,
+          title: recipe.title,
+          imageUrl: stepImageUrls,
+          categoryId: categories.indexOf(recipe.category) + 1,
+          contents: content,
+        };
+
+        const response = await axios.post(
           "https://homemade2021.ml/recipes/content",
           recipeInfo,
           {
@@ -194,16 +240,14 @@ export default function SubmitRecipe() {
           },
         );
 
-        console.log(data);
-
         const {
           data: {
             data: { id },
           },
-        } = data;
+        } = response;
 
         if (id) {
-          setStepImages({});
+          setImages({});
           setPreviews({});
           setRecipe({ title: "", category: "한식" });
           setCurrentSteps([1, 2, 3, 4, 5]);
@@ -221,7 +265,7 @@ export default function SubmitRecipe() {
   return (
     <SubmitRecipeForm
       deleteImage={deleteImage}
-      images={stepImages}
+      images={images}
       previews={previews}
       recipe={recipe}
       handleChange={handleChange}

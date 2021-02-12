@@ -31,12 +31,13 @@ export default function Recipe({ recipe }) {
 }
 
 const RecipeWrap = styled(Link)`
+  display: inline-block;
   color: black;
   text-decoration: none;
-  display: inline-block;
-  width: 80%;
+  width: 323px;
   height: 350px;
-  margin: 2rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 `;
 
 const Thumnail = styled.div`
