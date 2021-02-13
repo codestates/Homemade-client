@@ -127,11 +127,11 @@ export default function RecipesContainer() {
 const Result = styled.div`
   display: flex;
   position: relative;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   heigth: 20rem;
+  align-items: flex-end;
   justify-content: space-around;
   padding: 2rem;
-  padding-bottom: 1.5rem;
   margin-bottom: 2rem;
   background-color: #f1f1f2;
 `;
