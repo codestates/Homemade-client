@@ -10,6 +10,7 @@ import SubmitRecipeForm from "./SubmitRecipeForm";
 import UserModal from "./UserModal";
 import Loader from "./Loader";
 import Banner from "./Banner";
+import RecipeList from "./RecipeList";
 
 export {
   Comment,
@@ -24,4 +25,5 @@ export {
   UserModal,
   Loader,
   Banner,
+  RecipeList,
 };
