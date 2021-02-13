@@ -34,7 +34,6 @@ export default function SubmitRecipe() {
 
   useEffect(() => {
     if (location.state) {
-      console.log(location.state);
       const currentRecipe = location.state.recipe;
 
       const currentRecipeContent = currentRecipe.content.split("//");
@@ -117,7 +116,7 @@ export default function SubmitRecipe() {
     const {
       target: { name, value },
     } = e;
-    console.log("recipe", recipe);
+
     setRecipe(state => {
       return {
         ...state,
