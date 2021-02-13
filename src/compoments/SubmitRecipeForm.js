@@ -3,6 +3,7 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import styled from "styled-components";
+import { AiOutlineCamera } from "react-icons/ai";
 
 export default function SubmitRecipeForm({
   deleteImage,
@@ -16,6 +17,7 @@ export default function SubmitRecipeForm({
   thumbnailRef,
   errorMessage,
   recipe,
+  isError,
 }) {
   return (
     <FormContainer>
@@ -28,6 +30,7 @@ export default function SubmitRecipeForm({
             <Label htmlFor="title">
               레시피 제목
               <Input
+                empty={isError && recipe.title === ""}
                 placeholder="예) 김치볶음밥 만들기"
                 type="text"
                 name="title"
@@ -40,6 +43,7 @@ export default function SubmitRecipeForm({
             <Label htmlFor="introduction">
               레시피 소개
               <Textarea
+                empty={isError && !recipe.introduction}
                 placeholder="이 레시피의 탄생배경을 적어주세요."
                 type="textarea"
                 name="introduction"
@@ -52,6 +56,7 @@ export default function SubmitRecipeForm({
             <Label htmlFor="ingredient">
               레시피 재료
               <Textarea
+                empty={isError && !recipe.ingredient}
                 placeholder="이 레시피의 재료를 적어주세요."
                 type="textarea"
                 name="ingredient"
@@ -95,15 +100,17 @@ export default function SubmitRecipeForm({
               src={previews.thumbnail}
             />
             <PickImageBtn
+              thumbnail
               active={!previews.thumbnail}
+              empty={isError && !previews.thumbnail}
               type="button"
               onClick={() => thumbnailRef.current.click()}
             >
-              +
+              <PickImageIcon>
+                <AiOutlineCamera />
+              </PickImageIcon>
+              <span> 레시피의 대표사진을 등록해 주세요</span>
             </PickImageBtn>
-            <Announcement active={!previews.thumbnail}>
-              대표사진 등록하기
-            </Announcement>
           </ImageWrap>
         </Image>
       </RecipeWrap>
@@ -114,6 +121,7 @@ export default function SubmitRecipeForm({
               <Label htmlFor={`step${step}`}>
                 Step {step}
                 <Textarea
+                  empty={isError && !recipe[`step${step}`]}
                   placeholder="예) 고기에 적당한 간을 해주세요."
                   type="textarea"
                   name={`step${step}`}
@@ -144,6 +152,7 @@ export default function SubmitRecipeForm({
                   />
                   <PickImageBtn
                     active={!previews[`step${step}`]}
+                    empty={isError && !previews[`step${step}`]}
                     type="button"
                     onClick={() => stepRefs.current[i].click()}
                   >
@@ -254,6 +263,13 @@ const Textarea = styled(Input.withComponent("textarea"))`
   font-size: 1.2rem;
   height: 120px;
   resize: none;
+
+  ${({ empty }) =>
+    empty &&
+    `
+    border: 1px solid #B91F1F;
+    background-color:#FEEFF4
+  `}
 `;
 
 const Select = styled(Input.withComponent("select"))`
@@ -326,6 +342,19 @@ const PickImageBtn = styled.button`
     `
     display: inline-block;
   `}
+
+  ${({ empty }) =>
+    empty &&
+    `
+    border: 1px solid #B91F1F;
+    background-color:#FEEFF4
+  `}
+
+  ${({ thumbnail }) =>
+    thumbnail &&
+    `
+    font-size: 1rem;
+  `}
 `;
 
 const StepWrap = styled.div`
@@ -346,17 +375,6 @@ const ImageWrap = styled.span`
   position: relative;
   width: 100%
   heigth: 200px;
-`;
-
-const Announcement = styled.div`
-  display: none;
-  ${({ active }) =>
-    active &&
-    `
-    display:block;
-    margin-top: 1rem;
-    font-size: 1.2rem;
-  `}
 `;
 
 const AddStepBtn = styled(SaveBtn)`
@@ -395,4 +413,8 @@ const DeleteImageBtn = styled.button`
       }
     }
   `}
+`;
+
+const PickImageIcon = styled.div`
+  font-size: 4rem;
 `;
