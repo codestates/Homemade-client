@@ -7,10 +7,12 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { FcCheckmark } from "react-icons/fc";
 import NorificationModal from "./NotificationModal";
+import { isPhoneNumber, strongPassword } from "../common/utils/validation";
 // eslint-disable-next-line no-unused-vars
 
-function Information({ handleLogOut }) {
+function Information({ handleLogOut, isLogin }) {
   const [modalMessage, setModalMessage] = useState("");
   const history = useHistory();
   const [userInfo, setUserInfo] = useState({
@@ -36,6 +38,13 @@ function Information({ handleLogOut }) {
   const [message, setMessage] = useState("");
   const [mobileNumber, setMobile] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(false);
+  const [isWithdrawState, setIsWithdrawState] = useState(false);
+
+  // 유효성 검사에 대한 상태
+  const [validation, setValidation] = useState({
+    validPassword: false,
+    validMobile: false,
+  });
 
   // modal창 오픈 시
   const openModal = buttonName => {
@@ -65,6 +74,10 @@ function Information({ handleLogOut }) {
   const handleFirstPassword = event => {
     const { value } = event.target;
     setFirstPassword(value);
+    setValidation({
+      ...validation,
+      validPassword: strongPassword(value),
+    });
     if (lastPassword.length > 0) {
       if (value !== lastPassword) {
         setMessage("비밀번호 불일치");
@@ -100,6 +113,10 @@ function Information({ handleLogOut }) {
   const handleMobile = event => {
     const { value } = event.target;
     setMobile(value);
+    setValidation({
+      ...validation,
+      validMobile: isPhoneNumber(event.target.value),
+    });
   };
   // 비밀번호 입력값 초기화
   const handleInitializePassword = () => {
@@ -124,6 +141,14 @@ function Information({ handleLogOut }) {
     };
     reader.readAsDataURL(file);
   };
+  const handleCanlceAvatar = () => {
+    setAvatarModify(false);
+    setImage({
+      fiel: "",
+      previewURL: "",
+    });
+  };
+
   const handleReqeustUploadAvatar = async () => {
     const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
     const formData = new FormData();
@@ -138,15 +163,15 @@ function Information({ handleLogOut }) {
     await axios
       .post("https://homemade2021.ml/avatarimage", formData, config)
       .then(res => {
-        const { avatarurl } = res.data;
+        const { avatarUrl } = res.data;
         setUserInfo({
-          avatar: avatarurl,
+          avatar: avatarUrl,
         });
         axios
           .patch(
             "https://homemade2021.ml/users/uuserinfo",
             {
-              avatar: avatarurl,
+              avatarUrl,
             },
             {
               headers: {
@@ -213,6 +238,22 @@ function Information({ handleLogOut }) {
   };
   const handleRequestPasswordModify = () => {
     const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
+    const { validPassword } = validation;
+    if (!lastPassword) {
+      setModalMessage("비밀번호를 입력하세요");
+      setModalVisible(true);
+      return;
+    }
+    if (!validPassword) {
+      setModalMessage("비밀번호 규칙을 확인 해 주세요");
+      setModalVisible(true);
+      return;
+    }
+    if (!isValidPassword) {
+      setModalMessage("비밀번호가 일치하지 않습니다");
+      setModalVisible(true);
+      return;
+    }
     try {
       axios
         .patch(
@@ -238,6 +279,17 @@ function Information({ handleLogOut }) {
   };
   const handleRequestMobileModify = () => {
     const { accessToken } = JSON.parse(localStorage.getItem("loggedInfo"));
+    const { validMobile } = validation;
+    if (!mobileNumber) {
+      setModalMessage("전화번호를 입력하세요");
+      setModalVisible(true);
+      return;
+    }
+    if (!validMobile) {
+      setModalMessage("핸드폰 번호 형식을 확인 해 주세요");
+      setModalVisible(true);
+      return;
+    }
     try {
       axios
         .patch(
@@ -254,6 +306,7 @@ function Information({ handleLogOut }) {
           },
         )
         .then(() => {
+          userInfo.mobile = mobileNumber;
           openModal("mobileChange");
           handleInitializeMobile();
         });
@@ -279,6 +332,12 @@ function Information({ handleLogOut }) {
       history.push("/");
     }
   };
+  useEffect(() => {}, [userInfo.mobile]);
+  useEffect(() => {
+    if (!isLogin) {
+      history.push("/");
+    }
+  }, [isLogin]);
   useEffect(() => {
     handleRequestUserInfo();
   }, []);
@@ -292,7 +351,7 @@ function Information({ handleLogOut }) {
               <h4>프로필 사진</h4>
               <ProfileImg>
                 {/* 유저가 저장해 놓은 이미지가 없을경우 기본 이미지를 print */}
-                {avatarModify ? (
+                {userInfo.avatar ? (
                   <div>
                     <input
                       type="file"
@@ -301,7 +360,7 @@ function Information({ handleLogOut }) {
                       name="profile_img"
                       onChange={handleFileOnChange}
                     />
-                    {userInfo.avatar !== undefined ? (
+                    {userInfo.avatar ? (
                       <Avatar
                         className="profile_preview"
                         src={
@@ -319,18 +378,31 @@ function Information({ handleLogOut }) {
                   </div>
                 ) : (
                   <div>
-                    {userInfo.avatar !== undefined ? (
+                    {userInfo.avatar ? (
                       <Avatar
                         src={userInfo.avatar}
                         id="avater"
                         className="avatar-tag"
                       />
                     ) : (
-                      <Avatar
-                        src="../images/defaultUserAvatar.png"
-                        id="avater"
-                        className="avatar-tag"
-                      />
+                      <div>
+                        <input
+                          type="file"
+                          id="input_file"
+                          accept="image/*"
+                          name="profile_img"
+                          onChange={handleFileOnChange}
+                        />
+                        <Avatar
+                          src={
+                            image.previewURL
+                              ? image.previewURL
+                              : "../images/defaultUserAvatar.png"
+                          }
+                          id="avater"
+                          className="avatar-tag"
+                        />
+                      </div>
                     )}
                   </div>
                 )}
@@ -347,7 +419,7 @@ function Information({ handleLogOut }) {
                     </Button>
                     <Button
                       className="avatar-changed-button"
-                      onClick={() => setAvatarModify(false)}
+                      onClick={handleCanlceAvatar}
                     >
                       취소
                     </Button>
@@ -388,7 +460,7 @@ function Information({ handleLogOut }) {
                       name="password"
                       className="new-password"
                       value={firstPassword}
-                      placeholder="새로운 비밀번호"
+                      placeholder="8자 이상(문자,숫자,특수기호(@$!%*#?)중 하나)"
                       onChange={handleFirstPassword}
                       required
                     />
@@ -401,10 +473,23 @@ function Information({ handleLogOut }) {
                       onChange={handleLastPassword}
                       required
                     />{" "}
+                    {validation.validPassword ? (
+                      <ValidCheck>
+                        <FcCheckmark size="22" />
+                      </ValidCheck>
+                    ) : (
+                      <>
+                        {firstPassword.length > 1 ? (
+                          <CheckPasswordMessage>
+                            비밀번호 규칙을 확인해주세요
+                          </CheckPasswordMessage>
+                        ) : null}
+                      </>
+                    )}
                     <Error check={isValidPassword}>{message}</Error>
                   </div>
                 ) : (
-                  <TableData className="user-info">********</TableData>
+                  <TableData className="user-info" />
                 )}
                 <TableData className="td-button">
                   {/* 비밀번호 변경버튼을 눌렀을 경우  */}
@@ -441,13 +526,30 @@ function Information({ handleLogOut }) {
               <TableRow>
                 <TableData className="label">전화번호</TableData>
                 {mobileModify ? (
-                  <input
-                    type="text"
-                    name="mobile-modify"
-                    onChange={handleMobile}
-                    placeholder="'-' 는 제외한 숫자만 입력바랍니다"
-                    required
-                  />
+                  <div>
+                    <TableData>
+                      <input
+                        type="text"
+                        name="mobile-modify"
+                        onChange={handleMobile}
+                        placeholder="'-' 는 제외한 숫자만 입력바랍니다"
+                        required
+                      />
+                    </TableData>
+                    {validation.validMobile ? (
+                      <ValidCheck>
+                        <FcCheckmark size="22" />
+                      </ValidCheck>
+                    ) : (
+                      <>
+                        {mobileNumber.length > 1 ? (
+                          <CheckPasswordMessage>
+                            핸드폰 번호 형식이 아닙니다.
+                          </CheckPasswordMessage>
+                        ) : null}
+                      </>
+                    )}
+                  </div>
                 ) : (
                   <TableData className="user-info">{userInfo.mobile}</TableData>
                 )}
@@ -535,7 +637,7 @@ const Background = styled.div`
 `;
 // UserInfo 영역
 const UserInfoStyle = styled.div`
-  width: 700px;
+  width: 100%;
   padding: 1.5rem;
   border-radius: 5px;
   h3 {
@@ -551,8 +653,8 @@ const UserInfoStyle = styled.div`
   input {
     margin-top: 5px;
     display: block;
-    width: 100%;
     height: 40px;
+    width: 200px;
     border: 1px solid lightgray;
     border-radius: 3px;
     margin-bottom: 5px;
@@ -565,11 +667,11 @@ const UserInfoStyle = styled.div`
   }
   .td-button {
     text-align: -webkit-right;
-    width: 120px;
+    width: 200px;
   }
   .user-info {
     color: gray;
-    width: 200px;
+    width: 50%;
   }
   #withdraw {
     text-align: center;
@@ -588,12 +690,13 @@ const Button = styled.button`
   margin-bottom: 5px;
   display: inline-block;
   height: 40px;
-  background: blueviolet;
+  background: #76a264;
   color: white;
   border: 1px solid lightgray;
 `;
 const Avatar = styled.img`
   height: 216px;
+  width: 200px;
   border-radius: 10px;
 `;
 const UserinfoContainer = styled.div`
@@ -612,10 +715,9 @@ const TableRow = styled.tr`
 const TableData = styled.td``;
 const UserInfoTable = styled.table`
   border-collapse: collapse;
-  border-top: 1px solid lightgray;
-	display: inline-block;
-	margin-top: 60px;
-v
+  display: inline-block;
+  margin-top: 60px;
+  width: 100%;
 `;
 const AvatarContainer = styled.span`
   height: 390px;
@@ -623,6 +725,7 @@ const AvatarContainer = styled.span`
   margin-right: 30px;
 `;
 const Container = styled.div`
+  width: 80%;
   display: inline-flex;
 `;
 const ProfileImg = styled.div`
@@ -633,17 +736,27 @@ const FileInput = styled.input`
   display: none;
 `;
 const UploadButton = styled.label`
-  border: 1px solid #892ce2;
+  border: 1px solid #76a264;
   padding: 0.5em 2em;
-  color: #892ce2;
+  color: #76a264;
   border-radius: 10px;
   display: block;
   width: 100%;
   background: white;
   &:hover {
     transition: all 0.3s ease-in-out;
-    background-color: #892ce2;
+    background-color: #76a264;
     color: #fff;
   }
+`;
+const ValidCheck = styled.span`
+  text-align: left;
+  float: right;
+`;
+const CheckPasswordMessage = styled.span`
+  font-size: 0.8rem;
+  float: right;
+
+  color: red;
 `;
 export default Information;

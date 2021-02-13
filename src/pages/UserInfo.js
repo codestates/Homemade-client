@@ -5,10 +5,10 @@ import Information from "../compoments/Information";
 import UserRecipe from "../compoments/UserRecipe";
 
 // eslint-disable-next-line no-unused-vars
-export default function UserInfo({ handleLogOut }) {
+export default function UserInfo({ handleLogOut, isLogin }) {
   const menuList = {
-    0: <Information handleLogOut={handleLogOut} />,
-    1: <UserRecipe />,
+    0: <Information handleLogOut={handleLogOut} isLogin={isLogin} />,
+    1: <UserRecipe isLogin={isLogin} />,
   };
   const [menu, setMenu] = useState(0);
   // eslint-disable-next-line no-unused-vars
@@ -52,6 +52,7 @@ export default function UserInfo({ handleLogOut }) {
 }
 UserInfo.propTypes = {
   handleLogOut: PropTypes.func.isRequired,
+  isLogin: PropTypes.string.isRequired,
 };
 const MenuContainer = styled.div`
   border: 1px solid lightgray;

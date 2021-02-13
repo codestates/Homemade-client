@@ -8,8 +8,8 @@ import axios from "axios";
 export default function UserRecipe({ myrecipes }) {
   // carousel 상태
   const slideRef = useRef(null);
-  const TOTAL_SLIDES = Math.floor(myrecipes.length / 4);
-  const myRecipesQuantity = myrecipes.length > 0 ? myrecipes.length : 0;
+  const TOTAL_SLIDES = myrecipes ? Math.floor(myrecipes.length / 4) : 0;
+  const myRecipesQuantity = myrecipes ? myrecipes.length : 0;
   const [currentSlide, setCurrentSlide] = useState(0);
   // myrecipes 상태
   // eslint-disable-next-line no-unused-vars
@@ -49,11 +49,13 @@ export default function UserRecipe({ myrecipes }) {
         })
         .then(res => {
           const { id, title, thumbnailUrl } = res.data.data.recipes;
-          setMyRecipes({
-            id,
-            title,
-            thumbnailUrl,
-          });
+          if ((id, title, thumbnailUrl)) {
+            setMyRecipes({
+              id,
+              title,
+              thumbnailUrl,
+            });
+          }
         });
     } catch (err) {
       console.log(err);
@@ -73,29 +75,41 @@ export default function UserRecipe({ myrecipes }) {
       <RecipeQuantity>총 : {myRecipesQuantity} 개</RecipeQuantity>
       <Container>
         <SliderContainer ref={slideRef}>
-          {myrecipes.map(recipe => {
-            return (
-              <RecipeCard key={recipe.id}>
-                <CreatedAt>{recipe.created_at}</CreatedAt>
-                <RecipeImg className="recipe" to={`/recipe/${recipe.id}`}>
-                  <img
-                    className="thumbnail"
-                    src={recipe.thumbnail_uri}
-                    alt={recipe.title}
-                  />
-                </RecipeImg>
-                <div> {recipe.title}</div>
-              </RecipeCard>
-            );
-          })}
+          {myrecipes ? (
+            myrecipes.map(recipe => {
+              return (
+                <RecipeCard key={recipe.id}>
+                  <RecipeImg className="recipe" to={`/recipe/${recipe.id}`}>
+                    <img
+                      className="thumbnail"
+                      src={recipe.thumbnail_uri}
+                      alt={recipe.title}
+                    />
+                  </RecipeImg>
+                  <div>
+                    <span> {recipe.title}</span>
+                    <CreatedAt>{recipe.created_at}</CreatedAt>
+                  </div>
+                </RecipeCard>
+              );
+            })
+          ) : (
+            <NoRecipe>등록된 recipe가 없습니다</NoRecipe>
+          )}
         </SliderContainer>
-        <Pages>
-          {`${TOTAL_SLIDES + 1} 페이지 중 ${currentSlide + 1} 페이지`}
-        </Pages>
-        <ButtonWrap>
-          <ButtonImg onClick={prevSlide}>Previous Slide</ButtonImg>
-          <ButtonImg onClick={nextSlide}>Next Slide</ButtonImg>
-        </ButtonWrap>
+        {myrecipes ? (
+          <div>
+            <Pages>
+              {`${TOTAL_SLIDES + 1} 페이지 중 ${currentSlide + 1} 페이지`}
+            </Pages>
+            <ButtonWrap>
+              <ButtonImg onClick={prevSlide}>이전 페이지</ButtonImg>
+              <ButtonImg onClick={nextSlide}>다음 페이지</ButtonImg>
+            </ButtonWrap>
+          </div>
+        ) : (
+          <div />
+        )}
       </Container>
     </div>
   );
@@ -108,94 +122,94 @@ UserRecipe.propTypes = {
     created_at: PropTypes.string.isRequired,
   }),
 };
-UserRecipe.defaultProps = {
-  myrecipes: [
-    {
-      id: 1,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 2,
-      title: "콜라 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 3,
-      title: "우유 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 4,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 5,
-      title: "딸기 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 3,
-      title: "우유 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 4,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 5,
-      title: "딸기 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 3,
-      title: "우유 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 4,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 5,
-      title: "딸기 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 3,
-      title: "우유 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 4,
-      title: "닭강정 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-    {
-      id: 5,
-      title: "딸기 만들기",
-      thumbnail_uri: "../images/recipeInfo1.jpg",
-      created_at: "2021-02-02",
-    },
-  ],
-};
+// UserRecipe.defaultProps = {
+//   myrecipes: [
+//     {
+//       id: 1,
+//       title: "닭강정 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 2,
+//       title: "콜라 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 3,
+//       title: "우유 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 4,
+//       title: "닭강정 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 5,
+//       title: "딸기 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 3,
+//       title: "우유 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 4,
+//       title: "닭강정 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 5,
+//       title: "딸기 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 3,
+//       title: "우유 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 4,
+//       title: "닭강정 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 5,
+//       title: "딸기 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 3,
+//       title: "우유 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 4,
+//       title: "닭강정 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//     {
+//       id: 5,
+//       title: "딸기 만들기",
+//       thumbnail_uri: "../images/recipeInfo1.jpg",
+//       created_at: "2021-02-02",
+//     },
+//   ],
+// };
 const Container = styled.div`
   width: 100%;
   overflow: hidden;
@@ -205,13 +219,13 @@ const ButtonWrap = styled.div`
 `;
 const ButtonImg = styled.button`
   all: unset;
-  border: 1px solid #892ce2;
+  border: 1px solid #76a264;
   padding: 0.5em 2em;
-  color: #892ce2;
+  color: #76a264;
   border-radius: 10px;
   &:hover {
     transition: all 0.3s ease-in-out;
-    background-color: #892ce2;
+    background-color: #76a264;
     color: #fff;
   }
   margin: 20px;
@@ -228,15 +242,17 @@ const Pages = styled.div`
 `;
 const RecipeQuantity = styled.div`
   text-align: right;
+  margin-right: 20px;
 `;
 const MyrecipesTitle = styled.div`
   text-align: center;
   padding: 30px;
   font-size: 1.5rem;
 `;
-const CreatedAt = styled.div`
+const CreatedAt = styled.span`
   text-align: right;
   font-size: 0.8rem;
+  float: right;
 `;
 
 const RecipeCard = styled.div`
@@ -251,4 +267,10 @@ const RecipeImg = styled(Link)`
   img {
 		width: 200px;
     height: 239px;
+`;
+const NoRecipe = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: 1.5rem;
+  color: lightgray;
 `;

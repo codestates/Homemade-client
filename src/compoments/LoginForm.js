@@ -28,7 +28,6 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
     setEmail("");
     setPassword("");
     setErrorMessage("");
-    handleFindPassword();
     isShow(false);
   };
   if (!show) {
@@ -212,7 +211,7 @@ const Button = styled.button`
   display: block;
   width: 100%;
   height: 40px;
-  background: blueviolet;
+  background: #76a264;
   color: white;
   border: 1px solid lightgray;
 `;
@@ -237,14 +236,14 @@ const ButtonWrap = styled.div`
   text-align: center;
 `;
 const FindButton = styled.button`
-  border: 1px solid #892ce2;
+  border: 1px solid #76a264;
   padding: 0.5em 2em;
-  color: #892ce2;
+  color: #76a264;
   border-radius: 10px;
   background: white;
   &:hover {
     transition: all 0.3s ease-in-out;
-    background-color: #892ce2;
+    background-color: #76a264;
     color: #fff;
   }
   margin: 20px;
