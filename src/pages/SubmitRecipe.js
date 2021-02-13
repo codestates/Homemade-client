@@ -30,6 +30,7 @@ export default function SubmitRecipe() {
   const stepRefs = useRef([]);
   const thumbnailRef = useRef();
   const [errorMessage, setErrorMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (location.state) {
@@ -125,6 +126,13 @@ export default function SubmitRecipe() {
     });
   };
 
+  const scrollToThumbnail = () => {
+    window.scrollTo({
+      behavior: "smooth",
+      top: thumbnailRef.current.offsetTop,
+    });
+  };
+
   const handleUpload = async () => {
     const fd = new FormData();
 
@@ -143,7 +151,8 @@ export default function SubmitRecipe() {
       Object.keys(recipe).length < 6 ||
       Object.keys(recipe).length - 3 !== Object.keys(previews).length
     ) {
-      setErrorMessage("모든 항목을 입력해 주세요.");
+      setIsError(true);
+      scrollToThumbnail();
       return;
     }
 
@@ -201,6 +210,7 @@ export default function SubmitRecipe() {
           setErrorMessage("");
           history.push(`/recipe/${id}`);
         } else {
+          setIsError(true);
           setErrorMessage("레시피 등록이 되지 않았습니다.");
         }
       } else {
@@ -252,12 +262,15 @@ export default function SubmitRecipe() {
           setRecipe({ title: "", category: "한식" });
           setCurrentSteps([1, 2, 3, 4, 5]);
           setErrorMessage("");
+          setIsError(false);
           history.push(`/recipe/${id}`);
         } else {
+          setIsError(true);
           setErrorMessage("레시피 등록이 되지 않았습니다.");
         }
       }
     } catch (err) {
+      setIsError(true);
       setErrorMessage("레시피 등록이 되지 않았습니다.");
     }
   };
@@ -276,6 +289,7 @@ export default function SubmitRecipe() {
       stepRefs={stepRefs}
       thumbnailRef={thumbnailRef}
       errorMessage={errorMessage}
+      isError={isError}
     />
   );
 }
