@@ -9,6 +9,7 @@ import RecipeList from "../compoments/RecipeList";
 export default function RecipesContainer() {
   const [recipeList, setRecipeList] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState("조회순");
   const allListLength = useRef(null);
 
   const location = useLocation();
@@ -41,8 +42,14 @@ export default function RecipesContainer() {
       const data = await axios.get(
         `https://homemade2021.ml/recipes/recipes?${queryParam}`,
       );
-      console.log("data", data);
+
       const { recipes, contentSum } = data.data.data;
+
+      if (sortOrder === "조회순") {
+        recipes.sort((a, b) => b.views - a.views);
+      } else {
+        recipes.sort((a, b) => b.createdAt - a.createdAt);
+      }
 
       allListLength.current = contentSum;
       setRecipeList(recipes);
@@ -50,7 +57,7 @@ export default function RecipesContainer() {
     } catch (err) {
       console.log("error 발생");
     }
-  }, [queryParam]);
+  }, [queryParam, sortOrder]);
 
   const recipesPerPage = Math.ceil(allListLength.current / 20);
   const currentpage = Number(params.page);
@@ -61,7 +68,27 @@ export default function RecipesContainer() {
     <>
       {!isLoading ? (
         <>
-          <Result>{result}에 대한 결과입니다.</Result>
+          <Result>
+            <Title>{result}에 대한 결과입니다.</Title>
+            <SortOrderWrap>
+              <SortOrder
+                type="button"
+                onClick={e => setSortOrder(e.target.value)}
+                value="조회순"
+                active={sortOrder === "조회순"}
+              >
+                조회순
+              </SortOrder>
+              <SortOrder
+                type="button"
+                onClick={e => setSortOrder(e.target.value)}
+                value="날짜순"
+                active={sortOrder === "날짜순"}
+              >
+                날짜순
+              </SortOrder>
+            </SortOrderWrap>
+          </Result>
           {recipeList.length === 0 && <div>레시피가 존재하지 않습니다.</div>}
           <RecipeList recipes={recipeList} />
           <PageContainer>
@@ -98,17 +125,25 @@ export default function RecipesContainer() {
   );
 }
 const Result = styled.div`
-  font-size: 1.5rem;
   display: flex;
-  justify-content: center;
-  margin: 1rem;
-  padding: 1rem;
+  position: relative;
+  font-size: 1.5rem;
+  heigth: 20rem;
+  justify-content: space-around;
+  padding: 2rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  background-color: #f1f1f2;
+`;
+
+const Title = styled.span`
+  flex: 3.6;
+  padding-left: 10.5rem;
 `;
 
 const PageContainer = styled.div`
   width: fit-content;
   padding: 3rem;
-  height: 72px;
   margin: 0 auto;
   display: table;
   align-items: center;
@@ -125,31 +160,50 @@ const PageItem = styled.li`
   margin-left: 0.3rem;
   border: 1px solid #e6e7e8;
   text-align: center;
-  vertical-align: middle;
   cursor: pointer;
   font-size: 1.2rem;
+  font-weight: 600;
   &:hover {
-    background-color: ${lighten(0.1, `#6f6f6f`)};
-    a {
-      color: white;
-    }
+    background-color: ${lighten(0.1, `#76A264`)};
   }
   &:active {
-    background-color: ${darken(0.1, `#6f6f6f`)};
-    a {
-      color: white;
-    }
+    background-color: ${darken(0.1, `#76A264`)};
   }
   a {
     display: inline-block;
     width: 36px;
     height: 36px;
     text-decoration: none;
+    padding-top: 6px;
     color: black;
   }
   ${({ current }) =>
     current &&
     `
-    background: #84ACCB;
+    background: #76A264;
+  `}
+`;
+
+const SortOrderWrap = styled.span`
+  flex: 1;
+  display: flex;
+  list-style: none;
+  background-color: #eeeeee;
+  &:hover {
+    background-color: ${lighten(0.1, `#eeeeee`)};
+  }
+`;
+
+const SortOrder = styled.button`
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.4rem 1rem;
+  border: 1px solid #bbbbbb;
+  cursor: pointer;
+
+  ${({ active }) =>
+    active &&
+    `
+    background-color:#76A264;
   `}
 `;
