@@ -5,12 +5,19 @@ import axios from "axios";
 // import KakaoLogin from "react-kakao-login";
 import { BiExit } from "react-icons/bi";
 import FindPassword from "./FindPassword";
+import NorificationModal from "./NotificationModal";
 
 export default function LoginForm({ show, isShow, signInHanlder }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isFindPassword, setIsFindPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  // modal 상태
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const closeModal = () => {
+    setModalVisible(false);
+  };
   const handleEmail = event => {
     setEmail(event.target.value);
   };
@@ -37,7 +44,8 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
   //! localStorage로 accessToken을 영구보관하여 로그인상태를 유지
   const signinRequestHandler = async () => {
     if (!email || !password) {
-      setErrorMessage("이메일과 패스워드를 모두 입력해 주세요.");
+      setModalMessage("이메일과 패스워드를 모두 입력해 주세요.");
+      setModalVisible(true);
       return;
     }
     try {
@@ -79,7 +87,8 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
           );
         });
     } catch (err) {
-      setErrorMessage("이메일과 비밀번호를 확인해 주세요.");
+      setModalMessage("정보가 정확하지 않습니다");
+      setModalVisible(true);
     }
   };
   return (
@@ -134,6 +143,14 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
           </div>
         </LoginFormStyle>
       )}
+      <NorificationModal
+        visible={modalVisible}
+        closeable
+        maskClosable
+        onClose={closeModal}
+      >
+        <h3>{modalMessage}</h3>
+      </NorificationModal>
     </DarkBackground>
   );
 }

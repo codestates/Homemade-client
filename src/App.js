@@ -70,7 +70,11 @@ function App() {
             <Main />
           </Route>
           <Route exact path="/userinfo">
-            <UserInfo handleLogOut={handleLogOut} isLogin={isLogin} />
+            <UserInfo
+              id="userinfo"
+              handleLogOut={handleLogOut}
+              isLogin={isLogin}
+            />
           </Route>
           <Route exact path="/postrecipe">
             <SubmitRecipe />
@@ -97,10 +101,11 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-  }
+	}
 `;
 const Container = styled.div`
   width: 100%;
   margin: 0 auto;
+  text-align: -webkit-center;
 `;
 export default App;

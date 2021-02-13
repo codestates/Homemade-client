@@ -1,24 +1,21 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable react/require-default-props */
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 import axios from "axios";
 
-export default function UserRecipe({ myrecipes }) {
-  // carousel 상태
-  const slideRef = useRef(null);
-  const TOTAL_SLIDES = myrecipes ? Math.floor(myrecipes.length / 4) : 0;
-  const myRecipesQuantity = myrecipes ? myrecipes.length : 0;
-  const [currentSlide, setCurrentSlide] = useState(0);
+export default function UserRecipe() {
   // myrecipes 상태
   // eslint-disable-next-line no-unused-vars
-  const [myRecipes, setMyRecipes] = useState({
-    id: "",
-    title: "",
-    thumbnailUrl: "",
-    createdAt: "",
-  });
+  const [myRecipes, setMyRecipes] = useState([]);
+
+  // carousel 상태
+  const slideRef = useRef(null);
+  const TOTAL_SLIDES = myRecipes ? Math.floor(myRecipes.length / 4) : 0;
+  const myRecipesQuantity = myRecipes ? myRecipes.length : 0;
+  const [currentSlide, setCurrentSlide] = useState(0);
+
   // carousel의 다음 슬라이드
   const nextSlide = () => {
     if (currentSlide >= TOTAL_SLIDES) {
@@ -48,19 +45,26 @@ export default function UserRecipe({ myrecipes }) {
           withCredentials: true,
         })
         .then(res => {
-          const { id, title, thumbnailUrl } = res.data.data.recipes;
-          if ((id, title, thumbnailUrl)) {
-            setMyRecipes({
-              id,
-              title,
-              thumbnailUrl,
-            });
-          }
+          setMyRecipes(res.data.data.recipes);
+          // for (const el of res.data.data.recipes) {
+          //   setMyRecipes([
+          //     ...myRecipes,
+          //     {
+          //       id: el.id,
+          //       title: el.title,
+          //       thumbnailUrl: el.thumbnail_uri,
+          //       createdAt: el.createdAt,
+          //     },
+          //   ]);
+          // }
         });
     } catch (err) {
       console.log(err);
     }
   };
+  useEffect(() => {
+    console.log(myRecipes);
+  });
   // myrecipes 최초 1회 요청
   useEffect(() => {
     handleRequestUserRecipes();
@@ -75,20 +79,21 @@ export default function UserRecipe({ myrecipes }) {
       <RecipeQuantity>총 : {myRecipesQuantity} 개</RecipeQuantity>
       <Container>
         <SliderContainer ref={slideRef}>
-          {myrecipes ? (
-            myrecipes.map(recipe => {
+          {myRecipes ? (
+            myRecipes.map(recipe => {
+              const createdDate = recipe.createdAt.substring(0, 10);
               return (
                 <RecipeCard key={recipe.id}>
                   <RecipeImg className="recipe" to={`/recipe/${recipe.id}`}>
                     <img
                       className="thumbnail"
-                      src={recipe.thumbnail_uri}
+                      src={recipe.thumbnail_url}
                       alt={recipe.title}
                     />
                   </RecipeImg>
                   <div>
-                    <span> {recipe.title}</span>
-                    <CreatedAt>{recipe.created_at}</CreatedAt>
+                    <Title> {recipe.title}</Title>
+                    <CreatedAt>{createdDate}</CreatedAt>
                   </div>
                 </RecipeCard>
               );
@@ -97,7 +102,7 @@ export default function UserRecipe({ myrecipes }) {
             <NoRecipe>등록된 recipe가 없습니다</NoRecipe>
           )}
         </SliderContainer>
-        {myrecipes ? (
+        {myRecipes ? (
           <div>
             <Pages>
               {`${TOTAL_SLIDES + 1} 페이지 중 ${currentSlide + 1} 페이지`}
@@ -114,14 +119,7 @@ export default function UserRecipe({ myrecipes }) {
     </div>
   );
 }
-UserRecipe.propTypes = {
-  myrecipes: PropTypes.arrayOf({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    thumbnail_uri: PropTypes.string.isRequired,
-    created_at: PropTypes.string.isRequired,
-  }),
-};
+
 // UserRecipe.defaultProps = {
 //   myrecipes: [
 //     {
@@ -273,4 +271,7 @@ const NoRecipe = styled.div`
   text-align: center;
   font-size: 1.5rem;
   color: lightgray;
+`;
+const Title = styled.span`
+  float: left;
 `;
