@@ -4,7 +4,7 @@ import queryString from "query-string";
 import styled from "styled-components";
 import { lighten, darken } from "polished";
 import axios from "axios";
-import RecipeList from "../compoments/RecipeList";
+import { RecipeList, Loader } from "../compoments/index";
 
 export default function RecipesContainer() {
   const [recipeList, setRecipeList] = useState(null);
@@ -89,7 +89,6 @@ export default function RecipesContainer() {
               </SortOrder>
             </SortOrderWrap>
           </Result>
-          {recipeList.length === 0 && <div>레시피가 존재하지 않습니다.</div>}
           <RecipeList recipes={recipeList} />
           <PageContainer>
             <PageWrap>
@@ -119,7 +118,9 @@ export default function RecipesContainer() {
           </PageContainer>
         </>
       ) : (
-        <div>loading...</div>
+        <div>
+          <Loader />
+        </div>
       )}
     </>
   );
