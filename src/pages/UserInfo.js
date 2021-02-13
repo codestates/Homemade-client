@@ -57,12 +57,16 @@ UserInfo.propTypes = {
 const MenuContainer = styled.div`
   border: 1px solid lightgray;
   border-radius: 0px 0px 10px 10px;
+  width: 1200px;
+
   background: lightgray;
   .active {
     background: white;
   }
 `;
-const MenuButton = styled.div``;
+const MenuButton = styled.div`
+  text-align: left;
+`;
 
 const ViewComponent = styled.div`
   background: white;

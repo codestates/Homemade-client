@@ -6,15 +6,20 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 import { FcCheckmark } from "react-icons/fc";
 import NorificationModal from "./NotificationModal";
 import { isPhoneNumber, strongPassword } from "../common/utils/validation";
 // eslint-disable-next-line no-unused-vars
 
 function Information({ handleLogOut, isLogin }) {
-  const [modalMessage, setModalMessage] = useState("");
   const history = useHistory();
+
+  if (!isLogin) {
+    return <Redirect to="/" />;
+  }
+
+  const [modalMessage, setModalMessage] = useState("");
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -654,7 +659,8 @@ const UserInfoStyle = styled.div`
     margin-top: 5px;
     display: block;
     height: 40px;
-    width: 200px;
+    width: 333px;
+
     border: 1px solid lightgray;
     border-radius: 3px;
     margin-bottom: 5px;

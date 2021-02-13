@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { BiExit } from "react-icons/bi";
 import { FcCheckmark } from "react-icons/fc";
-
 import UserModal from "./UserModal";
 import NorificationModal from "./NotificationModal";
 import {
