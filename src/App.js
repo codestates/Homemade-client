@@ -70,7 +70,7 @@ function App() {
             <Main />
           </Route>
           <Route exact path="/userinfo">
-            <UserInfo handleLogOut={handleLogOut} />
+            <UserInfo handleLogOut={handleLogOut} isLogin={isLogin} />
           </Route>
           <Route exact path="/postrecipe">
             <SubmitRecipe />

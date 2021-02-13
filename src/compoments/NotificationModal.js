@@ -115,14 +115,14 @@ const ModalInner = styled.div`
   padding: 20px 20px;
 `;
 const ConfirmButton = styled.button`
-  border: 1px solid #892ce2;
+  border: 1px solid #76a264;
   padding: 0.5em 2em;
-  color: #892ce2;
+  color: #76a264;
   border-radius: 10px;
   background: white;
   &:hover {
     transition: all 0.3s ease-in-out;
-    background-color: #892ce2;
+    background-color: #76a264;
     color: #fff;
   }
 `;
