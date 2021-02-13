@@ -172,8 +172,16 @@ export default function SubmitRecipe() {
           updatedImageUrls[key] = value;
         });
 
+        Object.keys(updatedImageUrls)
+          .sort()
+          .forEach(el => {
+            if (el !== "thumbnail") {
+              stepImageUrls.push(updatedImageUrls[el]);
+            }
+          });
+
         const recipeInfo = {
-          thumbnailUrl: imageUrls.thumbnail,
+          thumbnailUrl: updatedImageUrls.thumbnail,
           title: recipe.title,
           imageUrls: stepImageUrls,
           categoryId: categories.indexOf(recipe.category) + 1,
