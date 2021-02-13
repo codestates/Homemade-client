@@ -189,10 +189,6 @@ const SortOrderWrap = styled.span`
   flex: 1;
   display: flex;
   list-style: none;
-  background-color: #eeeeee;
-  &:hover {
-    background-color: ${lighten(0.1, `#eeeeee`)};
-  }
 `;
 
 const SortOrder = styled.button`
