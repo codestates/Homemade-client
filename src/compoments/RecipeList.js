@@ -18,7 +18,7 @@ const RecipeListContainer = styled.div`
   position: relative;
   height: 100%;
   width: 80vw;
-  margin: 10px auto;
+  margin: 0 auto;
 `;
 const RecipeListWrap = styled.div`
   display: grid;
