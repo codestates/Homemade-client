@@ -1,8 +1,7 @@
-/* eslint-disable camelcase */
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
-import RecipeInfo from "../compoments/RecipeInfo";
+import { RecipeInfo, Loader } from "../compoments/index";
 
 export default function RecipeDescription() {
   const accessToken = useRef(
@@ -127,7 +126,6 @@ export default function RecipeDescription() {
       const data = await axios.get(
         `https://homemade2021.ml/recipes/recipe/${contentId}`,
       );
-
       const recipeData = data.data.data.recipe;
       setRecipe(recipeData);
       setIsLoading(false);
@@ -144,7 +142,10 @@ export default function RecipeDescription() {
   return (
     <>
       {isLoading ? (
-        <div>loading...{errorMessage ? <div>{errorMessage}</div> : ""}</div>
+        <div>
+          <Loader />
+          {errorMessage ? <div>{errorMessage}</div> : ""}
+        </div>
       ) : (
         <RecipeInfo
           recipe={recipe}
