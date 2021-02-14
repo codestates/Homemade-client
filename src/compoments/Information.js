@@ -18,7 +18,11 @@ function Information({ handleLogOut, isLogin }) {
   if (!isLogin) {
     return <Redirect to="/" />;
   }
-
+  useEffect(() => {
+    if (!isLogin) {
+      history.push("/");
+    }
+  }, [isLogin]);
   const [modalMessage, setModalMessage] = useState("");
   const [userInfo, setUserInfo] = useState({
     name: "",
@@ -338,11 +342,6 @@ function Information({ handleLogOut, isLogin }) {
     }
   };
   useEffect(() => {}, [userInfo.mobile]);
-  useEffect(() => {
-    if (!isLogin) {
-      history.push("/");
-    }
-  }, [isLogin]);
   useEffect(() => {
     handleRequestUserInfo();
   }, []);
