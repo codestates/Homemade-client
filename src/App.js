@@ -15,6 +15,7 @@ import {
   RecipeDescription,
   RecipesContainer,
 } from "./pages/index";
+import Footer from "./compoments/Footer";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -86,6 +87,7 @@ function App() {
           <Redirect path="/" />
         </Switch>
       </Container>
+      <Footer />
     </Router>
   );
 }
