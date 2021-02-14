@@ -697,6 +697,7 @@ const Button = styled.button`
   display: inline-block;
   height: 40px;
   background: #0b0b20;
+  cursor: pointer;
   color: white;
   border: 1px solid lightgray;
 `;
@@ -749,6 +750,7 @@ const UploadButton = styled.label`
   display: block;
   width: 100%;
   background: white;
+  cursor: pointer;
   &:hover {
     transition: all 0.3s ease-in-out;
     background-color: #0b0b20;
