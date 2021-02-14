@@ -638,6 +638,8 @@ const Background = styled.div`
   width: 100%;
   display: block;
   align-items: center;
+  height: 100vh;
+
   justify-content: center;
 `;
 // UserInfo 영역
