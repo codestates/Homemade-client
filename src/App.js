@@ -22,6 +22,7 @@ import {
 function App() {
   const [isLogin, setIsLogin] = useState(false);
   const [intro, setIntro] = useState(false);
+
   // 회원이 로그아웃할 경우 localStorage의 accessToken을 삭제한다
   const handleLogOut = () => {
     localStorage.clear();
@@ -56,6 +57,9 @@ function App() {
   };
   // 홈페이지 오픈시 한번만 실행
   useEffect(() => {
+    if (localStorage.getItem("loggedInfo")) {
+      setIntro(true);
+    }
     initializeUserInfo();
   }, []);
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import Information from "../compoments/Information";
@@ -18,9 +18,6 @@ export default function UserInfo({ handleLogOut, isLogin }) {
   const handleMenu = menuIndex => {
     setMenu(menuIndex);
   };
-  useEffect(() => {
-    console.log(menu, " = 현재 번호");
-  });
   return (
     <>
       <Banner url="./banner/myPage.jpg" />
@@ -63,6 +60,7 @@ const MenuContainer = styled.div`
   background: #0b0c21;
   .active {
     background: white;
+    color: #0b0c21;
   }
 `;
 const MenuButton = styled.div`
@@ -80,9 +78,11 @@ const Button = styled.button`
   border: 1px solid white;
   margin-top: 5px;
   margin-right: 8px;
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 17px 17px 0px 0px;
   display: inline-block;
-  background: #bdc2f4;
+  background: #585a6b;
   height: 40px;
+  color: white;
+  width: 150px;
   border: 1px solid white;
 `;
