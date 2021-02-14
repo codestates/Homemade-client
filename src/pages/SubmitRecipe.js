@@ -25,7 +25,6 @@ export default function SubmitRecipe() {
     title: "",
     category: "한식",
   });
-
   const [currentSteps, setCurrentSteps] = useState([1, 2, 3]);
   const stepRefs = useRef([]);
   const thumbnailRef = useRef();
@@ -35,8 +34,11 @@ export default function SubmitRecipe() {
   useEffect(() => {
     if (location.state) {
       const currentRecipe = location.state.recipe;
-
       const currentRecipeContent = currentRecipe.content.split("//");
+      const currentRecipeStep = Array(currentRecipeContent.length - 2)
+        .fill()
+        .map((el, idx) => idx + 1);
+      setCurrentSteps(currentRecipeStep);
       const currentRecipeCategory = currentRecipe.categoryName;
       const currentRecipeTitle = currentRecipe.title;
       const currentRecipeIntroduction = currentRecipeContent.shift();
@@ -171,7 +173,7 @@ export default function SubmitRecipe() {
           const [[key, value]] = Object.entries(el);
           updatedImageUrls[key] = value;
         });
-
+        console.log("updatedImageUrls", updatedImageUrls);
         Object.keys(updatedImageUrls)
           .sort()
           .forEach(el => {
@@ -188,6 +190,7 @@ export default function SubmitRecipe() {
           contents: content,
           contentId: location.state.recipe.id,
         };
+        console.log("recipeInfo", recipeInfo);
 
         const response = await axios.patch(
           "https://homemade2021.ml/users/ucontent",
@@ -220,61 +223,56 @@ export default function SubmitRecipe() {
           setIsError(true);
           setErrorMessage("레시피 등록이 되지 않았습니다.");
         }
+      }
+      const imageUrls = await axios.post("https://homemade2021.ml/image", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const { data } = imageUrls;
+
+      const stepImageUrls = [];
+      data.images.forEach(el => {
+        const [value] = Object.values(el);
+        stepImageUrls.push(value);
+      });
+
+      const recipeInfo = {
+        thumbnailUrl: data.thumbnail,
+        title: recipe.title,
+        imageUrls: stepImageUrls,
+        categoryId: categories.indexOf(recipe.category) + 1,
+        contents: content,
+      };
+
+      const response = await axios.post(
+        "https://homemade2021.ml/recipes/content",
+        recipeInfo,
+        {
+          withCredentials: true,
+          headers: {
+            authorization: `Bearer ${accessToken.current}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      const {
+        data: {
+          data: { id },
+        },
+      } = response;
+
+      if (id) {
+        setImages({});
+        setPreviews({});
+        setRecipe({ title: "", category: "한식" });
+        setCurrentSteps([1, 2, 3, 4, 5]);
+        setErrorMessage("");
+        setIsError(false);
+        history.push(`/recipe/${id}`);
       } else {
-        const imageUrls = await axios.post(
-          "https://homemade2021.ml/image",
-          fd,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          },
-        );
-
-        const { data } = imageUrls;
-
-        const stepImageUrls = [];
-        data.images.forEach(el => {
-          const [value] = Object.values(el);
-          stepImageUrls.push(value);
-        });
-
-        const recipeInfo = {
-          thumbnailUrl: data.thumbnail,
-          title: recipe.title,
-          imageUrl: stepImageUrls,
-          categoryId: categories.indexOf(recipe.category) + 1,
-          contents: content,
-        };
-
-        const response = await axios.post(
-          "https://homemade2021.ml/recipes/content",
-          recipeInfo,
-          {
-            withCredentials: true,
-            headers: {
-              authorization: `Bearer ${accessToken.current}`,
-              "Content-Type": "application/json",
-            },
-          },
-        );
-
-        const {
-          data: {
-            data: { id },
-          },
-        } = response;
-
-        if (id) {
-          setImages({});
-          setPreviews({});
-          setRecipe({ title: "", category: "한식" });
-          setCurrentSteps([1, 2, 3, 4, 5]);
-          setErrorMessage("");
-          setIsError(false);
-          history.push(`/recipe/${id}`);
-        } else {
-          setIsError(true);
-          setErrorMessage("레시피 등록이 되지 않았습니다.");
-        }
+        setIsError(true);
+        setErrorMessage("레시피 등록이 되지 않았습니다.");
       }
     } catch (err) {
       setIsError(true);

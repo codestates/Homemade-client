@@ -109,7 +109,7 @@ export default function SubmitRecipeForm({
               <PickImageIcon>
                 <AiOutlineCamera />
               </PickImageIcon>
-              <span> 레시피의 대표사진을 등록해 주세요</span>
+              <Announcement>레시피의 대표사진을 등록해 주세요</Announcement>
             </PickImageBtn>
           </ImageWrap>
         </Image>
@@ -272,6 +272,8 @@ const Textarea = styled(Input.withComponent("textarea"))`
   `}
 `;
 
+const Announcement = styled.span``;
+
 const Select = styled(Input.withComponent("select"))`
   margin-left: 40px;
 `;
@@ -302,7 +304,7 @@ const SaveBtn = styled.button`
   background: #76a264;
   color: white;
   border: 1px solid lightgray;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 `;
 
 const ImageInput = styled.input`
@@ -346,8 +348,9 @@ const PickImageBtn = styled.button`
   ${({ empty }) =>
     empty &&
     `
+    font-size: 1rem;
     border: 1px solid #B91F1F;
-    background-color:#FEEFF4
+    background-color:#FEEFF4;
   `}
 
   ${({ thumbnail }) =>

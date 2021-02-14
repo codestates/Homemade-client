@@ -5,91 +5,72 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export default function Recipe({ recipe }) {
-  const { id, title, rate, thumbnail_url, nickname, views } = recipe;
-  const starRate = Number(rate) * 20;
+  const { id, title, thumbnail_url, nickname, views } = recipe;
+  // const starRate = Number(rate) * 20;
   return (
-    <RecipeWrap to={`/recipe/${id}`}>
-      <Thumnail>
-        <img src={thumbnail_url || "../images/recipe1.jpg"} alt={title} />
-      </Thumnail>
-      <RecipeInfo>
-        <Title>{title || "무제"}</Title>
-        <UserName>{nickname || "anonymous"}</UserName>
-        <div>
-          <StarRating>
-            <span
-              style={{ width: `${starRate || 50}%` }}
-              className="star-ratings-sprite-rating"
-            />
-          </StarRating>
-          &nbsp;
-          <span>view: {views}</span>
-        </div>
-      </RecipeInfo>
-    </RecipeWrap>
+    <RecipeContainer to={`/recipe/${id}`}>
+      <ImageConatiner>
+        <Image src={thumbnail_url || "../images/recipe1.jpg"} alt={title} />
+      </ImageConatiner>
+      <SummaryConatiner>
+        <RecipeTitle>{title || "무제"}</RecipeTitle>
+        <WriterWrap>
+          <Writer>{nickname || "anonymous"}</Writer>
+          <Views>({views})</Views>
+        </WriterWrap>
+      </SummaryConatiner>
+    </RecipeContainer>
   );
 }
 
-const RecipeWrap = styled(Link)`
-  display: inline-block;
-  color: black;
-  text-decoration: none;
-  width: 323px;
-  height: 350px;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-`;
-
-const Thumnail = styled.div`
-  width: 100%;
-  height: 270px;
-  img {
-    width: 100%;
-    height: 270px;
-  }
-`;
-
-const RecipeInfo = styled.div`
-  height: 72px;
+const RecipeContainer = styled(Link)`
+  width: 18vw;
+  height: 16vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  margin: 0.5rem;
-  padding-bottom: 0.3rem;
-  border-bottom: 1px solid #e6e7e8;
-  span {
-    font-size: 0.9rem;
+  margin: 1rem;
+  margin-bottom: 5rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  text-decoration: none;
+`;
+
+const ImageConatiner = styled.div`
+  width: 100%;
+  max-height: 100%;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+    filter: brightness(90%);
   }
 `;
 
-const Title = styled.div`
-  font-size: 1.125rem;
-  font-weight: 500;
+const SummaryConatiner = styled.div`
+  margin-top: 0.3rem;
 `;
 
-const UserName = styled.div`
-  font-size: 0.9rem;
-  font-weight: 400;
+const RecipeTitle = styled.p`
+  font-size: 1.3rem;
+  margin: 1rem 0 0 0;
+  color: #333333;
 `;
 
-const StarRating = styled.div`
-  display: inline-block;
-  margin-top: 0.2rem;
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/2605/star-rating-sprite.png")
-    repeat-x;
-  font-size: 0;
-  height: 21px;
-  line-height: 0;
-  overflow: hidden;
-  text-indent: -999em;
-  width: 110px;
+const WriterWrap = styled.div`
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: #666666;
+`;
 
-  span {
-    background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/2605/star-rating-sprite.png")
-      repeat-x;
-    background-position: 0 100%;
-    float: left;
-    height: 21px;
-    display: block;
-  }
+const Writer = styled.span`
+  font-size: 0.8rem;
+`;
+
+const Views = styled.span`
+  padding-left: 0.3rem;
+  font-size: 0.8rem;
 `;

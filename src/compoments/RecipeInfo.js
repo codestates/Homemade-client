@@ -22,7 +22,6 @@ function RecipeInfo({
     title,
     createdAt,
     thumbnailUrl,
-    rate,
     views,
     imageUrls,
     content,
@@ -33,7 +32,8 @@ function RecipeInfo({
   const recipeContent = content.split("//");
   const introduction = recipeContent[0];
   const ingredient = recipeContent[1];
-  const starRate = Number(rate) * 20;
+
+  const starRate = 100;
 
   return (
     <RecipeContainer>
@@ -52,27 +52,38 @@ function RecipeInfo({
         <DeleteContentBtn onClick={() => deleteContent(id)}>
           삭제
         </DeleteContentBtn>
-        <Link to={{ pathname: "/updaterecipe", state: { recipe } }}>수정</Link>
+        <Link
+          to={{
+            pathname: "/updaterecipe",
+            state: { recipe },
+          }}
+        >
+          수정
+        </Link>
       </Handler>
       <Title>
         {title}
         <Introduction>{introduction}</Introduction>
-        <StarRating>
-          <span style={{ width: `${starRate}%` }} />
-        </StarRating>
-        <SmallInfo>{createdAt.slice(0, 10)}</SmallInfo>
+        <SmallInfoWrap>
+          <StarRating>
+            <span style={{ width: `${starRate}%` }} />
+          </StarRating>
+          <SmallInfo>{createdAt.slice(0, 10)}</SmallInfo>
+        </SmallInfoWrap>
       </Title>
       <Article>
         <Description>
-          <DescriptionTitle>재료</DescriptionTitle>
+          <DescriptionTitle ingredient>재료</DescriptionTitle>
           <DescriptionContent ingredient>{ingredient}</DescriptionContent>
         </Description>
       </Article>
       {imageUrls.map((url, idx) => (
         <Article key={`${url + idx}`}>
-          <RecipeImg src={url} alt="recipe" />
-          <Description>
+          <RecipeView>
             <DescriptionTitle>step {idx + 1}</DescriptionTitle>
+            <RecipeImg src={url} alt="recipe" />
+          </RecipeView>
+          <Description>
             <DescriptionContent>{recipeContent[idx + 2]}</DescriptionContent>
           </Description>
         </Article>
@@ -111,6 +122,7 @@ function RecipeInfo({
 // };
 
 const RecipeContainer = styled.section`
+  :coral ;
   margin: 0 auto;
   width: 720px;
   height: 100%;
@@ -148,16 +160,14 @@ const UserName = styled.div`
 const Title = styled.div`
   font-weight: 500;
   padding-top: 3rem;
-  padding-bottom: 1.5rem;
-  border-bottom: solid 1px #e6e7e8;
+  padding-bottom: 0.5rem;
+  border-bottom: solid 1px #aeb4b7;
 `;
 
 const Article = styled.article`
   width: 100%;
   display: flex;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-  border-bottom: solid 1px #e6e7e8;
+  border-bottom: solid 1px #aeb4b7;
 `;
 
 const RecipeImg = styled.img`
@@ -171,21 +181,28 @@ const Description = styled.div`
 `;
 
 const DescriptionTitle = styled.div`
-  text-align: center;
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
-  border-top: solid 1px #e6e7e8;
-  border-bottom: solid 1px #e6e7e8;
-`;
-
-const DescriptionContent = styled.div`
-  padding: 1rem;
-  font-size: 1.2rem;
-  font-weight: 300;
-  color: #767676;
+  padding: 0.5rem 0;
   ${({ ingredient }) =>
     ingredient &&
     `
+    padding-top: 1.7rem;
+    
+  `}
+`;
+
+const DescriptionContent = styled.div`
+  width: 21.5vw;
+  padding: 1rem;
+  padding-top: 3.8rem;
+  font-size: 1.2rem;
+  font-weight: 300;
+  overflow-wrap: break-word;
+  white-space: initial;
+
+  ${({ ingredient }) =>
+    ingredient &&
+    `
+    padding-top: 1.5rem;
     min-height: 120px;
     
   `}
@@ -224,6 +241,8 @@ const Introduction = styled.div`
   margin-top: 1rem;
   margin-bottom: 1rem;
   font-size: 1rem;
+  overflow-wrap: break-word;
+  white-space: initial;
 `;
 
 const Handler = styled.div`
@@ -252,6 +271,17 @@ const Handler = styled.div`
 
 const DeleteContentBtn = styled.span`
   cursor: pointer;
+`;
+
+const RecipeView = styled.div`
+  padding: 1rem;
+  padding-left: 0;
+`;
+
+const SmallInfoWrap = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 `;
 
 export default RecipeInfo;

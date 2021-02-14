@@ -69,25 +69,27 @@ export default function RecipesContainer() {
       {!isLoading ? (
         <>
           <Result>
-            <Title>{result}에 대한 결과입니다.</Title>
-            <SortOrderWrap>
-              <SortOrder
-                type="button"
-                onClick={e => setSortOrder(e.target.value)}
-                value="조회순"
-                active={sortOrder === "조회순"}
-              >
-                조회순
-              </SortOrder>
-              <SortOrder
-                type="button"
-                onClick={e => setSortOrder(e.target.value)}
-                value="날짜순"
-                active={sortOrder === "날짜순"}
-              >
-                날짜순
-              </SortOrder>
-            </SortOrderWrap>
+            <Wrap>
+              <Title>{result}에 대한 결과입니다.</Title>
+              <SortOrderWrap>
+                <SortOrder
+                  type="button"
+                  onClick={e => setSortOrder(e.target.value)}
+                  value="조회순"
+                  active={sortOrder === "조회순"}
+                >
+                  조회순
+                </SortOrder>
+                <SortOrder
+                  type="button"
+                  onClick={e => setSortOrder(e.target.value)}
+                  value="날짜순"
+                  active={sortOrder === "날짜순"}
+                >
+                  날짜순
+                </SortOrder>
+              </SortOrderWrap>
+            </Wrap>
           </Result>
           <RecipeList recipes={recipeList} />
           <PageContainer>
@@ -126,20 +128,23 @@ export default function RecipesContainer() {
   );
 }
 const Result = styled.div`
-  display: flex;
-  position: relative;
-  font-size: 1.35rem;
-  heigth: 20rem;
-  align-items: flex-end;
-  justify-content: space-around;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  background-color: #f1f1f2;
+  width: 80vw;
+  margin: 0 auto;
 `;
 
-const Title = styled.span`
-  flex: 3.6;
-  padding-left: 10.5rem;
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  font-size: 1.2rem;
+  heigth: 100%
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 2rem;
+`;
+
+const Title = styled.p`
+  flex: 1000;
 `;
 
 const PageContainer = styled.div`
@@ -164,28 +169,29 @@ const PageItem = styled.li`
   cursor: pointer;
   font-size: 1.2rem;
   font-weight: 600;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   &:hover {
-    background-color: ${lighten(0.1, `#76A264`)};
+    background-color: ${lighten(0.1, `#76a264`)};
   }
   &:active {
-    background-color: ${darken(0.1, `#76A264`)};
+    background-color: ${darken(0.1, `#76a264`)};
   }
   a {
+    color: #ffffff;
     display: inline-block;
     width: 36px;
     height: 36px;
     text-decoration: none;
     padding-top: 6px;
-    color: black;
   }
   ${({ current }) =>
     current &&
     `
-    background: #76A264;
+    background: #76a264;
   `}
 `;
 
-const SortOrderWrap = styled.span`
+const SortOrderWrap = styled.p`
   flex: 1;
   display: flex;
   list-style: none;
@@ -194,13 +200,16 @@ const SortOrderWrap = styled.span`
 const SortOrder = styled.button`
   font-size: 1rem;
   font-weight: 400;
+  min-width: 80px;
   padding: 0.4rem 1rem;
   border: 1px solid #bbbbbb;
   cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 
   ${({ active }) =>
     active &&
     `
+    color: #ffffff;
     background-color:#76A264;
   `}
 `;

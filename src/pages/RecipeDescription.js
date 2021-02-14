@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
+import styled from "styled-components";
 import { RecipeInfo, Loader } from "../compoments/index";
 
 export default function RecipeDescription() {
@@ -147,18 +148,22 @@ export default function RecipeDescription() {
           {errorMessage ? <div>{errorMessage}</div> : ""}
         </div>
       ) : (
-        <RecipeInfo
-          recipe={recipe}
-          myId={userId}
-          deleteContent={deleteContent}
-          accessToken={accessToken}
-          contentId={contentId}
-          savedComments={savedComments}
-          deleteComment={deleteComment}
-          handleSubmit={handleSubmit}
-          updateComment={updateComment}
-        />
+        <Container>
+          <RecipeInfo
+            recipe={recipe}
+            myId={userId}
+            deleteContent={deleteContent}
+            accessToken={accessToken}
+            contentId={contentId}
+            savedComments={savedComments}
+            deleteComment={deleteComment}
+            handleSubmit={handleSubmit}
+            updateComment={updateComment}
+          />
+        </Container>
       )}
     </>
   );
 }
+
+const Container = styled.div``;

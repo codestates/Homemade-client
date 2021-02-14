@@ -52,7 +52,6 @@ function App() {
   };
   // 홈페이지 오픈시 한번만 실행
   useEffect(() => {
-    console.log("한번만");
     initializeUserInfo();
   }, []);
   return (
@@ -70,11 +69,7 @@ function App() {
             <Main />
           </Route>
           <Route exact path="/userinfo">
-            <UserInfo
-              id="userinfo"
-              handleLogOut={handleLogOut}
-              isLogin={isLogin}
-            />
+            <UserInfo handleLogOut={handleLogOut} />
           </Route>
           <Route exact path="/postrecipe">
             <SubmitRecipe />
@@ -101,11 +96,10 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-	}
+  }
 `;
 const Container = styled.div`
-  width: 100%;
+  width: 80vw;
   margin: 0 auto;
-  text-align: -webkit-center;
 `;
 export default App;
