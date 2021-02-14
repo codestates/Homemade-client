@@ -36,67 +36,73 @@ export default function CommentContainer({
   };
 
   return (
-    <CommentWrap>
-      {savedComments
-        ? savedComments.map(comment => {
-            const {
-              userId,
-              nickname,
-              createdAt,
-              created_At,
-              text,
-              rate,
-            } = comment;
-            return (
-              <Comment
-                key={comment.id}
-                myId={myId}
-                commentId={comment.id}
-                userId={userId}
-                nickname={nickname}
-                createdAt={createdAt || created_At}
-                text={text}
-                value={input}
-                rate={rate}
-                deleteComment={deleteComment}
-                updateComment={updateComment}
-              />
-            );
-          })
-        : ""}
-      <CommentInputForm>
-        <RateContainer>
-          <SetRatingBtn
-            type="button"
-            onClick={handleDecrease}
-            disabled={rating <= 0}
-          />
-          <Rating>{rating}</Rating>
-          <SetRatingBtn
-            increase
-            type="button"
-            onClick={handleIncrease}
-            disabled={rating >= 5}
-          />
-        </RateContainer>
-        <InputWrap>
-          <CommentInput
-            type="textarea"
-            name="commentInput"
-            value={input}
-            placeholder="댓글을 남겨주세요."
-            onChange={e => handleChange(e)}
-          />
-          <CommentButton
-            onClick={() => submitComment(input, rating)}
-            type="button"
-            disabled={!input || !accessToken}
-          >
-            등록
-          </CommentButton>
-        </InputWrap>
-      </CommentInputForm>
-    </CommentWrap>
+    <div>
+      <Title>
+        댓글
+        <CommentLen>{savedComments ? savedComments.length : ""}</CommentLen>
+      </Title>
+      <CommentWrap>
+        {savedComments
+          ? savedComments.map(comment => {
+              const {
+                userId,
+                nickname,
+                createdAt,
+                created_At,
+                text,
+                rate,
+              } = comment;
+              return (
+                <Comment
+                  key={comment.id}
+                  myId={myId}
+                  commentId={comment.id}
+                  userId={userId}
+                  nickname={nickname}
+                  createdAt={createdAt || created_At}
+                  text={text}
+                  value={input}
+                  rate={rate}
+                  deleteComment={deleteComment}
+                  updateComment={updateComment}
+                />
+              );
+            })
+          : ""}
+        <CommentInputForm>
+          <RateContainer>
+            <SetRatingBtn
+              type="button"
+              onClick={handleDecrease}
+              disabled={rating <= 0}
+            />
+            <Rating>{rating}</Rating>
+            <SetRatingBtn
+              increase
+              type="button"
+              onClick={handleIncrease}
+              disabled={rating >= 5}
+            />
+          </RateContainer>
+          <InputWrap>
+            <CommentInput
+              type="textarea"
+              name="commentInput"
+              value={input}
+              placeholder="댓글을 남겨주세요."
+              onChange={e => handleChange(e)}
+            />
+            <CommentButton
+              onClick={() => submitComment(input, rating)}
+              type="button"
+              disabled={!input || !accessToken}
+            >
+              등록
+            </CommentButton>
+          </InputWrap>
+        </CommentInputForm>
+      </CommentWrap>
+    </div>
   );
 }
 
@@ -113,8 +119,9 @@ export default function CommentContainer({
 // };
 
 const CommentWrap = styled.div`
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
   width: 720px;
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
 `;
@@ -122,16 +129,16 @@ const CommentWrap = styled.div`
 const CommentInputForm = styled.form`
   width: 100%;
   height: 100px;
-  margin: 1.6rem;
+  margin: 1.6rem auto;
 `;
 
 const CommentInput = styled.textarea`
-  width: 594px;
+  width: 612px;
   height: 100px;
   font-size: 1.2rem;
   padding: 8px;
-  margin: 0 auto;
-  border: 1px solid #cccccc;
+  margin: 0.1rem auto;
+  border: 1px solid #aeb4b7;
   resize: none;
   &:focus {
     outline: none;
@@ -149,8 +156,8 @@ const CommentButton = styled.button`
   padding: 0;
   height: 100px;
   width: 100px;
-  top: -46px;
-  border: 1px solid #cccccc;
+  top: -48px;
+  border: 1px solid #aeb4b7;
   background-color: white;
   cursor: pointer;
   &:focus {
@@ -169,7 +176,7 @@ const RateContainer = styled.div`
 const SetRatingBtn = styled.button`
   position: absolute;
   top: -4px;
-  border: 2px solid lightgrey;
+  border: 2px solid #aeb4b7;
   background-color: #fff;
   font-size: 16px;
   height: 2.5em;
@@ -229,4 +236,14 @@ const Rating = styled.span`
   margin-left: 0.6rem;
   margin-right: 0.6rem;
   font-size: 1.4rem;
+`;
+
+const Title = styled.p`
+  margin-bottom: 0;
+  padding-left: 0.15rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #aeb4b7;
+`;
+const CommentLen = styled.span`
+  color: #74b043;
 `;

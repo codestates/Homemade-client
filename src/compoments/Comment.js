@@ -64,11 +64,11 @@ export default function Comment({
 const CommentWrap = styled.div`
   width: 100%;
   min-height: 80px;
-  margin: 1rem;
-  padding: 0.5rem;
+  margin: 0.2rem auto;
+  padding: 0.5rem 0.15rem;
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #aeb4b7;
   span {
     flex: 1;
   }
@@ -91,7 +91,8 @@ const CreatedAt = styled.span`
 const Text = styled.div`
   font-size: 1.2rem;
   padding-top: 1.2rem;
-  width: 60%;
+  width: 90%;
+  word-wrap: break-word;
 `;
 
 const UpdateInput = styled(Text.withComponent("input"))`
