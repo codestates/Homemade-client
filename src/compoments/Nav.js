@@ -52,36 +52,36 @@ export default function Test({ isLogin, signInHanlder, handleLogOut }) {
                   <SearchButton />
                 </SearchLink>
               </SearchDiv>
+            </CenterDiv>
+            <EmptyDiv2 />
+            <RightDiv>
               <MyPageLink to="/userinfo">
                 <MyPage />
               </MyPageLink>
               <WriteLink to="/postrecipe">
                 <Write />
               </WriteLink>
-            </CenterDiv>
-            <RightDiv />
+              {isLogin ? (
+                <>
+                  <AccessBtn onClick={() => setShowLogin(true)}>
+                    <AccessLink>로그인</AccessLink>
+                  </AccessBtn>
+                  <AccessBtn onClick={() => setShowSignUp(true)}>
+                    <AccessLink>회원가입</AccessLink>
+                  </AccessBtn>
+                </>
+              ) : (
+                <>
+                  <AccessBtn onClick={() => handleLogOut()}>
+                    <AccessLink>로그아웃</AccessLink>
+                  </AccessBtn>
+                </>
+              )}
+            </RightDiv>
+            <EmptyDivHalf />
           </MenuWrapper>
         </MenuContainer>
       </TopBar>
-      <BottomBar>
-        <LeftDiv bottom />
-        <AccessDiv>
-          {isLogin ? (
-            <AccessBtn type="button" onClick={() => handleLogOut()}>
-              로그아웃
-            </AccessBtn>
-          ) : (
-            <>
-              <AccessBtn type="button" onClick={() => setShowLogin(true)}>
-                로그인
-              </AccessBtn>
-              <AccessBtn type="button" onClick={() => setShowSignUp(true)}>
-                회원가입
-              </AccessBtn>
-            </>
-          )}
-        </AccessDiv>
-      </BottomBar>
       <LoginForm
         show={showLogin}
         isShow={setShowLogin}
@@ -92,35 +92,18 @@ export default function Test({ isLogin, signInHanlder, handleLogOut }) {
   );
 }
 
-const AccessDiv = styled.div`
-  display: flex;
-  height: 100%;
-  align-items: center;
-  flex: 5;
+const EmptyDivHalf = styled.div`
+  flex: 0.5;
 `;
 
-const AccessBtn = styled.button`
-  border: none;
-  background: #ffffff;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding-left: 2rem;
-
-  &:focus {
-    outline: none;
-  }
-  &:hover {
-    color: ${lighten(0.1, `#6f6f6f`)};
-  }
-  &:active {
-    color: ${darken(0.1, `#6f6f6f`)};
-  }
+const EmptyDiv2 = styled.div`
+  flex: 2;
 `;
 
 const TopBar = styled.div`
   position: relative;
-  z-index: 99;
+  background: #ffffff;
+  z-index: 199;
   width: 100%;
   height: 14vh;
   font-size: 2rem;
@@ -140,7 +123,7 @@ const MenuWrapper = styled.div`
 `;
 
 const LeftDiv = styled.div`
-  flex: 3;
+  flex: 0.3;
 
   ${({ bottom }) =>
     bottom &&
@@ -150,11 +133,15 @@ const LeftDiv = styled.div`
 `;
 
 const RightDiv = styled.div`
-  flex: 4;
+  flex: 2.5;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background: #ffffff;
 `;
 
 const CenterDiv = styled.div`
-  flex: 10;
+  flex: 5;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
@@ -162,26 +149,50 @@ const CenterDiv = styled.div`
 `;
 
 const SearchDiv = styled.div`
-  position: relative;
-  height: 40%;
-  width: 65%;
-  text-align: left;
-  background: #fafafa;
-  border: 1px solid #cccccc;
-  border-radius: 12px;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  padding: 10px;
+  position: absolute;
+  top: 69%;
+  left: 30%;
+  transform: translate(0%, -100%);
+  height: 52px;
+  width: 52px;
+  background-color: #fff;
+  border: 1px solid #dddddd;
+  border-radius: 30px;
+  transition: 0.4s;
+  &:hover {
+    box-shadow: 0px 0px 0.5px 1px #000000;
+    width: 780px;
+
+    SearchButton {
+      background-color: #fff;
+    }
+
+    Search {
+      width: 240px;
+      padding: 0 6px;
+      opacity: 1;
+    }
+  }
 `;
 
 const Search = styled.input`
-  height: 100%;
-  width: 85%;
-  background: #fafafa;
+  display: flex;
+  padding: 0;
+  width: 800px;
   border: none;
-  padding: 0 1rem;
-  font-size: 1.3rem;
-
-  &:focus {
-    outline: none;
+  background: none;
+  outline: none;
+  float: left;
+  font-size: 1rem;
+  line-height: 30px;
+  transition: 0.4s;
+  opacity: 0;
+  &:hover {
+    opacity: 1;
+    &:focus {
+      opacity: 1;
+    }
   }
 `;
 
@@ -191,17 +202,17 @@ const SearchLink = styled(Link)`
 `;
 
 const SearchButton = styled(AiOutlineSearch)`
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translate(-25%, -50%);
-  padding: 0.3rem;
-  &:hover {
-    color: ${lighten(0.1, `#6f6f6f`)};
-  }
-  &:active {
-    color: ${darken(0.1, `#6f6f6f`)};
-  }
+  transform: translate(7.5%, -92%);
+  text-decoration: none;
+  float: right;
+  width: 36px;
+  height: 36px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000000;
 `;
 
 const CateogryButtonDiv = styled.div`
@@ -302,23 +313,57 @@ const Write = styled(HiOutlinePencil)`
   }
 `;
 
+const AccessBtn = styled.button`
+  position: relative;
+  height: 52px;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #dddddd;
+  border-radius: 16px;
+  display: flex;
+  font-size: 1rem;
+  padding: 1rem;
+  font-weight: 600;
+  background: #000000;
+  color: #ffffff;
+  &:hover {
+    background: ${lighten(0.15, `#000000`)};
+  }
+  &:active {
+    background: #000000;
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+
+const AccessLink = styled(Link)`
+  text-decoration: none;
+  color: white;
+`;
+
 const LogoWrapper = styled(Link)`
-  flex: 0.1;
-  width: 200px;
+  position: absolute;
+  top: 50%;
+  transform: translate(40.5%, -40%) scale(1.5);
+  flex: 18;
+  width: 160px;
+  height: auto;
 `;
 
 const Logo = styled.img`
-  height: 100%;
+  width: 100%;
+  max-height: 100%;
   object-fit: cover;
 `;
 
-const BottomBar = styled.div`
-  display: flex;
-  width: 100%;
-  height: 6vh;
-  border-top: 0.1px solid #f1f1f1;
-  border-bottom: 0.5px solid #f1f1f1;
-`;
+// const BottomBar = styled.div`
+//   display: flex;
+//   width: 100%;
+//   height: 6vh;
+//   border-top: 0.1px solid #f1f1f1;
+//   border-bottom: 0.5px solid #f1f1f1;
+// `;
 
 Test.propTypes = {
   isLogin: PropTypes.bool.isRequired,
