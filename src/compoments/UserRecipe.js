@@ -229,6 +229,7 @@ const ButtonImg = styled.button`
 const SliderContainer = styled.div`
   width: 100%;
   padding: 40px;
+
   display: flex; //이미지들을 가로로 나열합니다.
 `;
 const Pages = styled.div`
@@ -248,17 +249,16 @@ const MyrecipesTitle = styled.div`
 const CardContainer = styled.div`
   width: 300px;
   height: 400px;
-  margin-left: 10px;
+	margin-left: 10px;
+	border-radius: 20px;
   margin-right: 5px;
   box-shadow: 0px 0px 10px 3px #d4d0d0;
-  display: inline-block;
-  /* margin-left: 100px; */
-  border-radius: 20px;
+  display: inline-block;d
 `;
 
 const Thumbnail = styled(Link)`
   img {
-    width: 100%;
+    width: 300px;
     height: 80%;
     border-bottom: 1px solid gainsboro;
     border-radius: 20px 20px 0px 0px;
