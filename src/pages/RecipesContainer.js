@@ -1,9 +1,11 @@
+/* eslint-disable prettier/prettier */
 import React, { useRef, useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import queryString from "query-string";
 import styled from "styled-components";
 import { lighten, darken } from "polished";
 import axios from "axios";
+import { GrGremlin } from "react-icons/gr";
 import { RecipeList, Loader, Banner } from "../compoments/index";
 import bannerUrls from "../assets/bannerUrls";
 
@@ -81,7 +83,7 @@ export default function RecipesContainer() {
           <Banner url={bannerUrl.current} />
           <Result>
             <Wrap>
-              <Title>{result}에 대한 결과입니다.</Title>
+              <Title>{result} 에 대한 결과입니다.</Title>
               <SortOrderWrap>
                 <SortOrder
                   type="button"
@@ -102,7 +104,16 @@ export default function RecipesContainer() {
               </SortOrderWrap>
             </Wrap>
           </Result>
+
+					{
+						recipeList.length > 0 ?
           <RecipeList recipes={recipeList} />
+						:
+						<Icon>
+							<GrGremlin size="333" color="#fff"/>
+							<Message>먹을게 하나도 없네..</Message>
+						</Icon>
+					}
           <PageContainer>
             <PageWrap>
               {firstPage === 1 ? (
@@ -141,20 +152,25 @@ export default function RecipesContainer() {
 const Result = styled.div`
   width: 80vw;
   margin: 0 auto;
+  background: black;
+  border-radius: 20px;
+  height: 55px;
+  color: white;
 `;
 
 const Wrap = styled.div`
-  display: flex;
+	display: flex;
+	margin-top:55px;
   flex-direction: row;
   position: relative;
   font-size: 1.2rem;
   heigth: 100%
   align-items: flex-end;
   justify-content: space-between;
-  padding: 2rem;
 `;
 
 const Title = styled.p`
+  padding-left: 30px;
   flex: 1000;
 `;
 
@@ -182,10 +198,10 @@ const PageItem = styled.li`
   font-weight: 600;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   &:hover {
-    background-color: ${lighten(0.1, `#76a264`)};
+    background-color: ${lighten(0.1, `#153450`)};
   }
   &:active {
-    background-color: ${darken(0.1, `#76a264`)};
+    background-color: ${darken(0.1, `#153450`)};
   }
   a {
     color: #ffffff;
@@ -198,7 +214,7 @@ const PageItem = styled.li`
   ${({ current }) =>
     current &&
     `
-    background: #76a264;
+    background: #153450;
   `}
 `;
 
@@ -206,21 +222,36 @@ const SortOrderWrap = styled.p`
   flex: 1;
   display: flex;
   list-style: none;
+  border: 2px solid white;
+  border-radius: 15px;
+  margin-top: 11px;
+  margin-right: 20px;
 `;
 
 const SortOrder = styled.button`
   font-size: 1rem;
   font-weight: 400;
   min-width: 80px;
-  padding: 0.4rem 1rem;
-  border: 1px solid #bbbbbb;
   cursor: pointer;
+	border-radius: 12px;
+	background:black;
+	outline: 0;
+	color:white;
+  height: 28px;
+  border: none;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 
   ${({ active }) =>
     active &&
     `
-    color: #ffffff;
-    background-color:#76A264;
+		color: black ;
+    background-color:white;
   `}
 `;
+
+const Icon = styled.div`
+text-align: -webkit-center;
+margin-top: 100px;
+`;
+
+const Message = styled.p`font-size:2rem;`;
