@@ -217,11 +217,11 @@ export default function SignUpForm({ show, isShow }) {
               </TableData>
             </TableRow>
             <TableRow>
-              <TableData className="label">eamil</TableData>
+              <TableData className="label">email</TableData>
               <TableData className="input-tag">
                 <input
                   type="text"
-                  name="eamil"
+                  name="email"
                   onChange={handleEmail}
                   placeholder="email은 로그인시 id로 사용됩니다"
                   required
