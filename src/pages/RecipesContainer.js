@@ -4,17 +4,25 @@ import queryString from "query-string";
 import styled from "styled-components";
 import { lighten, darken } from "polished";
 import axios from "axios";
-import { RecipeList, Loader } from "../compoments/index";
+import { RecipeList, Loader, Banner } from "../compoments/index";
+import bannerUrls from "../assets/bannerUrls";
 
 export default function RecipesContainer() {
   const [recipeList, setRecipeList] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState("조회순");
+  const bannerUrl = useRef(null);
   const allListLength = useRef(null);
 
   const location = useLocation();
   const params = queryString.parse(location.search);
   const result = params.q ? params.q : params.category;
+
+  if (!isLoading && params.category) {
+    bannerUrl.current = bannerUrls[result];
+  } else {
+    bannerUrl.current = "./banner/koreanFood.jpg";
+  }
 
   let firstPage;
 
@@ -54,6 +62,8 @@ export default function RecipesContainer() {
       allListLength.current = contentSum;
       setRecipeList(recipes);
       setIsLoading(false);
+
+      console.log(params.q);
     } catch (err) {
       console.log("error 발생");
     }
@@ -68,6 +78,7 @@ export default function RecipesContainer() {
     <>
       {!isLoading ? (
         <>
+          <Banner url={bannerUrl.current} />
           <Result>
             <Wrap>
               <Title>{result}에 대한 결과입니다.</Title>
