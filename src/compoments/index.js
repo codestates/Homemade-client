@@ -12,6 +12,8 @@ import Loader from "./Loader";
 import Banner from "./Banner";
 import RecipeList from "./RecipeList";
 import Footer from "./Footer";
+import UserRecipe from "./UserRecipe";
+import NotificationModal from "./NotificationModal";
 
 export {
   Comment,
@@ -28,4 +30,6 @@ export {
   Banner,
   RecipeList,
   Footer,
+  UserRecipe,
+  NotificationModal,
 };

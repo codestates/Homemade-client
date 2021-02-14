@@ -87,7 +87,7 @@ const Container = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #8fd7e0;
+  background-color: #000000;
   height: 100vh;
   width: 100vw;
 	overflow: hidden;
@@ -104,7 +104,7 @@ const Container = styled.div`
   .bubble {
     position: absolute;
     border-radius: 100%;
-    box-shadow: 0 0 0.25vh #4d4d4d;
+    box-shadow: 0 0 0.25vh white;
     opacity: 0;
   }
   &:.bubble:nth-child(1) {
@@ -112,7 +112,7 @@ const Container = styled.div`
     left: 58%;
     width: 2.5vh;
     height: 2.5vh;
-    background-color: #454545;
+    background-color: white;
     animation: ${bubble}2s cubic-bezier(0.53, 0.16, 0.39, 0.96) infinite;
   }
   .bubble:nth-child(2) {
@@ -120,7 +120,7 @@ const Container = styled.div`
     left: 52%;
     width: 2vh;
     height: 2vh;
-    background-color: #3d3d3d;
+    background-color: white;
     animation: ${bubble} 2s ease-in-out 0.35s infinite;
   }
   #cooking .bubble:nth-child(3) {
@@ -128,7 +128,7 @@ const Container = styled.div`
     left: 50%;
     width: 1.5vh;
     height: 1.5vh;
-    background-color: #333;
+    background-color: white;
     animation: ${bubble} 1.5s cubic-bezier(0.53, 0.16, 0.39, 0.96) 0.55s
       infinite;
   }
@@ -137,7 +137,7 @@ const Container = styled.div`
     left: 56%;
     width: 1.2vh;
     height: 1.2vh;
-    background-color: #2b2b2b;
+    background-color: white;
     animation: ${bubble} 1.8s cubic-bezier(0.53, 0.16, 0.39, 0.96) 0.9s infinite;
   }
   #cooking .bubble:nth-child(5) {
@@ -145,7 +145,7 @@ const Container = styled.div`
     left: 63%;
     width: 1.1vh;
     height: 1.1vh;
-    background-color: #242424;
+    background-color: white;
     animation: ${bubble} 1.6s ease-in-out 1s infinite;
   }
   #area {
@@ -172,7 +172,7 @@ const Container = styled.div`
     width: 35%;
     height: 20%;
     background-color: transparent;
-    border-top: 1vh solid #333;
+    border-top: 1vh solid white;
     border-left: 1vh solid transparent;
     border-radius: 100%;
     transform: rotate(20deg) rotateX(0deg) scale(1.3, 0.9);
@@ -183,7 +183,7 @@ const Container = styled.div`
     right: 30%;
     width: 50%;
     height: 8%;
-    background-color: #333;
+    background-color: white;
     border-radius: 0 0 1.4em 1.4em;
     transform-origin: -15% 0;
   }
@@ -196,7 +196,7 @@ const Title = styled.h1`
   text-align: center;
   font-family: fantasy;
   font-size: 6vh;
-  color: #333;
+  color: white;
   opacity: 0.75;
   animation: ${pulse} 2.5s linear infinite;
 `;
@@ -209,7 +209,7 @@ const SubTitle = styled.p`
   text-align: center;
   font-family: fantasy;
   font-size: 5vh;
-  color: #333;
+  color: white;
   opacity: 0.75;
   animation: ${pulse} 2.5s linear infinite;
 `;

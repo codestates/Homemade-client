@@ -1,3 +1,4 @@
+/* eslint-disable import/named */
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
@@ -8,13 +9,14 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { useHistory, Redirect } from "react-router-dom";
 import { FcCheckmark } from "react-icons/fc";
-import NorificationModal from "./NotificationModal";
 import { isPhoneNumber, strongPassword } from "../common/utils/validation";
+import NotificationModal from "./NotificationModal";
+import Loader from "./Loader";
 // eslint-disable-next-line no-unused-vars
 
 function Information({ handleLogOut, isLogin }) {
   const history = useHistory();
-
+  const [loading, setLoading] = useState(true);
   if (!isLogin) {
     return <Redirect to="/" />;
   }
@@ -240,6 +242,7 @@ function Information({ handleLogOut, isLogin }) {
             avatar: avatar_url,
           });
         });
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -349,266 +352,276 @@ function Information({ handleLogOut, isLogin }) {
       <UserinfoContainer>
         <UserInfoStyle>
           <h3>회원정보</h3>
-          <Container>
-            <AvatarContainer>
-              <h4>프로필 사진</h4>
-              <ProfileImg>
-                {/* 유저가 저장해 놓은 이미지가 없을경우 기본 이미지를 print */}
-                {userInfo.avatar ? (
-                  <div>
-                    <input
-                      type="file"
-                      id="input_file"
-                      accept="image/*"
-                      name="profile_img"
-                      onChange={handleFileOnChange}
-                    />
-                    {userInfo.avatar ? (
-                      <Avatar
-                        className="profile_preview"
-                        src={
-                          image.previewURL ? image.previewURL : userInfo.avatar
-                        }
-                        alt="default_img"
+          {loading ? (
+            <Loader />
+          ) : (
+            <Container>
+              <AvatarContainer>
+                <h4>프로필 사진</h4>
+                <ProfileImg>
+                  {/* 유저가 저장해 놓은 이미지가 없을경우 기본 이미지를 print */}
+                  {userInfo.avatar ? (
+                    <div>
+                      <input
+                        type="file"
+                        id="input_file"
+                        accept="image/*"
+                        name="profile_img"
+                        onChange={handleFileOnChange}
                       />
-                    ) : (
-                      <Avatar
-                        className="profile_preview"
-                        src="../images/defaultUserAvatar.png"
-                        alt="default_img"
-                      />
-                    )}
-                  </div>
-                ) : (
-                  <div>
-                    {userInfo.avatar ? (
-                      <Avatar
-                        src={userInfo.avatar}
-                        id="avater"
-                        className="avatar-tag"
-                      />
-                    ) : (
-                      <div>
-                        <input
-                          type="file"
-                          id="input_file"
-                          accept="image/*"
-                          name="profile_img"
-                          onChange={handleFileOnChange}
-                        />
+                      {userInfo.avatar ? (
                         <Avatar
+                          className="profile_preview"
                           src={
                             image.previewURL
                               ? image.previewURL
-                              : "../images/defaultUserAvatar.png"
+                              : userInfo.avatar
                           }
+                          alt="default_img"
+                        />
+                      ) : (
+                        <Avatar
+                          className="profile_preview"
+                          src="../images/defaultUserAvatar.png"
+                          alt="default_img"
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      {userInfo.avatar ? (
+                        <Avatar
+                          src={userInfo.avatar}
                           id="avater"
                           className="avatar-tag"
                         />
-                      </div>
-                    )}
-                  </div>
-                )}
-                {avatarModify ? (
-                  <div>
-                    <UploadButton htmlFor="input_file">파일검색</UploadButton>
-
-                    <Button
-                      className="avatar-changed-button"
-                      name="avatarChange"
-                      onClick={handleReqeustUploadAvatar}
-                    >
-                      등록
-                    </Button>
-                    <Button
-                      className="avatar-changed-button"
-                      onClick={handleCanlceAvatar}
-                    >
-                      취소
-                    </Button>
-                  </div>
-                ) : (
-                  <Button
-                    id="avater-change-button"
-                    onClick={() => setAvatarModify(true)}
-                  >
-                    {/* 이미지 등록 or 이미지 변경 */}
-                    {checkUserAvartar(userInfo.avatar)}
-                  </Button>
-                )}
-              </ProfileImg>
-            </AvatarContainer>
-            <UserInfoTable id="signup-form-table">
-              <TableRow>
-                <TableData className="label">이름</TableData>
-                <TableData className="user-info">{userInfo.name}</TableData>
-                <TableData />
-              </TableRow>
-              <TableRow>
-                <TableData className="label">eamil</TableData>
-                <TableData className="user-info">{userInfo.email}</TableData>
-                <TableData />
-              </TableRow>
-              <TableRow>
-                <TableData className="label">닉네임</TableData>
-                <TableData className="user-info">{userInfo.nickname}</TableData>
-                <TableData />
-              </TableRow>
-              <TableRow>
-                <TableData className="label">비밀번호</TableData>
-                {passwordModify ? (
-                  <div>
-                    <input
-                      type="password"
-                      name="password"
-                      className="new-password"
-                      value={firstPassword}
-                      placeholder="8자 이상(문자,숫자,특수기호(@$!%*#?)중 하나)"
-                      onChange={handleFirstPassword}
-                      required
-                    />
-                    <input
-                      type="password"
-                      name="password-check"
-                      className="new-password"
-                      value={lastPassword}
-                      placeholder="새로운 비밀번호 확인 "
-                      onChange={handleLastPassword}
-                      required
-                    />{" "}
-                    {validation.validPassword ? (
-                      <ValidCheck>
-                        <FcCheckmark size="22" />
-                      </ValidCheck>
-                    ) : (
-                      <>
-                        {firstPassword.length > 1 ? (
-                          <CheckPasswordMessage>
-                            비밀번호 규칙을 확인해주세요
-                          </CheckPasswordMessage>
-                        ) : null}
-                      </>
-                    )}
-                    <Error check={isValidPassword}>{message}</Error>
-                  </div>
-                ) : (
-                  <TableData className="user-info" />
-                )}
-                <TableData className="td-button">
-                  {/* 비밀번호 변경버튼을 눌렀을 경우  */}
-                  {passwordModify ? (
-                    <div>
-                      {/* TODO : 비동기 및 수직 방향 정렬필요 */}
-                      <Button
-                        className="changed-Button"
-                        name="changePassword"
-                        onClick={handleRequestPasswordModify}
-                      >
-                        {" "}
-                        변경{" "}
-                      </Button>
-                      <Button
-                        className="changed-Button"
-                        onClick={handleInitializePassword}
-                      >
-                        {" "}
-                        취소{" "}
-                      </Button>
+                      ) : (
+                        <div>
+                          <input
+                            type="file"
+                            id="input_file"
+                            accept="image/*"
+                            name="profile_img"
+                            onChange={handleFileOnChange}
+                          />
+                          <Avatar
+                            src={
+                              image.previewURL
+                                ? image.previewURL
+                                : "../images/defaultUserAvatar.png"
+                            }
+                            id="avater"
+                            className="avatar-tag"
+                          />
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <Button
-                      id="password-change-button"
-                      onClick={() => setPasswordModify(true)}
-                    >
-                      {" "}
-                      비밀번호변경{" "}
-                    </Button>
                   )}
-                </TableData>
-              </TableRow>
-              <TableRow>
-                <TableData className="label">전화번호</TableData>
-                {mobileModify ? (
-                  <div>
-                    <TableData>
-                      <input
-                        type="text"
-                        name="mobile-modify"
-                        onChange={handleMobile}
-                        placeholder="'-' 는 제외한 숫자만 입력바랍니다"
-                        required
-                      />
-                    </TableData>
-                    {validation.validMobile ? (
-                      <ValidCheck>
-                        <FcCheckmark size="22" />
-                      </ValidCheck>
-                    ) : (
-                      <>
-                        {mobileNumber.length > 1 ? (
-                          <CheckPasswordMessage>
-                            핸드폰 번호 형식이 아닙니다.
-                          </CheckPasswordMessage>
-                        ) : null}
-                      </>
-                    )}
-                  </div>
-                ) : (
-                  <TableData className="user-info">{userInfo.mobile}</TableData>
-                )}
-                <TableData className="td-button">
-                  {/* 핸드폰번호 변경  */}
-                  {mobileModify ? (
+                  {avatarModify ? (
                     <div>
+                      <UploadButton htmlFor="input_file">파일검색</UploadButton>
+
                       <Button
-                        className="changed-Button"
-                        name="mobileChange"
-                        onClick={handleRequestMobileModify}
+                        className="avatar-changed-button"
+                        name="avatarChange"
+                        onClick={handleReqeustUploadAvatar}
                       >
-                        변경
+                        등록
                       </Button>
                       <Button
-                        className="changed-Button"
-                        onClick={handleInitializeMobile}
+                        className="avatar-changed-button"
+                        onClick={handleCanlceAvatar}
                       >
                         취소
                       </Button>
                     </div>
                   ) : (
                     <Button
-                      id="mobile-change-button"
-                      onClick={() => setMobileModify(true)}
+                      id="avater-change-button"
+                      onClick={() => setAvatarModify(true)}
                     >
-                      번호변경{" "}
+                      {/* 이미지 등록 or 이미지 변경 */}
+                      {checkUserAvartar(userInfo.avatar)}
                     </Button>
                   )}
-                </TableData>
-              </TableRow>
-              <TableRow>
-                <TableData />
-                <TableData id="withdraw">
-                  <Button
-                    type="button"
-                    name="withdraw"
-                    onClick={handleRequestwithdraw}
-                  >
-                    회원탈퇴
-                  </Button>
-                </TableData>
-                <TableData />
-              </TableRow>
-            </UserInfoTable>
-          </Container>
+                </ProfileImg>
+              </AvatarContainer>
+              <UserInfoTable id="signup-form-table">
+                <TableRow>
+                  <TableData className="label">이름</TableData>
+                  <TableData className="user-info">{userInfo.name}</TableData>
+                  <TableData />
+                </TableRow>
+                <TableRow>
+                  <TableData className="label">email</TableData>
+                  <TableData className="user-info">{userInfo.email}</TableData>
+                  <TableData />
+                </TableRow>
+                <TableRow>
+                  <TableData className="label">닉네임</TableData>
+                  <TableData className="user-info">
+                    {userInfo.nickname}
+                  </TableData>
+                  <TableData />
+                </TableRow>
+                <TableRow>
+                  <TableData className="label">비밀번호</TableData>
+                  {passwordModify ? (
+                    <div>
+                      <input
+                        type="password"
+                        name="password"
+                        className="new-password"
+                        value={firstPassword}
+                        placeholder="8자 이상(문자,숫자,특수기호(@$!%*#?)중 하나)"
+                        onChange={handleFirstPassword}
+                        required
+                      />
+                      <input
+                        type="password"
+                        name="password-check"
+                        className="new-password"
+                        value={lastPassword}
+                        placeholder="새로운 비밀번호 확인 "
+                        onChange={handleLastPassword}
+                        required
+                      />{" "}
+                      {validation.validPassword ? (
+                        <ValidCheck>
+                          <FcCheckmark size="22" />
+                        </ValidCheck>
+                      ) : (
+                        <>
+                          {firstPassword.length > 1 ? (
+                            <CheckPasswordMessage>
+                              비밀번호 규칙을 확인해주세요
+                            </CheckPasswordMessage>
+                          ) : null}
+                        </>
+                      )}
+                      <Error check={isValidPassword}>{message}</Error>
+                    </div>
+                  ) : (
+                    <TableData className="user-info" />
+                  )}
+                  <TableData className="td-button">
+                    {/* 비밀번호 변경버튼을 눌렀을 경우  */}
+                    {passwordModify ? (
+                      <div>
+                        {/* TODO : 비동기 및 수직 방향 정렬필요 */}
+                        <Button
+                          className="changed-Button"
+                          name="changePassword"
+                          onClick={handleRequestPasswordModify}
+                        >
+                          {" "}
+                          변경{" "}
+                        </Button>
+                        <Button
+                          className="changed-Button"
+                          onClick={handleInitializePassword}
+                        >
+                          {" "}
+                          취소{" "}
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        id="password-change-button"
+                        onClick={() => setPasswordModify(true)}
+                      >
+                        {" "}
+                        비밀번호변경{" "}
+                      </Button>
+                    )}
+                  </TableData>
+                </TableRow>
+                <TableRow>
+                  <TableData className="label">전화번호</TableData>
+                  {mobileModify ? (
+                    <div>
+                      <TableData>
+                        <input
+                          type="text"
+                          name="mobile-modify"
+                          onChange={handleMobile}
+                          placeholder="'-' 는 제외한 숫자만 입력바랍니다"
+                          required
+                        />
+                      </TableData>
+                      {validation.validMobile ? (
+                        <ValidCheck>
+                          <FcCheckmark size="22" />
+                        </ValidCheck>
+                      ) : (
+                        <>
+                          {mobileNumber.length > 1 ? (
+                            <CheckPasswordMessage>
+                              핸드폰 번호 형식이 아닙니다.
+                            </CheckPasswordMessage>
+                          ) : null}
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <TableData className="user-info">
+                      {userInfo.mobile}
+                    </TableData>
+                  )}
+                  <TableData className="td-button">
+                    {/* 핸드폰번호 변경  */}
+                    {mobileModify ? (
+                      <div>
+                        <Button
+                          className="changed-Button"
+                          name="mobileChange"
+                          onClick={handleRequestMobileModify}
+                        >
+                          변경
+                        </Button>
+                        <Button
+                          className="changed-Button"
+                          onClick={handleInitializeMobile}
+                        >
+                          취소
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        id="mobile-change-button"
+                        onClick={() => setMobileModify(true)}
+                      >
+                        번호변경{" "}
+                      </Button>
+                    )}
+                  </TableData>
+                </TableRow>
+                <TableRow>
+                  <TableData />
+                  <TableData id="withdraw">
+                    <Button
+                      type="button"
+                      name="withdraw"
+                      onClick={handleRequestwithdraw}
+                    >
+                      회원탈퇴
+                    </Button>
+                  </TableData>
+                  <TableData />
+                </TableRow>
+              </UserInfoTable>
+            </Container>
+          )}
         </UserInfoStyle>
       </UserinfoContainer>
-      <NorificationModal
+      <NotificationModal
         visible={modalVisible}
         closeable
         maskClosable
         onClose={closeModal}
       >
         <h3>{modalMessage}</h3>
-      </NorificationModal>
+      </NotificationModal>
     </Background>
   );
 }
@@ -697,6 +710,7 @@ const Button = styled.button`
   display: inline-block;
   height: 40px;
   background: #0b0b20;
+  cursor: pointer;
   color: white;
   border: 1px solid lightgray;
 `;
@@ -749,6 +763,7 @@ const UploadButton = styled.label`
   display: block;
   width: 100%;
   background: white;
+  cursor: pointer;
   &:hover {
     transition: all 0.3s ease-in-out;
     background-color: #0b0b20;

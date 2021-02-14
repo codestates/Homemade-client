@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import Information from "../compoments/Information";
-import UserRecipe from "../compoments/UserRecipe";
-import Banner from "../compoments/Banner";
+import { Information, UserRecipe, Banner } from "../compoments/index";
+
 // eslint-disable-next-line no-unused-vars
 export default function UserInfo({ handleLogOut, isLogin }) {
   const menuList = {
@@ -83,6 +82,11 @@ const Button = styled.button`
   background: #585a6b;
   height: 40px;
   color: white;
+  cursor: pointer;
   width: 150px;
-  border: 1px solid white;
+  border: 0;
+  outline: 0;
+  &:focus {
+    display: none;
+  }
 `;

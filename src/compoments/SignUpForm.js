@@ -450,7 +450,7 @@ const Button = styled.button`
   margin-top: 3px;
   display: inline;
   height: 40px;
-  background: #76a264;
+  background: #0b0b20;
   color: white;
   border: 1px solid lightgray;
 `;

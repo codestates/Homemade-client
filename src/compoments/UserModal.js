@@ -20,6 +20,8 @@ const UserModalStyle = styled.div`
   padding: 1.5rem;
   background: white;
   border-radius: 5px;
+  box-sizing: border-box;
+  text-align: -webkit-center;
   h3 {
     margin-bottom: 50px;
   }
@@ -32,9 +34,8 @@ const Button = styled.button`
   padding-right: 1rem;
   margin-top: 3px;
   display: block;
-  width: 100%;
   height: 40px;
-  background: #76a264;
+  background: #0b0b20;
   color: white;
   border: 1px solid lightgray;
 `;
