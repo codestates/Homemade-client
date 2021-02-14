@@ -83,6 +83,11 @@ const Button = styled.button`
   background: #585a6b;
   height: 40px;
   color: white;
+  cursor: pointer;
   width: 150px;
-  border: 1px solid white;
+  border: 0;
+  outline: 0;
+  &:focus {
+    display: none;
+  }
 `;
