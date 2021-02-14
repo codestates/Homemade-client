@@ -13,7 +13,7 @@ export default function Test({ isLogin, signInHanlder, handleLogOut }) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignUp] = useState(false);
   const [keyword, setKeyword] = useState("");
-
+  console.log(isLogin);
   const categories = ["한식", "중식", "양식", "일식", "음료/술"];
 
   return (
@@ -63,17 +63,17 @@ export default function Test({ isLogin, signInHanlder, handleLogOut }) {
               </WriteLink>
               {isLogin ? (
                 <>
+                  <AccessBtn onClick={() => handleLogOut()}>
+                    <AccessLink>로그아웃</AccessLink>
+                  </AccessBtn>
+                </>
+              ) : (
+                <>
                   <AccessBtn onClick={() => setShowLogin(true)}>
                     <AccessLink>로그인</AccessLink>
                   </AccessBtn>
                   <AccessBtn onClick={() => setShowSignUp(true)}>
                     <AccessLink>회원가입</AccessLink>
-                  </AccessBtn>
-                </>
-              ) : (
-                <>
-                  <AccessBtn onClick={() => handleLogOut()}>
-                    <AccessLink>로그아웃</AccessLink>
                   </AccessBtn>
                 </>
               )}
@@ -244,6 +244,7 @@ const CategoryButton = styled(AiOutlineMenu)`
 const CategoryItemDiv = styled.div`
   display: none;
   top: 30px;
+  left: -60px;
   width: 160px;
   border: 1px solid #cccccc;
   border-radius: 12px;
@@ -327,10 +328,10 @@ const AccessBtn = styled.button`
   background: #000000;
   color: #ffffff;
   &:hover {
-    background: ${lighten(0.15, `#000000`)};
+    background: ${lighten(0.1, `#000000`)};
   }
   &:active {
-    background: #000000;
+    background: #000000);
   }
   &:focus {
     outline: none;
