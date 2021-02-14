@@ -58,8 +58,8 @@ const MenuContainer = styled.div`
   border: 1px solid lightgray;
   border-radius: 0px 0px 10px 10px;
   width: 1200px;
-
-  background: lightgray;
+  margin-top: 60px;
+  background: #0b0c21;
   .active {
     background: white;
   }
@@ -81,6 +81,7 @@ const Button = styled.button`
   margin-right: 8px;
   border-radius: 10px 10px 0px 0px;
   display: inline-block;
+  background: #bdc2f4;
   height: 40px;
   border: 1px solid white;
 `;
