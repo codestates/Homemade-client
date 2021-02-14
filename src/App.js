@@ -8,17 +8,20 @@ import {
 } from "react-router-dom";
 import axios from "axios";
 import { Nav } from "./compoments/index";
+import Footer from "./compoments/Footer";
+
 import {
   Main,
+  Intro,
   UserInfo,
   SubmitRecipe,
   RecipeDescription,
   RecipesContainer,
 } from "./pages/index";
-import Footer from "./compoments/Footer";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
+  const [intro, setIntro] = useState(false);
   // 회원이 로그아웃할 경우 localStorage의 accessToken을 삭제한다
   const handleLogOut = () => {
     localStorage.clear();
@@ -56,39 +59,45 @@ function App() {
     initializeUserInfo();
   }, []);
   return (
-    <Router>
-      <Nav
-        isLogin={isLogin}
-        setIsLogin={setIsLogin}
-        signInHanlder={signInHanlder}
-        handleLogOut={handleLogOut}
-      />
-      <GlobalStyle />
-      <Container className="App">
-        <Switch>
-          <Route exact path="/">
-            <Main />
-          </Route>
-          <Route exact path="/userinfo">
-            <UserInfo handleLogOut={handleLogOut} isLogin={isLogin} />
-          </Route>
-          <Route exact path="/postrecipe">
-            <SubmitRecipe />
-          </Route>
-          <Route exact path="/updaterecipe">
-            <SubmitRecipe />
-          </Route>
-          <Route exact path="/recipe/:id">
-            <RecipeDescription />
-          </Route>
-          <Route path="/search">
-            <RecipesContainer />
-          </Route>
-          <Redirect path="/" />
-        </Switch>
-      </Container>
-      <Footer />
-    </Router>
+    <>
+      {intro ? (
+        <Router>
+          <Nav
+            isLogin={isLogin}
+            setIsLogin={setIsLogin}
+            signInHanlder={signInHanlder}
+            handleLogOut={handleLogOut}
+          />
+          <GlobalStyle />
+          <Container className="App">
+            <Switch>
+              <Route exact path="/">
+                <Main />
+              </Route>
+              <Route exact path="/userinfo">
+                <UserInfo handleLogOut={handleLogOut} isLogin={isLogin} />
+              </Route>
+              <Route exact path="/postrecipe">
+                <SubmitRecipe />
+              </Route>
+              <Route exact path="/updaterecipe">
+                <SubmitRecipe />
+              </Route>
+              <Route exact path="/recipe/:id">
+                <RecipeDescription />
+              </Route>
+              <Route path="/search">
+                <RecipesContainer />
+              </Route>
+              <Redirect path="/" />
+            </Switch>
+          </Container>
+          <Footer />
+        </Router>
+      ) : (
+        <Intro setIntro={setIntro} />
+      )}
+    </>
   );
 }
 const GlobalStyle = createGlobalStyle`

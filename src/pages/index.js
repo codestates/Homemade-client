@@ -3,5 +3,13 @@ import SubmitRecipe from "./SubmitRecipe";
 import UserInfo from "./UserInfo";
 import RecipeDescription from "./RecipeDescription";
 import RecipesContainer from "./RecipesContainer";
+import Intro from "./intro";
 
-export { Main, SubmitRecipe, UserInfo, RecipeDescription, RecipesContainer };
+export {
+  Main,
+  Intro,
+  SubmitRecipe,
+  UserInfo,
+  RecipeDescription,
+  RecipesContainer,
+};

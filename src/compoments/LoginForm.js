@@ -109,7 +109,7 @@ export default function LoginForm({ show, isShow, signInHanlder }) {
             <InputWrap>
               <input
                 type="text"
-                name="eamil"
+                name="email"
                 value={email}
                 placeholder="email 을 입력하세요"
                 onChange={handleEmail}
