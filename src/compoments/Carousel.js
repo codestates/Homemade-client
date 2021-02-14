@@ -1,86 +1,77 @@
-/* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import { darken, lighten } from "polished";
-import Recipe from "./Recipe";
+import d from "../assets/data";
+import RecipeCard from "./RecipeCard";
 
-export default function Carousel({ recipes }) {
-  const [recipe] = useState(recipes);
-  const [currentRecipeIdx, setCurrentRecipeIdx] = useState(0);
+export default function Carousel() {
+  const [data] = useState(d);
+  const myRef = useRef(null);
 
-  const prevSlide = () => {
-    const resetToVeryBack = currentRecipeIdx === 0;
-
-    const index = resetToVeryBack ? recipe.length - 1 : currentRecipeIdx - 1;
-
-    setCurrentRecipeIdx(index);
+  const prevClick = () => {
+    const slide = myRef.current;
+    slide.scrollLeft -= slide.offsetWidth;
+    if (slide.scrollLeft <= 0) {
+      slide.scrollLeft = slide.scrollWidth;
+    }
   };
 
-  const nextSlide = () => {
-    const resetIndex = currentRecipeIdx === recipe.length - 1;
-
-    const index = resetIndex ? 0 : currentRecipeIdx + 1;
-
-    setCurrentRecipeIdx(index);
+  const nextClick = () => {
+    const slide = myRef.current;
+    slide.scrollLeft += slide.offsetWidth;
+    if (slide.scrollLeft >= slide.scrollWidth - slide.offsetWidth) {
+      slide.scrollLeft = 0;
+    }
   };
-
-  const activeRecipeFromState = recipe.slice(
-    currentRecipeIdx,
-    currentRecipeIdx + 4,
-  );
-  const recipeToDisplay =
-    activeRecipeFromState.length < 4
-      ? [
-          ...activeRecipeFromState,
-          ...recipe.slice(0, 4 - activeRecipeFromState.length),
-        ]
-      : activeRecipeFromState;
 
   return (
-    <CarouselContainer>
-      <Button type="button" onClick={prevSlide} left>
-        &lt;
-      </Button>
-      {recipeToDisplay.map(recipeInfo => (
-        <Recipe key={recipeInfo.id} recipe={recipeInfo} />
-      ))}
-      <Button type="button" onClick={nextSlide} right>
-        &gt;
-      </Button>
-    </CarouselContainer>
+    <Wrapper>
+      <Slider className="app" ref={myRef}>
+        <RecipeCard data={data} />
+      </Slider>
+      <Row>
+        <Prev onClick={prevClick}>
+          <img src="../slider/prev.png" alt="" />
+        </Prev>
+        <Next onClick={nextClick}>
+          <img src="../slider/next.png" alt="" />
+        </Next>
+      </Row>
+    </Wrapper>
   );
 }
 
-const CarouselContainer = styled.div`
-  position: relative;
-  height: 100%;
-`;
-const Button = styled.button`
-  border: none;
-  cursor: pointer;
-  background-color: transparent;
+const Wrapper = styled.div`
+  max-width: 92.5%;
+  width: 100%;
+  min-height: 30vh;
   position: absolute;
-  top: 40%;
-  transform: translateY(-40%);
-  font-size: 3rem;
-  &:focus {
-    outline: none;
-  }
-  &:hover {
-    color: ${lighten(0.1, `#6f6f6f`)};
-  }
-  &:active {
-    color: ${darken(0.1, `#6f6f6f`)};
-  }
-  ${({ left }) =>
-    left &&
-    `
-  left: -2.5%;
-  `};
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: auto;
+  padding: 0 20px;
+`;
 
-  ${({ right }) =>
-    right &&
-    `
-    right: -2.5%;
-  `};
+const Slider = styled.div`
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+`;
+
+const Row = styled.div``;
+
+const Prev = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  left: 0;
+`;
+
+const Next = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  right: 0;
 `;

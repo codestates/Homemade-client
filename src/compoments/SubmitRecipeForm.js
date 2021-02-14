@@ -183,6 +183,7 @@ const FormContainer = styled.div`
   width: 60%;
   height: 100%;
   border: solid 1px #e6e7e8;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
 `;
@@ -191,7 +192,7 @@ const Title = styled.div`
   position: relative;
   background-color: #f8f8f8;
   padding: 0.5rem;
-  border: 1px solid #e6e7e8;
+  border-radius: 12px;
   h3 {
     font-size: 1.5rem;
   }
@@ -301,7 +302,7 @@ const SaveBtn = styled.button`
   display: block;
   width: 100%;
   height: 48px;
-  background: #76a264;
+  background: #153450;
   color: white;
   border: 1px solid lightgray;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;

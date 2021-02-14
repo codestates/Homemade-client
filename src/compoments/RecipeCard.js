@@ -1,62 +1,63 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/require-default-props */
 /* eslint-disable camelcase */
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-export default function RecipeCard({ recipe }) {
-  const { title, thumbnail_url, views, created_at } = recipe;
+export default function RecipeCard({ data }) {
   return (
-    <CardContainer>
-      <Thumbnail src={thumbnail_url} alt="default" />
-      <Description>
-        <Title>{title}</Title>
-        <SubContainer>
-          <span>{views}</span>
-          <span>{created_at}</span>
-        </SubContainer>
-      </Description>
-    </CardContainer>
+    <>
+      {data.map(item => (
+        <CardContainer>
+          <Thumbnail src={item.src} alt="default" />
+          <Description>
+            <Title>{item.title}</Title>
+            <View>view: {item.view}</View>
+          </Description>
+        </CardContainer>
+      ))}
+    </>
   );
 }
 RecipeCard.propTypes = {
-  recipe: PropTypes.shape({
+  data: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    thumbnail_url: PropTypes.string.isRequired,
-    views: PropTypes.number.isRequired,
-    created_at: PropTypes.string.isRequired,
+    src: PropTypes.string.isRequired,
+    view: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
   }),
 };
-
-const CardContainer = styled.span`
-  width: 300px;
-  height: 400px;
-  box-shadow: 0px 0px 10px 3px #d4d0d0;
-  display: inline-block;
-  /* margin-left: 100px; */
-  border-radius: 20px;
+const CardContainer = styled.div`
+  border-radius: 12px;
+  min-width: 33.3%;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  border: 5px solid #eee;
 `;
-
 const Thumbnail = styled.img`
   width: 100%;
-  height: 70%;
-  border-bottom: 1px solid gainsboro;
+  height: 360px;
+  display: block;
+  object-fit: cover;
+  border-bottom: 1px solid #eeeeee;
+
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+    filter: brightness(90%);
+  }
 `;
 const Description = styled.div`
-  padding: 10px;
+  padding: 0.4rem;
 `;
-const Title = styled.p`
+const Title = styled.h2`
   font-weight: 800;
-  margin-top: 2px;
+  magrin: 0;
 `;
-const SubContainer = styled.div`
-  border-top: 2px solid orange;
-  padding-top: 6px;
-  display: flex;
-  span {
-    flex: 1 1 auto;
-    font-size: 0.8rem;
-    color: #7b7676;
-  }
-  text-align: center;
+const View = styled.p`
+  margin: 0;
+  text-align: right;
+  color: #bbbbbb;
 `;

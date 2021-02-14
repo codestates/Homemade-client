@@ -13,7 +13,7 @@ export default function Test({ isLogin, signInHanlder, handleLogOut }) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignUp] = useState(false);
   const [keyword, setKeyword] = useState("");
-  console.log(isLogin);
+
   const categories = ["한식", "중식", "양식", "일식", "음료/술"];
 
   return (
@@ -216,9 +216,12 @@ const SearchButton = styled(AiOutlineSearch)`
 `;
 
 const CateogryButtonDiv = styled.div`
-  position: relative;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
   height: 52px;
   width: 52px;
+  transition: 0.4s;
   text-align: center;
   vertical-align: middle;
   border: 1px solid #dddddd;
@@ -243,8 +246,9 @@ const CategoryButton = styled(AiOutlineMenu)`
 
 const CategoryItemDiv = styled.div`
   display: none;
-  top: 30px;
-  left: -60px;
+  position: relative;
+  top: 50%;
+  left: -100%;
   width: 160px;
   border: 1px solid #cccccc;
   border-radius: 12px;
@@ -260,16 +264,14 @@ const CategoryItem = styled(Link)`
   color: #000000;
   border-bottom: 1px solid #eeeeee;
   &:hover {
-    color: ${lighten(0.1, `#6f6f6f`)};
-  }
-  &:active {
-    color: ${darken(0.1, `#6f6f6f`)};
+    background: ${darken(0.2, `#fafafa`)};
   }
 `;
 
 const CategoryHover = styled.div`
   position: absolute;
   top: 50px;
+  left: -55px;
   height: 30px;
   width: 160px;
 `;
@@ -357,14 +359,6 @@ const Logo = styled.img`
   max-height: 100%;
   object-fit: cover;
 `;
-
-// const BottomBar = styled.div`
-//   display: flex;
-//   width: 100%;
-//   height: 6vh;
-//   border-top: 0.1px solid #f1f1f1;
-//   border-bottom: 0.5px solid #f1f1f1;
-// `;
 
 Test.propTypes = {
   isLogin: PropTypes.bool.isRequired,
