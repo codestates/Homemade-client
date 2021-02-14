@@ -110,7 +110,8 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 const Container = styled.div`
-  width: 80vw;
+  width: 100vw;
+  min-height: 100vh;
   margin: 0 auto;
 `;
 export default App;
