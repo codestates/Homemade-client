@@ -11,6 +11,7 @@ import UserModal from "./UserModal";
 import Loader from "./Loader";
 import Banner from "./Banner";
 import RecipeList from "./RecipeList";
+import Footer from "./Footer";
 
 export {
   Comment,
@@ -26,4 +27,5 @@ export {
   Loader,
   Banner,
   RecipeList,
+  Footer,
 };
