@@ -1,26 +1,34 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import styled from "styled-components";
+import { nanoid } from "nanoid";
 import Recipe from "./Recipe";
+import chunk from "../common/utils/utils";
 
 export default function RecipeList({ recipes }) {
+  const recipeParts = chunk(recipes, 4);
   return (
-    <RecipeListContainer>
-      <RecipeListWrap>
-        {recipes.map(recipe => (
-          <Recipe key={recipe.id} recipe={recipe} />
-        ))}
-      </RecipeListWrap>
-    </RecipeListContainer>
+    <Container>
+      {recipeParts.map(part => (
+        <ListContainer key={nanoid()}>
+          {part.map(recipe => (
+            <Recipe key={nanoid()} recipe={recipe} />
+          ))}
+        </ListContainer>
+      ))}
+    </Container>
   );
 }
-const RecipeListContainer = styled.div`
-  position: relative;
-  height: 100%;
-  width: 80vw;
+
+const ListContainer = styled.div`
+  padding: 2rem;
+  width: 100%;
   margin: 0 auto;
+  display: flex;
+  flex-wrap: no-wrap;
 `;
-const RecipeListWrap = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+
+const Container = styled.div`
+  margin: 0 auto;
+  width: fit-content;
 `;
