@@ -276,7 +276,7 @@ const Button = styled.button`
   display: block;
   width: 100%;
   height: 40px;
-  background: #76a264;
+  background: #0b0b20;
   color: white;
   border: 1px solid lightgray;
 `;

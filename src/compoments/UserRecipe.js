@@ -62,9 +62,6 @@ export default function UserRecipe() {
       console.log(err);
     }
   };
-  useEffect(() => {
-    console.log(myRecipes);
-  });
   // myrecipes 최초 1회 요청
   useEffect(() => {
     handleRequestUserRecipes();
@@ -79,7 +76,7 @@ export default function UserRecipe() {
       <RecipeQuantity>총 : {myRecipesQuantity} 개</RecipeQuantity>
       <Container>
         <SliderContainer ref={slideRef}>
-          {myRecipes ? (
+          {myRecipes.length > 0 ? (
             myRecipes.map(recipe => {
               const createdDate = recipe.createdAt.substring(0, 10);
               return (
@@ -102,7 +99,7 @@ export default function UserRecipe() {
             <NoRecipe>등록된 recipe가 없습니다</NoRecipe>
           )}
         </SliderContainer>
-        {myRecipes ? (
+        {myRecipes.length > 0 ? (
           <div>
             <Pages>
               {`${TOTAL_SLIDES + 1} 페이지 중 ${currentSlide + 1} 페이지`}
@@ -218,13 +215,13 @@ const ButtonWrap = styled.div`
 `;
 const ButtonImg = styled.button`
   all: unset;
-  border: 1px solid #76a264;
+  border: 1px solid #0b0b20;
   padding: 0.5em 2em;
-  color: #76a264;
+  color: #0b0b20;
   border-radius: 10px;
   &:hover {
     transition: all 0.3s ease-in-out;
-    background-color: #76a264;
+    background-color: #0b0b20;
     color: #fff;
   }
   margin: 20px;
@@ -256,7 +253,6 @@ const CreatedAt = styled.span`
 
 const RecipeCard = styled.div`
   width: 200px;
-  height: 200px;
   margin: 20px;
   display: inline-block;
 `;
@@ -264,7 +260,7 @@ const RecipeCard = styled.div`
 const RecipeImg = styled(Link)`
   display: inline-block;
   img {
-		width: 200px;
+		width: 100%;
     height: 239px;
 `;
 const NoRecipe = styled.div`

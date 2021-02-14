@@ -119,7 +119,6 @@ export default function SignUpForm({ show, isShow }) {
       setModalVisible(true);
       return;
     }
-    console.log(email);
     if (email !== "") {
       try {
         axios
@@ -183,9 +182,8 @@ export default function SignUpForm({ show, isShow }) {
               withCredentials: true,
             },
           )
-          .then(res => {
+          .then(() => {
             setSignUpModal(true);
-            return console.log(res);
           });
       } catch (err) {
         setModalMessage("이미 동일한 email이 존재합니다");

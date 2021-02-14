@@ -208,7 +208,6 @@ function Information({ handleLogOut, isLogin }) {
             openModal("avatarChange");
             setAvatarModify(false);
           });
-        console.log(userInfo.avatar, "url 받아와서 상태 업데이트 시");
       })
       .catch(err => {
         console.log(err);
@@ -697,7 +696,7 @@ const Button = styled.button`
   margin-bottom: 5px;
   display: inline-block;
   height: 40px;
-  background: #76a264;
+  background: #0b0b20;
   color: white;
   border: 1px solid lightgray;
 `;
@@ -743,16 +742,16 @@ const FileInput = styled.input`
   display: none;
 `;
 const UploadButton = styled.label`
-  border: 1px solid #76a264;
+  border: 1px solid #0b0b20;
   padding: 0.5em 2em;
-  color: #76a264;
+  color: #0b0b20;
   border-radius: 10px;
   display: block;
   width: 100%;
   background: white;
   &:hover {
     transition: all 0.3s ease-in-out;
-    background-color: #76a264;
+    background-color: #0b0b20;
     color: #fff;
   }
 `;

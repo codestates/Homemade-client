@@ -5,7 +5,7 @@ import PropType from "prop-types";
 // eslint-disable-next-line react/prop-types
 export default function Intro({ setIntro }) {
   return (
-    <Container>
+    <Container type="button" onClick={() => setIntro(true)}>
       <Title>Welcome to our Kitchen</Title>
       <SubTitle>Yon can cook anything in Homemade</SubTitle>
       <div id="cooking">
@@ -21,9 +21,6 @@ export default function Intro({ setIntro }) {
           </div>
         </div>
       </div>
-      <Button type="button" id="intro-button" onClick={() => setIntro(true)}>
-        Click
-      </Button>
     </Container>
   );
 }
@@ -95,7 +92,7 @@ const Container = styled.div`
   width: 100vw;
 	overflow: hidden;
 	text-align: center;
-
+	cursor:pointer;
   #cooking {
     position: relative;
     margin: 0 auto;
@@ -215,10 +212,4 @@ const SubTitle = styled.p`
   color: #333;
   opacity: 0.75;
   animation: ${pulse} 2.5s linear infinite;
-`;
-const Button = styled.button`
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
 `;
