@@ -3,7 +3,6 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useHistory, Redirect, useLocation } from "react-router-dom";
 import SubmitRecipeForm from "../compoments/SubmitRecipeForm";
-import Banner from "../compoments/Banner";
 
 export default function SubmitRecipe() {
   const accessToken = useRef(
@@ -174,7 +173,7 @@ export default function SubmitRecipe() {
           const [[key, value]] = Object.entries(el);
           updatedImageUrls[key] = value;
         });
-        console.log("updatedImageUrls", updatedImageUrls);
+
         Object.keys(updatedImageUrls)
           .sort()
           .forEach(el => {
@@ -283,7 +282,6 @@ export default function SubmitRecipe() {
 
   return (
     <>
-      <Banner url="./banner/registerRecipe.jpg" />
       <SubmitRecipeForm
         deleteImage={deleteImage}
         images={images}

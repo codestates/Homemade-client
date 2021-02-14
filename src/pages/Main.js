@@ -2,15 +2,20 @@ import React from "react";
 import styled from "styled-components";
 import Banner from "../compoments/Banner";
 import bannerUrls from "../assets/bannerUrls";
+import Carousel from "../compoments/Carousel";
 
 export default function Main() {
   const { main } = bannerUrls;
   return (
     <MainContainer>
       <Banner url={main} />
+      <SliderConatiner>
+        <Title>최근 등록된 레시피</Title>
+        <Carousel />
+      </SliderConatiner>
       <Conatiner>
         <Section2>
-          <Section2Title>2월달 최고의 레시피를 만나보세요.</Section2Title>
+          <Section2Title>2월달 최고의 레시피</Section2Title>
           <Section2Wrap>
             <Card>
               <CardImg src="../images/main.jpg" />
@@ -60,10 +65,24 @@ export default function Main() {
     </MainContainer>
   );
 }
+
 const MainContainer = styled.div`
   position: relative;
   unset: all;
   heigth: 100%;
+`;
+
+const SliderConatiner = styled.div`
+  margin-top: 3rem;
+  position: relative;
+  min-height: 540px;
+  width: 100%;
+`;
+
+const Title = styled.p`
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-left: 5%;
 `;
 
 const Conatiner = styled.div`
@@ -106,7 +125,7 @@ const Section2Wrap = styled.div`
 const Section2Title = styled(Section3Title)`
   padding-top: 2.5rem;
   color: #ffffff;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
 `;
 
 const Section2Right = styled.div`
@@ -141,6 +160,7 @@ const CardImg = styled.img`
   width: 100%;
   height: 88%;
   border-radius: 12px;
+  cursor: pointer;
 
   ${({ Section2Bottom }) =>
     Section2Bottom &&
