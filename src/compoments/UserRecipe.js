@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-undef */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/require-default-props */
 import React, { useState, useEffect, useRef } from "react";
@@ -80,19 +82,17 @@ export default function UserRecipe() {
             myRecipes.map(recipe => {
               const createdDate = recipe.createdAt.substring(0, 10);
               return (
-                <RecipeCard key={recipe.id}>
-                  <RecipeImg className="recipe" to={`/recipe/${recipe.id}`}>
-                    <img
-                      className="thumbnail"
-                      src={recipe.thumbnail_url}
-                      alt={recipe.title}
-                    />
-                  </RecipeImg>
-                  <div>
-                    <Title> {recipe.title}</Title>
-                    <CreatedAt>{createdDate}</CreatedAt>
-                  </div>
-                </RecipeCard>
+                <CardContainer key={recipe.id}>
+                  <Thumbnail to={`/recipe/${recipe.id}`}>
+                    <img src={recipe.thumbnail_url} alt="default" />
+                  </Thumbnail>
+                  <Description>
+                    <Title>{recipe.title}</Title>
+                    <SubContainer>
+                      <span>{createdDate}</span>
+                    </SubContainer>
+                  </Description>
+                </CardContainer>
               );
             })
           ) : (
@@ -218,6 +218,7 @@ const ButtonImg = styled.button`
   border: 1px solid #0b0b20;
   padding: 0.5em 2em;
   color: #0b0b20;
+  cursor: pointer;
   border-radius: 10px;
   &:hover {
     transition: all 0.3s ease-in-out;
@@ -228,7 +229,7 @@ const ButtonImg = styled.button`
 `;
 const SliderContainer = styled.div`
   width: 100%;
-  height: 350px;
+  padding: 40px;
   display: flex; //이미지들을 가로로 나열합니다.
 `;
 const Pages = styled.div`
@@ -245,30 +246,47 @@ const MyrecipesTitle = styled.div`
   padding: 30px;
   font-size: 1.5rem;
 `;
-const CreatedAt = styled.span`
-  text-align: right;
-  font-size: 0.8rem;
-  float: right;
+const CardContainer = styled.div`
+  width: 300px;
+  height: 400px;
+  margin-left: 10px;
+  margin-right: 5px;
+  box-shadow: 0px 0px 10px 3px #d4d0d0;
+  display: inline-block;
+  /* margin-left: 100px; */
+  border-radius: 20px;
 `;
 
-const RecipeCard = styled.div`
-  width: 200px;
-  margin: 20px;
-  display: inline-block;
-`;
-// recipeList 영역
-const RecipeImg = styled(Link)`
-  display: inline-block;
+const Thumbnail = styled(Link)`
   img {
-		width: 100%;
-    height: 239px;
+    width: 100%;
+    height: 80%;
+    border-bottom: 1px solid gainsboro;
+    border-radius: 20px 20px 0px 0px;
+  }
 `;
+const Description = styled.div`
+  padding: 10px;
+`;
+const Title = styled.p`
+  font-weight: 800;
+  margin-top: 2px;
+`;
+const SubContainer = styled.div`
+  border-top: 2px solid orange;
+  padding-top: 6px;
+  display: flex;
+  span {
+    flex: 1 1 auto;
+    font-size: 0.8rem;
+    color: #7b7676;
+  }
+  text-align: center;
+`;
+
 const NoRecipe = styled.div`
   width: 100%;
   text-align: center;
   font-size: 1.5rem;
   color: lightgray;
-`;
-const Title = styled.span`
-  float: left;
 `;
