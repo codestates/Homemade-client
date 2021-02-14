@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import Information from "../compoments/Information";
 import UserRecipe from "../compoments/UserRecipe";
-
+import Banner from "../compoments/Banner";
 // eslint-disable-next-line no-unused-vars
 export default function UserInfo({ handleLogOut, isLogin }) {
   const menuList = {
@@ -23,6 +23,7 @@ export default function UserInfo({ handleLogOut, isLogin }) {
   });
   return (
     <>
+      <Banner url="./banner/myPage.jpg" />
       <MenuContainer>
         <MenuButton>
           <Button
@@ -57,8 +58,8 @@ UserInfo.propTypes = {
 const MenuContainer = styled.div`
   border: 1px solid lightgray;
   border-radius: 0px 0px 10px 10px;
-  width: 1200px;
-  margin-top: 60px;
+  width: 80%;
+  margin: 60px auto;
   background: #0b0c21;
   .active {
     background: white;

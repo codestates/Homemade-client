@@ -178,7 +178,7 @@ export default function SubmitRecipeForm({
 }
 
 const FormContainer = styled.div`
-  margin: 0 auto;
+  margin: 1rem auto;
   margin-bottom: 3rem;
   width: 60%;
   height: 100%;

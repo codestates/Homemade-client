@@ -637,7 +637,7 @@ const Background = styled.div`
   width: 100%;
   display: block;
   align-items: center;
-  height: 100vh;
+  height: auto;
 
   justify-content: center;
 `;
@@ -732,7 +732,7 @@ const AvatarContainer = styled.span`
   margin-right: 30px;
 `;
 const Container = styled.div`
-  width: 80%;
+  min-width: 874px;
   display: inline-flex;
 `;
 const ProfileImg = styled.div`

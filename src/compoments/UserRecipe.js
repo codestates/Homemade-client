@@ -211,7 +211,7 @@ export default function UserRecipe() {
 const Container = styled.div`
   width: 100%;
   overflow: hidden;
-  height: 100vh;
+  height: auto;
 `;
 const ButtonWrap = styled.div`
   text-align: center;
