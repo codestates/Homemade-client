@@ -107,12 +107,14 @@ function App() {
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
+    scroll-behavior: smooth;
   }
   body {
     margin: 0;
     padding: 0;
   }
 `;
+
 const Container = styled.div`
   width: 100vw;
   min-height: 100vh;
