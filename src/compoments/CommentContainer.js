@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 // import PropTypes from "prop-types";
-import { lighten, darken } from "polished";
 import Comment from "./Comment";
+import StarRating from "./StarRating";
 
 export default function CommentContainer({
   myId,
@@ -23,20 +23,11 @@ export default function CommentContainer({
     setRating(3);
   };
 
-  const handleDecrease = () => {
-    setRating(state => state - 1);
-  };
-
-  const handleIncrease = () => {
-    setRating(state => state + 1);
-  };
-
   const handleChange = e => {
     setInput(e.target.value);
   };
-
   return (
-    <div>
+    <Container>
       <Title>
         댓글
         <CommentLen>{savedComments ? savedComments.length : ""}</CommentLen>
@@ -71,18 +62,7 @@ export default function CommentContainer({
           : ""}
         <CommentInputForm>
           <RateContainer>
-            <SetRatingBtn
-              type="button"
-              onClick={handleDecrease}
-              disabled={rating <= 0}
-            />
-            <Rating>{rating}</Rating>
-            <SetRatingBtn
-              increase
-              type="button"
-              onClick={handleIncrease}
-              disabled={rating >= 5}
-            />
+            <StarRating setRating={setRating} />
           </RateContainer>
           <InputWrap>
             <CommentInput
@@ -102,7 +82,7 @@ export default function CommentContainer({
           </InputWrap>
         </CommentInputForm>
       </CommentWrap>
-    </div>
+    </Container>
   );
 }
 
@@ -118,10 +98,14 @@ export default function CommentContainer({
 //   ).isRequired,
 // };
 
+const Container = styled.div`
+  width: 100%;
+`;
+
 const CommentWrap = styled.div`
   padding-top: 0.4rem;
   padding-bottom: 0.4rem;
-  width: 720px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 `;
@@ -133,7 +117,7 @@ const CommentInputForm = styled.form`
 `;
 
 const CommentInput = styled.textarea`
-  width: 612px;
+  width: 80%;
   height: 100px;
   font-size: 1.2rem;
   padding: 8px;
@@ -146,17 +130,19 @@ const CommentInput = styled.textarea`
 `;
 
 const InputWrap = styled.div`
-  height: 100px;
-  width: 712px;
+  display: flex;
+  padding-left: 4rem;
+  padding-right: 4rem;
 `;
 
 const CommentButton = styled.button`
   position: relative;
+  transform: translate(0%, 1%);
+  flex: 1;
   display: inline-block;
   padding: 0;
   height: 100px;
-  width: 100px;
-  top: -48px;
+  width: 100%;
   border: 1px solid #aeb4b7;
   background-color: white;
   cursor: pointer;
@@ -171,76 +157,17 @@ const RateContainer = styled.div`
     line-height: 40px;
     vertical-align: middle;
   }
-`;
-
-const SetRatingBtn = styled.button`
-  position: absolute;
-  top: -4px;
-  border: 2px solid #aeb4b7;
-  background-color: #fff;
-  font-size: 16px;
-  height: 2.5em;
-  width: 2.5em;
-  border-radius: 999px;
-  position: relative;
-  cursor: pointer;
-  &:after,
-  &:before {
-    content: "";
-    display: block;
-    background-color: grey;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  div {
+    padding-left: 4rem;
   }
-
-  ${({ increase }) =>
-    increase &&
-    `
-    left:30px;
-    &:before {
-      height: 1em;
-      width: 0.2em;
-    }
-  `}
-
-  &:after {
-    height: 0.2em;
-    width: 1em;
-  }
-
-  &:hover {
-    transition: all 0.3s ease-in-out;
-    background-color: ${lighten(0.1, `#6f6f6f`)};
-    &:after,
-    &:before {
-      background: white;
-    }
-  }
-  &:active {
-    transition: all 0.3s ease-in-out;
-    background-color: ${darken(0.1, `#6f6f6f`)};
-    &:after,
-    &:before {
-      background: white;
-    }
-  }
-  &:focus {
-    outline: none;
-  }
-`;
-
-const Rating = styled.span`
-  position: absolute;
-  margin-left: 0.6rem;
-  margin-right: 0.6rem;
-  font-size: 1.4rem;
 `;
 
 const Title = styled.p`
+  border-top: 10px solid #ffffff;
+  margin-top: 0;
   margin-bottom: 0;
-  padding-left: 0.15rem;
+  padding-left: 4rem;
+  padding-top: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #aeb4b7;
 `;

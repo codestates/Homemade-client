@@ -20,38 +20,36 @@ function RecipeInfo({
   const {
     id,
     title,
-    createdAt,
     thumbnailUrl,
     views,
     imageUrls,
     content,
     username,
     avatarUrl,
+    rate,
   } = recipe;
 
   const recipeContent = content.split("//");
   const introduction = recipeContent[0];
   const ingredient = recipeContent[1];
-
-  const starRate = 100;
+  const starRate = rate * 20 || 80;
 
   return (
     <RecipeContainer>
-      <Thumbnail
-        src={thumbnailUrl || "../images/recipeInfo1.jpg"}
-        alt="recipe"
-      />
-      <AvatarWrap>
-        <Avatar
-          src={avatarUrl || "../images/defaultUserAvatar.png"}
-          alt="avatar"
+      <ThumbnailWrap>
+        <Thumbnail
+          src={thumbnailUrl || "../images/recipeInfo1.jpg"}
+          alt="recipe"
         />
-      </AvatarWrap>
+        <AvatarWrap>
+          <Avatar
+            src={avatarUrl || "../images/defaultUserAvatar.png"}
+            alt="avatar"
+          />
+        </AvatarWrap>
+      </ThumbnailWrap>
       <UserName>{username}</UserName>
       <Handler active={myId === recipe.userId}>
-        <DeleteContentBtn onClick={() => deleteContent(id)}>
-          삭제
-        </DeleteContentBtn>
         <Link
           to={{
             pathname: "/updaterecipe",
@@ -60,34 +58,41 @@ function RecipeInfo({
         >
           수정
         </Link>
+        <DeleteContentBtn onClick={() => deleteContent(id)}>
+          삭제
+        </DeleteContentBtn>
       </Handler>
       <Title>
         {title}
         <Introduction>{introduction}</Introduction>
         <SmallInfoWrap>
+          <Rating>평점:</Rating>
           <StarRating>
             <span style={{ width: `${starRate}%` }} />
           </StarRating>
-          <SmallInfo>{createdAt.slice(0, 10)}</SmallInfo>
         </SmallInfoWrap>
       </Title>
-      <Article>
-        <Description>
-          <DescriptionTitle ingredient>재료</DescriptionTitle>
-          <DescriptionContent ingredient>{ingredient}</DescriptionContent>
-        </Description>
-      </Article>
-      {imageUrls.map((url, idx) => (
-        <Article key={`${url + idx}`}>
-          <RecipeView>
-            <DescriptionTitle>step {idx + 1}</DescriptionTitle>
-            <RecipeImg src={url} alt="recipe" />
-          </RecipeView>
-          <Description>
-            <DescriptionContent>{recipeContent[idx + 2]}</DescriptionContent>
-          </Description>
-        </Article>
-      ))}
+      <Ingredient>
+        <IngredientTitle>재료</IngredientTitle>
+        <IngredientContent>{ingredient}</IngredientContent>
+      </Ingredient>
+      <RecipeWrap>
+        {imageUrls.map((url, idx) => (
+          <Conatiner key={`${url + idx}`}>
+            <RecipeView>
+              <RecipeDiv>
+                <RecipeImg src={url} alt="recipe" />
+              </RecipeDiv>
+            </RecipeView>
+            <Description>
+              <DescriptionContent>
+                <Step>{`step${idx + 1}`}</Step>
+                {recipeContent[idx + 2]}
+              </DescriptionContent>
+            </Description>
+          </Conatiner>
+        ))}
+      </RecipeWrap>
       <CommentContainer
         myId={myId}
         savedComments={savedComments}
@@ -122,93 +127,92 @@ function RecipeInfo({
 // };
 
 const RecipeContainer = styled.section`
-  :coral ;
+  position: relative;
   margin: 0 auto;
-  width: 720px;
+  width: 900px;
   height: 100%;
   display: flex;
   flex-direction: column;
   font-size: 1.4rem;
+  background: #f2f2f2;
+`;
+
+const ThumbnailWrap = styled.div`
+  width: 100%;
+  padding: 2rem;
 `;
 
 const Thumbnail = styled.img`
   position: relative;
-  max-width: 720px;
-  height: auto;
-  margin: 0 auto;
+  width: 100%;
+  object-fit: cover;
 `;
-const AvatarWrap = styled.span`
-  padding-top: 75px;
-  display: inline-block;
+const AvatarWrap = styled.div`
+  position: relative;
+  width: 120px;
 `;
 
 const Avatar = styled.img`
   position: absolute;
-  width: 120px;
+  transform: translate(300%, -50%);
+  width: 100%;
   heigth: 120px;
   border-radius: 50%;
-  margin-top: -123px;
-  margin-left: 300px;
 `;
 
 const UserName = styled.div`
   text-align: center;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 3rem;
+  font-weight: 600;
 `;
 
 const Title = styled.div`
-  font-weight: 500;
-  padding-top: 3rem;
-  padding-bottom: 0.5rem;
-  border-bottom: solid 1px #aeb4b7;
+  line-height: 1.5;
+  min-height: 300px;
+  padding 2rem 5rem;
+  padding-bottom: 0;
+  font-size: 2rem;
+  border-bottom: solid 10px #ffffff;
 `;
 
-const Article = styled.article`
+const RecipeDiv = styled.div`
   width: 100%;
-  display: flex;
-  border-bottom: solid 1px #aeb4b7;
+  height: 300px;
 `;
 
 const RecipeImg = styled.img`
   width: 300px;
-  height: 300px;
-  margin-right: 0.6rem;
+  min-height: 300px;
+  object-fit: cover;
 `;
 
 const Description = styled.div`
+  max-width: 55%;
   width: 100%;
 `;
 
-const DescriptionTitle = styled.div`
-  padding: 0.5rem 0;
-  ${({ ingredient }) =>
-    ingredient &&
-    `
-    padding-top: 1.7rem;
-    
-  `}
+const DescriptionContent = styled.div`
+  width: 100%;
+  line-height: 1.5;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 400;
+  overflow-wrap: break-word;
+  white-space: normal;
 `;
 
-const DescriptionContent = styled.div`
-  width: 21.5vw;
-  padding: 1rem;
-  padding-top: 3.8rem;
-  font-size: 1.2rem;
-  font-weight: 300;
-  overflow-wrap: break-word;
-  white-space: initial;
-
-  ${({ ingredient }) =>
-    ingredient &&
-    `
-    padding-top: 1.5rem;
-    min-height: 120px;
-    
-  `}
+const Rating = styled.span`
+  position: absolute;
+  color: #767676;
+  font-size: 1rem;
+  left: 0;
+  top: 25%;
+  z-index: 9999;
 `;
 
 const StarRating = styled.div`
+  position: relative;
+  left: 6%;
   margin-top: 0.2rem;
   background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/2605/star-rating-sprite.png")
     repeat-x;
@@ -231,6 +235,7 @@ const StarRating = styled.div`
 
 const SmallInfo = styled.div`
   font-size: 0.8rem;
+  padding-right: 4rem;
   color: #767676;
   text-align: right;
   height: 60px;
@@ -238,9 +243,11 @@ const SmallInfo = styled.div`
 `;
 
 const Introduction = styled.div`
-  margin-top: 1rem;
+  padding-top: 2rem;
   margin-bottom: 1rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  min-height: 128px;
+  border-bottom: solid 1px #aeb4b7;
   overflow-wrap: break-word;
   white-space: initial;
 `;
@@ -250,8 +257,8 @@ const Handler = styled.div`
   a,
   span {
     font-size: 1rem;
-    margin-left: 0.4rem;
     text-decoration: none;
+    margin-right: 1rem;
     color: #000000;
     &:hover {
       color: ${lighten(0.1, `#6f6f6f`)};
@@ -264,8 +271,9 @@ const Handler = styled.div`
   ${({ active }) =>
     active &&
     `
-    display: flex;
-    flex-direction: row-reverse;
+    display:block;
+    text-align: right;
+    margin-right: 4rem;
     `}
 `;
 
@@ -274,14 +282,54 @@ const DeleteContentBtn = styled.span`
 `;
 
 const RecipeView = styled.div`
+  flex: 1;
   padding: 1rem;
   padding-left: 0;
 `;
 
 const SmallInfoWrap = styled.div`
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+`;
+
+const Ingredient = styled.div`
+  padding-top: 2rem;
+  min-height: 12vh;
+  border-bottom: 10px solid #ffffff;
+`;
+
+const IngredientTitle = styled.p`
+  margin-top: 0;
+  text-align: center;
+  font-size: 2rem;
+`;
+
+const IngredientContent = styled.div`
+  min-height: 160px;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  width: 100%;
+  overflow-wrap: break-word;
+  white-space: normal;
+`;
+
+const RecipeWrap = styled.div`
+  padding: 3rem 5rem;
+`;
+
+const Conatiner = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;
+
+const Step = styled.div`
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #74b143;
+  padding-bottom: 1rem;
 `;
 
 export default RecipeInfo;
