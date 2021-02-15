@@ -162,7 +162,7 @@ const SearchDiv = styled.div`
   transition: 0.4s;
   &:hover {
     box-shadow: 0px 0px 0.5px 1px #000000;
-    width: 780px;
+    width: 700px;
 
     SearchButton {
       background-color: #fff;
@@ -248,10 +248,10 @@ const CategoryItemDiv = styled.div`
   display: none;
   position: relative;
   top: 50%;
-  left: -100%;
+  left: -107.5%;
   width: 160px;
   border: 1px solid #cccccc;
-  border-radius: 12px;
+  border-radius: 4px;
   background-color: #fafafa;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 `;
@@ -264,6 +264,7 @@ const CategoryItem = styled(Link)`
   color: #000000;
   border-bottom: 1px solid #eeeeee;
   &:hover {
+    border-radius: 4px;
     background: ${darken(0.2, `#fafafa`)};
   }
 `;
