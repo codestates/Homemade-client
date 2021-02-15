@@ -249,11 +249,11 @@ const MyrecipesTitle = styled.div`
 const CardContainer = styled.div`
   width: 300px;
   height: 400px;
-	margin-left: 10px;
-	border-radius: 20px;
+  margin-left: 10px;
+  border-radius: 20px;
   margin-right: 5px;
   box-shadow: 0px 0px 10px 3px #d4d0d0;
-  display: inline-block;d
+  display: inline-block;
 `;
 
 const Thumbnail = styled(Link)`
