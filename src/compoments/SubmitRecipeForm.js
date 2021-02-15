@@ -20,164 +20,167 @@ export default function SubmitRecipeForm({
   isError,
 }) {
   return (
-    <FormContainer>
+    <>
       <Title>
         <h3>레시피 등록</h3>
       </Title>
-      <RecipeWrap>
-        <RecipeInfoWrap>
-          <div>
-            <Label htmlFor="title">
-              레시피 제목
-              <Input
-                empty={isError && recipe.title === ""}
-                placeholder="예) 김치볶음밥 만들기"
-                type="text"
-                name="title"
-                value={recipe.title || ""}
-                onChange={e => handleRecipe(e)}
-              />
-            </Label>
-          </div>
-          <div>
-            <Label htmlFor="introduction">
-              레시피 소개
-              <Textarea
-                empty={isError && !recipe.introduction}
-                placeholder="이 레시피의 탄생배경을 적어주세요."
-                type="textarea"
-                name="introduction"
-                value={recipe.introduction || ""}
-                onChange={e => handleRecipe(e)}
-              />
-            </Label>
-          </div>
-          <div>
-            <Label htmlFor="ingredient">
-              레시피 재료
-              <Textarea
-                empty={isError && !recipe.ingredient}
-                placeholder="이 레시피의 재료를 적어주세요."
-                type="textarea"
-                name="ingredient"
-                value={recipe.ingredient || ""}
-                onChange={e => handleRecipe(e)}
-              />
-            </Label>
-          </div>
-          <div>
-            <Label htmlFor="category">카테고리</Label>
-            <Select
-              name="category"
-              id="recipeCategory"
-              onChange={e => handleRecipe(e)}
-            >
-              <option value="한식">한식</option>
-              <option value="중식">중식</option>
-              <option value="일식">일식</option>
-              <option value="양식">양식</option>
-              <option value="음료/술">음료/술</option>
-            </Select>
-          </div>
-        </RecipeInfoWrap>
-        <Image thumbnail>
-          <ImageWrap>
-            <ImageInput
-              ref={thumbnailRef}
-              name="thumbnail"
-              type="file"
-              accept="image/*"
-              onChange={e => handleChange(e, 0)}
-            />
-            <DeleteImageBtn
-              type="button"
-              onClick={() => deleteImage("thumbnail")}
-              active={previews.thumbnail}
-            />
-            <Preview
-              active={previews.thumbnail}
-              alt="test"
-              src={previews.thumbnail}
-            />
-            <PickImageBtn
-              thumbnail
-              active={!previews.thumbnail}
-              empty={isError && !previews.thumbnail}
-              type="button"
-              onClick={() => thumbnailRef.current.click()}
-            >
-              <PickImageIcon>
-                <AiOutlineCamera />
-              </PickImageIcon>
-              <Announcement>레시피의 대표사진을 등록해 주세요</Announcement>
-            </PickImageBtn>
-          </ImageWrap>
-        </Image>
-      </RecipeWrap>
-      <RecipeSequence>
-        {currentSteps.map((step, i) => {
-          return (
-            <StepWrap key={step}>
-              <Label htmlFor={`step${step}`}>
-                Step {step}
-                <Textarea
-                  empty={isError && !recipe[`step${step}`]}
-                  placeholder="예) 고기에 적당한 간을 해주세요."
-                  type="textarea"
-                  name={`step${step}`}
-                  value={recipe[`step${step}`] || ""}
+      <FormContainer>
+        <RecipeWrap>
+          <RecipeInfoWrap>
+            <div>
+              <Label htmlFor="title">
+                레시피 제목
+                <Input
+                  empty={isError && recipe.title === ""}
+                  placeholder="예) 김치볶음밥 만들기"
+                  type="text"
+                  name="title"
+                  value={recipe.title || ""}
                   onChange={e => handleRecipe(e)}
                 />
               </Label>
-              <Image>
-                <ImageWrap>
-                  <ImageInput
-                    ref={el => {
-                      stepRefs.current[i] = el;
-                    }}
-                    type="file"
-                    accept="image/*"
+            </div>
+            <div>
+              <Label htmlFor="introduction">
+                레시피 소개
+                <Textarea
+                  empty={isError && !recipe.introduction}
+                  placeholder="이 레시피의 탄생배경을 적어주세요."
+                  type="textarea"
+                  name="introduction"
+                  value={recipe.introduction || ""}
+                  onChange={e => handleRecipe(e)}
+                />
+              </Label>
+            </div>
+            <div>
+              <Label htmlFor="ingredient">
+                레시피 재료
+                <Textarea
+                  empty={isError && !recipe.ingredient}
+                  placeholder="이 레시피의 재료를 적어주세요."
+                  type="textarea"
+                  name="ingredient"
+                  value={recipe.ingredient || ""}
+                  onChange={e => handleRecipe(e)}
+                />
+              </Label>
+            </div>
+            <div>
+              <Label htmlFor="category">카테고리</Label>
+              <Select
+                name="category"
+                id="recipeCategory"
+                onChange={e => handleRecipe(e)}
+              >
+                <option value="한식">한식</option>
+                <option value="중식">중식</option>
+                <option value="일식">일식</option>
+                <option value="양식">양식</option>
+                <option value="음료/술">음료/술</option>
+              </Select>
+            </div>
+          </RecipeInfoWrap>
+          <Image thumbnail>
+            <ImageWrap>
+              <ImageInput
+                ref={thumbnailRef}
+                name="thumbnail"
+                type="file"
+                accept="image/*"
+                onChange={e => handleChange(e, 0)}
+              />
+              <DeleteImageBtn
+                type="button"
+                onClick={() => deleteImage("thumbnail")}
+                active={previews.thumbnail}
+              />
+              <Preview
+                active={previews.thumbnail}
+                alt="test"
+                src={previews.thumbnail}
+              />
+              <PickImageBtn
+                thumbnail
+                active={!previews.thumbnail}
+                empty={isError && !previews.thumbnail}
+                type="button"
+                onClick={() => thumbnailRef.current.click()}
+              >
+                <PickImageIcon>
+                  <AiOutlineCamera />
+                </PickImageIcon>
+                <Announcement>레시피의 대표사진을 등록해 주세요</Announcement>
+              </PickImageBtn>
+            </ImageWrap>
+          </Image>
+        </RecipeWrap>
+        <RecipeSequence>
+          {currentSteps.map((step, i) => {
+            return (
+              <StepWrap key={step}>
+                <Label htmlFor={`step${step}`}>
+                  Step {step}
+                  <Textarea
+                    empty={isError && !recipe[`step${step}`]}
+                    placeholder="예) 고기에 적당한 간을 해주세요."
+                    type="textarea"
                     name={`step${step}`}
-                    onChange={e => handleChange(e, step)}
+                    value={recipe[`step${step}`] || ""}
+                    onChange={e => handleRecipe(e)}
                   />
-                  <DeleteImageBtn
-                    type="button"
-                    onClick={() => deleteImage(`step${step}`)}
-                    active={previews[`step${step}`]}
-                  />
-                  <Preview
-                    active={previews[`step${step}`]}
-                    alt={`step${step}`}
-                    src={previews[`step${step}`]}
-                  />
-                  <PickImageBtn
-                    active={!previews[`step${step}`]}
-                    empty={isError && !previews[`step${step}`]}
-                    type="button"
-                    onClick={() => stepRefs.current[i].click()}
-                  >
-                    +
-                  </PickImageBtn>
-                </ImageWrap>
-              </Image>
-            </StepWrap>
-          );
-        })}
-      </RecipeSequence>
-      <AddStepBtn type="button" onClick={() => addStep()}>
-        순서 추가
-      </AddStepBtn>
-      <RecipeSaveWrap>
-        <ErrorMessage>{errorMessage || ""}</ErrorMessage>
-        <SaveBtn type="button" onClick={handleUpload}>
-          저장하기
-        </SaveBtn>
-      </RecipeSaveWrap>
-    </FormContainer>
+                </Label>
+                <Image>
+                  <ImageWrap>
+                    <ImageInput
+                      ref={el => {
+                        stepRefs.current[i] = el;
+                      }}
+                      type="file"
+                      accept="image/*"
+                      name={`step${step}`}
+                      onChange={e => handleChange(e, step)}
+                    />
+                    <DeleteImageBtn
+                      type="button"
+                      onClick={() => deleteImage(`step${step}`)}
+                      active={previews[`step${step}`]}
+                    />
+                    <Preview
+                      active={previews[`step${step}`]}
+                      alt={`step${step}`}
+                      src={previews[`step${step}`]}
+                    />
+                    <PickImageBtn
+                      active={!previews[`step${step}`]}
+                      empty={isError && !previews[`step${step}`]}
+                      type="button"
+                      onClick={() => stepRefs.current[i].click()}
+                    >
+                      +
+                    </PickImageBtn>
+                  </ImageWrap>
+                </Image>
+              </StepWrap>
+            );
+          })}
+        </RecipeSequence>
+        <AddStepBtn type="button" onClick={() => addStep()}>
+          순서 추가
+        </AddStepBtn>
+        <RecipeSaveWrap>
+          <ErrorMessage>{errorMessage || ""}</ErrorMessage>
+          <SaveBtn type="button" onClick={handleUpload}>
+            저장하기
+          </SaveBtn>
+        </RecipeSaveWrap>
+      </FormContainer>
+    </>
   );
 }
 
 const FormContainer = styled.div`
+  border-top: 1px solid gray;
   margin: 1rem auto;
   margin-bottom: 3rem;
   width: 60%;
@@ -190,8 +193,10 @@ const FormContainer = styled.div`
 
 const Title = styled.div`
   position: relative;
-  background-color: #f8f8f8;
+  background-color: #153450;
   padding: 0.5rem;
+  text-align: center;
+  color: white;
   border-radius: 12px;
   h3 {
     font-size: 1.5rem;

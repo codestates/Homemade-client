@@ -1,3 +1,4 @@
+/* eslint-disable react/style-prop-object */
 import React from "react";
 import styled from "styled-components";
 import Banner from "../compoments/Banner";
@@ -18,23 +19,23 @@ export default function Main() {
           <Section2Title>2월달 최고의 레시피</Section2Title>
           <Section2Wrap>
             <Card>
-              <CardImg src="../images/main.jpg" />
-              <CardTitle section2>묵은지 조림</CardTitle>
+              <CardImg src="../images/img5.jpg" />
+              <CardTitle section2>쿠스쿠스드 샐러드</CardTitle>
             </Card>
             <Section2Right>
               <Section2RightTop>
                 <Card>
-                  <CardImg src="../images/main.jpg" />
-                  <CardTitle section2>묵은지 조림</CardTitle>
+                  <CardImg src="../images/img6.jpg" />
+                  <CardTitle section2>레몬 탄산수</CardTitle>
                 </Card>
                 <Card>
-                  <CardImg src="../images/main.jpg" />
-                  <CardTitle section2>묵은지 조림</CardTitle>
+                  <CardImg src="../images/img7.jpg" />
+                  <CardTitle section2>수제 햄버거</CardTitle>
                 </Card>
               </Section2RightTop>
               <Card Section2Bottom>
-                <CardImg src="../images/main2.jpg" Section2Bottom />
-                <CardTitle section2>묵은지 조림</CardTitle>
+                <CardImg src="../images/img4.jpg" Section2Bottom />
+                <CardTitle section2>매운탕</CardTitle>
               </Card>
             </Section2Right>
           </Section2Wrap>
@@ -45,20 +46,20 @@ export default function Main() {
         <Section3Title>금주의 탑4 레시피</Section3Title>
         <Section3>
           <Card>
-            <CardImg src="../images/main.jpg" />
-            <CardTitle>맛있는 비프스튜</CardTitle>
+            <CardImg className="temp-img" src="../images/tempImg1.jpg" />
+            <CardTitle>징기즈칸 양고기</CardTitle>
           </Card>
           <Card>
-            <CardImg src="../images/main.jpg" />
-            <CardTitle>버섯 리조또</CardTitle>
+            <CardImg className="temp-img" src="../images/tempImg2.jpg" />
+            <CardTitle>굴비조림</CardTitle>
           </Card>
           <Card>
-            <CardImg src="../images/main.jpg" />
-            <CardTitle>문어 솥밥</CardTitle>
+            <CardImg className="temp-img" src="../images/tempImg3.jpg" />
+            <CardTitle>삼겹살 꼬치구이</CardTitle>
           </Card>
           <Card>
-            <CardImg src="../images/main.jpg" />
-            <CardTitle>묵은지 조림</CardTitle>
+            <CardImg className="temp-img" src="../images/tempImg4.jpg" />
+            <CardTitle>뜨끈뜨끈 우동</CardTitle>
           </Card>
         </Section3>
       </Conatiner>
@@ -114,6 +115,11 @@ const Section2 = styled.div`
   justify-content: space-around;
   margin: 0 auto;
   margin-bottom: 3rem;
+  ${({ Left }) =>
+    Left &&
+    `
+    height: fit-content;
+  `}
 `;
 
 const Section2Wrap = styled.div`
@@ -143,7 +149,7 @@ const Card = styled.div`
   flex: 1;
   display: flex;
   width: fit-content;
-  height: fit-content;
+  height: auto;
   flex-direction: column;
   border-radius: 12px;
   margin-left: 0.5rem;
@@ -152,20 +158,19 @@ const Card = styled.div`
   ${({ Section2Bottom }) =>
     Section2Bottom &&
     `
-    padding-bottom: 0.6rem;
   `}
 `;
 
 const CardImg = styled.img`
   width: 100%;
-  height: 88%;
+  height: 100%;
   border-radius: 12px;
   cursor: pointer;
 
   ${({ Section2Bottom }) =>
     Section2Bottom &&
     `
-    height: 86%;
+    height: 100%;
   `}
 `;
 
