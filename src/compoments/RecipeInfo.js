@@ -318,6 +318,7 @@ const IngredientContent = styled.div`
   min-height: 160px;
   padding-left: 5rem;
   padding-right: 5rem;
+  line-height: 1.5;
   width: 100%;
   overflow-wrap: break-word;
   white-space: normal;
