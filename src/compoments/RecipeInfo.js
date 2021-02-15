@@ -27,6 +27,7 @@ function RecipeInfo({
     username,
     avatarUrl,
     rate,
+    createdAt,
   } = recipe;
 
   const recipeContent = content.split("//");
@@ -92,6 +93,7 @@ function RecipeInfo({
             </Description>
           </Conatiner>
         ))}
+        <CreatedAt>{createdAt.slice(0, 10)}</CreatedAt>
       </RecipeWrap>
       <CommentContainer
         myId={myId}
@@ -304,6 +306,12 @@ const IngredientTitle = styled.p`
   margin-top: 0;
   text-align: center;
   font-size: 2rem;
+`;
+
+const CreatedAt = styled.p`
+  margin: 0;
+  text-align: right;
+  font-size: 0.8rem;
 `;
 
 const IngredientContent = styled.div`
