@@ -14,6 +14,7 @@ export default function Comment({
   deleteComment,
   updateComment,
 }) {
+  console.log(rate);
   const [activeUpdate, setActiveUpdate] = useState(false);
   const [updatedText, setUpdatedText] = useState(text);
   const starRate = Number(rate) * 20;
@@ -63,9 +64,9 @@ export default function Comment({
 }
 const CommentWrap = styled.div`
   width: 100%;
-  min-height: 80px;
+  min-height: 120px;
   margin: 0.2rem auto;
-  padding: 0.5rem 0.15rem;
+  padding: 1.5rem 4rem;
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid #aeb4b7;
@@ -80,7 +81,7 @@ const CommentWrap = styled.div`
 const UserName = styled.span`
   flex: 1;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.2rem;
 `;
 
 const CreatedAt = styled.span`
@@ -99,6 +100,7 @@ const UpdateInput = styled(Text.withComponent("input"))`
   &:focus {
     outline: none;
   }
+  background-color: #f2f2f2;
   width: 80%;
   border: none;
   border-bottom: 1px solid black;
@@ -154,11 +156,10 @@ const Update = styled.span`
 `;
 
 const UpdateBtn = styled.button`
-  margin: 0.4rem;
-  margin-bottom: 0;
   width: 48px;
-  height: 30px;
-  border-raidus: 4px;
+  height: 28px;
+  margin-bottom: 0;
+  border-raidus: 8px;
   cursor: pointer;
   border: none;
   color: white;
