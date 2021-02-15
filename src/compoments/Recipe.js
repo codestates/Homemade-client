@@ -16,7 +16,7 @@ export default function Recipe({ recipe }) {
         <RecipeTitle>{title || "무제"}</RecipeTitle>
         <WriterWrap>
           <Writer>글쓴이 : {nickname || "anonymous"}</Writer>
-          <Views>조회 수 : {views}</Views>
+          <Views>조회수 : {views}</Views>
         </WriterWrap>
       </SummaryConatiner>
     </RecipeContainer>
@@ -25,7 +25,7 @@ export default function Recipe({ recipe }) {
 
 const RecipeContainer = styled(Link)`
   width: 22vw;
-  height: 400px;
+  height: 440px;
   display: flex;
   flex-direction: column;
   margin: 1rem;
@@ -37,6 +37,7 @@ const RecipeContainer = styled(Link)`
 const ImageConatiner = styled.div`
   width: 100%;
   height: 70%;
+  min-height: 70%;
   max-height: 100%;
   border-bottom: 1px solid lightgray;
 `;
@@ -56,8 +57,10 @@ const SummaryConatiner = styled.div`
   margin-top: 0.3rem;
 `;
 
-const RecipeTitle = styled.p`
-  font-size: 1.3rem;
+const RecipeTitle = styled.div`
+  position: relative;
+  font-size: 1.2rem;
+  min-height: 46px;
   margin: 1rem 0 0 0;
   color: #333333;
   text-align: center;
@@ -65,7 +68,7 @@ const RecipeTitle = styled.p`
 `;
 
 const WriterWrap = styled.div`
-  padding-top: 20px;
+  padding-top: 10px;
   margin: 20px;
   border-top: 2px solid orange;
   font-size: 0.8rem;
