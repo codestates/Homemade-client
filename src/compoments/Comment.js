@@ -156,6 +156,9 @@ const Update = styled.span`
 `;
 
 const UpdateBtn = styled.button`
+  position: relative;
+  top: -3px;
+  margin-left: 0.2rem;
   width: 48px;
   height: 28px;
   margin-bottom: 0;

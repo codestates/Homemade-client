@@ -197,7 +197,6 @@ const Title = styled.div`
   padding: 0.5rem;
   text-align: center;
   color: white;
-  border-radius: 12px;
   h3 {
     font-size: 1.5rem;
   }

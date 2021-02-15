@@ -258,7 +258,7 @@ const CategoryItemDiv = styled.div`
 
 const CategoryItem = styled(Link)`
   padding: 12px 16px;
-  font-size: 1.3rem;
+  font-size: 1rem;
   text-decoration: none;
   display: block;
   color: #000000;
