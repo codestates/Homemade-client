@@ -15,8 +15,8 @@ export default function Recipe({ recipe }) {
       <SummaryConatiner>
         <RecipeTitle>{title || "무제"}</RecipeTitle>
         <WriterWrap>
-          <Writer>{nickname || "anonymous"}</Writer>
-          <Views>({views})</Views>
+          <Writer>글쓴이 : {nickname || "anonymous"}</Writer>
+          <Views>조회 수 : {views}</Views>
         </WriterWrap>
       </SummaryConatiner>
     </RecipeContainer>
@@ -24,26 +24,28 @@ export default function Recipe({ recipe }) {
 }
 
 const RecipeContainer = styled(Link)`
-  width: 18vw;
-  height: 16vh;
+  width: 22vw;
+  height: 400px;
   display: flex;
   flex-direction: column;
   margin: 1rem;
-  margin-bottom: 5rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  box-shadow: 0px 0px 10px 3px #d4d0d0;
   text-decoration: none;
+  border-radius: 20px;
 `;
 
 const ImageConatiner = styled.div`
   width: 100%;
+  height: 70%;
   max-height: 100%;
+  border-bottom: 1px solid lightgray;
 `;
 
 const Image = styled.img`
   width: 100%;
   height: 100%;
   transition: all 0.3s ease-in-out;
-
+  border-radius: 20px 20px 0px 0px;
   &:hover {
     transform: scale(1.05);
     filter: brightness(90%);
@@ -58,19 +60,27 @@ const RecipeTitle = styled.p`
   font-size: 1.3rem;
   margin: 1rem 0 0 0;
   color: #333333;
+  text-align: center;
+  font-weight: 800;
 `;
 
 const WriterWrap = styled.div`
-  margin-top: 0.4rem;
+  padding-top: 20px;
+  margin: 20px;
+  border-top: 2px solid orange;
   font-size: 0.8rem;
   color: #666666;
+  display: flex;
 `;
 
 const Writer = styled.span`
   font-size: 0.8rem;
+  flex: 1;
 `;
 
 const Views = styled.span`
   padding-left: 0.3rem;
   font-size: 0.8rem;
+  flex: 1;
+  text-align: right;
 `;
