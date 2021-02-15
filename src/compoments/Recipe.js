@@ -48,7 +48,6 @@ const Image = styled.img`
   transition: all 0.3s ease-in-out;
   border-radius: 20px 20px 0px 0px;
   &:hover {
-    transform: scale(1.05);
     filter: brightness(90%);
   }
 `;
