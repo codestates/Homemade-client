@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { darken, lighten } from "polished";
 import { AiOutlineSearch, AiOutlineMenu, AiOutlineUser } from "react-icons/ai";
 import { HiOutlinePencil } from "react-icons/hi";
@@ -16,6 +16,12 @@ export default function Test({ isLogin, signInHanlder, handleLogOut }) {
 
   const categories = ["한식", "중식", "양식", "일식", "음료/술"];
 
+  const history = useHistory();
+  const onKeyPress = e => {
+    if (e.key === "Enter") {
+      history.push(`/search?q=${keyword}&page=1`);
+    }
+  };
   return (
     <>
       <TopBar>
@@ -23,63 +29,58 @@ export default function Test({ isLogin, signInHanlder, handleLogOut }) {
           <Logo src="../images/logo.png" />
         </LogoWrapper>
         <MenuContainer>
-          <MenuWrapper>
-            <LeftDiv />
-            <CenterDiv>
-              <CateogryButtonDiv>
-                <CategoryButton />
-                <CategoryHover />
-                <CategoryItemDiv>
-                  {categories.map((category, idx) => (
-                    <CategoryItem
-                      key={nanoid()}
-                      to={`/search?category=${categories[idx]}&page=1`}
-                    >
-                      {category}
-                    </CategoryItem>
-                  ))}
-                </CategoryItemDiv>
-              </CateogryButtonDiv>
-              <SearchDiv>
-                <Search
-                  name="keyword"
-                  value={keyword}
-                  onChange={e => setKeyword(e.target.value)}
-                  type="text"
-                  placeholder="찾고 싶은 레시피를 검색해 보세요!"
-                />
-                <SearchLink to={`/search?q=${keyword}&page=1`}>
-                  <SearchButton />
-                </SearchLink>
-              </SearchDiv>
-            </CenterDiv>
-            <EmptyDiv2 />
-            <RightDiv>
-              <MyPageLink to="/userinfo">
-                <MyPage />
-              </MyPageLink>
-              <WriteLink to="/postrecipe">
-                <Write />
-              </WriteLink>
-              {isLogin ? (
-                <>
-                  <AccessBtn onClick={() => handleLogOut()}>
-                    <AccessLink>로그아웃</AccessLink>
-                  </AccessBtn>
-                </>
-              ) : (
-                <>
-                  <AccessBtn onClick={() => setShowLogin(true)}>
-                    <AccessLink>로그인</AccessLink>
-                  </AccessBtn>
-                  <AccessBtn onClick={() => setShowSignUp(true)}>
-                    <AccessLink>회원가입</AccessLink>
-                  </AccessBtn>
-                </>
-              )}
-            </RightDiv>
-            <EmptyDivHalf />
-          </MenuWrapper>
+          <CenterDiv>
+            <CateogryButtonDiv>
+              <CategoryButton />
+              <CategoryHover />
+              <CategoryItemDiv>
+                {categories.map((category, idx) => (
+                  <CategoryItem
+                    key={nanoid()}
+                    to={`/search?category=${categories[idx]}&page=1`}
+                  >
+                    {category}
+                  </CategoryItem>
+                ))}
+              </CategoryItemDiv>
+            </CateogryButtonDiv>
+            <SearchDiv>
+              <Search
+                autocomplete="nope"
+                name="field"
+                value={keyword}
+                onChange={e => setKeyword(e.target.value)}
+                onKeyPress={onKeyPress}
+                type="text"
+                placeholder="찾고 싶은 레시피를 검색해 보세요!"
+              />
+              <SearchLink to={`/search?q=${keyword}&page=1`}>
+                <SearchButton />
+              </SearchLink>
+            </SearchDiv>
+            <MyPageLink to="/userinfo">
+              <MyPage />
+            </MyPageLink>
+            <WriteLink to="/postrecipe">
+              <Write />
+            </WriteLink>
+            {isLogin ? (
+              <>
+                <AccessBtn onClick={() => handleLogOut()}>
+                  <AccessLink>로그아웃</AccessLink>
+                </AccessBtn>
+              </>
+            ) : (
+              <>
+                <AccessBtn onClick={() => setShowLogin(true)}>
+                  <AccessLink>로그인</AccessLink>
+                </AccessBtn>
+                <AccessBtn onClick={() => setShowSignUp(true)}>
+                  <AccessLink>회원가입</AccessLink>
+                </AccessBtn>
+              </>
+            )}
+          </CenterDiv>
         </MenuContainer>
       </TopBar>
       <LoginForm
@@ -92,14 +93,6 @@ export default function Test({ isLogin, signInHanlder, handleLogOut }) {
   );
 }
 
-const EmptyDivHalf = styled.div`
-  flex: 0.5;
-`;
-
-const EmptyDiv2 = styled.div`
-  flex: 2;
-`;
-
 const TopBar = styled.div`
   position: relative;
   background: #ffffff;
@@ -108,6 +101,7 @@ const TopBar = styled.div`
   height: 14vh;
   font-size: 2rem;
   display: flex;
+  box-shadow: 0px 0px 10px 3px #d4d0d0;
 `;
 
 const MenuContainer = styled.div`
@@ -117,56 +111,27 @@ const MenuContainer = styled.div`
   flex-direction: column;
 `;
 
-const MenuWrapper = styled.div`
-  display: flex;
-  flex: 1;
-`;
-
-const LeftDiv = styled.div`
-  flex: 0.3;
-
-  ${({ bottom }) =>
-    bottom &&
-    `
-    flex: 9.8;
-  `}
-`;
-
-const RightDiv = styled.div`
-  flex: 2.5;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  background: #ffffff;
-`;
-
 const CenterDiv = styled.div`
   flex: 5;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: center;
   background: #ffffff;
+  padding-right: 5vw;
+  div,
+  a {
+    margin-right: 0.4rem;
+  }
 `;
 
 const SearchDiv = styled.div`
   padding: 10px;
-  position: absolute;
-  top: 69%;
-  left: 30%;
-  transform: translate(0%, -100%);
   height: 52px;
   width: 52px;
   background-color: #fff;
   border: 1px solid #dddddd;
   border-radius: 30px;
-  transition: 0.4s;
-  &:hover {
-    box-shadow: 0px 0px 0.5px 1px #000000;
-    width: 700px;
-
-    SearchButton {
-      background-color: #fff;
-    }
+  width: 55vw;
 
     Search {
       width: 240px;
@@ -186,13 +151,8 @@ const Search = styled.input`
   float: left;
   font-size: 1rem;
   line-height: 30px;
-  transition: 0.4s;
-  opacity: 0;
-  &:hover {
-    opacity: 1;
-    &:focus {
-      opacity: 1;
-    }
+  &:focus {
+    outline-width: 0;
   }
 `;
 
@@ -202,7 +162,7 @@ const SearchLink = styled(Link)`
 `;
 
 const SearchButton = styled(AiOutlineSearch)`
-  transform: translate(7.5%, -92%);
+  transform: translate(7.5%, -10%);
   text-decoration: none;
   float: right;
   width: 36px;
@@ -216,9 +176,6 @@ const SearchButton = styled(AiOutlineSearch)`
 `;
 
 const CateogryButtonDiv = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
   height: 52px;
   width: 52px;
   transition: 0.4s;
@@ -248,7 +205,6 @@ const CategoryItemDiv = styled.div`
   display: none;
   position: relative;
   top: 50%;
-  left: -107.5%;
   width: 160px;
   border: 1px solid #cccccc;
   border-radius: 4px;
@@ -298,6 +254,7 @@ const MyPage = styled(AiOutlineUser)`
 `;
 
 const WriteLink = styled(Link)`
+  margin-left: 0.5rem;
   position: relative;
   height: 52px;
   width: 52px;
@@ -318,13 +275,12 @@ const Write = styled(HiOutlinePencil)`
 `;
 
 const AccessBtn = styled.button`
-  position: relative;
+  margin-left: .5rem;
   height: 52px;
   text-align: center;
   vertical-align: middle;
   border: 1px solid #dddddd;
   border-radius: 16px;
-  display: flex;
   font-size: 1rem;
   padding: 1rem;
   font-weight: 600;
@@ -343,16 +299,15 @@ const AccessBtn = styled.button`
 
 const AccessLink = styled(Link)`
   text-decoration: none;
+  text-align: center;
   color: white;
 `;
 
 const LogoWrapper = styled(Link)`
-  position: absolute;
-  top: 50%;
-  transform: translate(40.5%, -40%) scale(1.5);
-  flex: 18;
-  width: 160px;
-  height: auto;
+  flex: 20;
+  min-width: 160px;
+  height: 14vh;
+  margin-left: 4%;
 `;
 
 const Logo = styled.img`

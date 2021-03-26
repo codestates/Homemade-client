@@ -105,15 +105,14 @@ export default function RecipesContainer() {
             </Wrap>
           </Result>
 
-					{
-						recipeList.length > 0 ?
-          <RecipeList recipes={recipeList} />
-						:
-						<Icon>
-							<GrGremlin size="333" color="#fff"/>
-							<Message>먹을게 하나도 없네..</Message>
-						</Icon>
-					}
+          {recipeList.length > 0 ? (
+            <RecipeList recipes={recipeList} />
+          ) : (
+            <Icon>
+              <GrGremlin size="333" color="#fff" />
+              <Message>먹을게 하나도 없네..</Message>
+            </Icon>
+          )}
           <PageContainer>
             <PageWrap>
               {firstPage === 1 ? (
@@ -150,7 +149,7 @@ export default function RecipesContainer() {
   );
 }
 const Result = styled.div`
-  width: 80vw;
+  width: 87.5vw;
   margin: 0 auto;
   background: black;
   border-radius: 20px;
@@ -160,7 +159,7 @@ const Result = styled.div`
 
 const Wrap = styled.div`
 	display: flex;
-	margin-top:55px;
+	margin-top: 55px;
   flex-direction: row;
   position: relative;
   font-size: 1.2rem;
@@ -233,10 +232,10 @@ const SortOrder = styled.button`
   font-weight: 400;
   min-width: 80px;
   cursor: pointer;
-	border-radius: 12px;
-	background:black;
-	outline: 0;
-	color:white;
+  border-radius: 12px;
+  background: black;
+  outline: 0;
+  color: white;
   height: 28px;
   border: none;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
@@ -250,8 +249,10 @@ const SortOrder = styled.button`
 `;
 
 const Icon = styled.div`
-text-align: -webkit-center;
-margin-top: 100px;
+  text-align: -webkit-center;
+  margin-top: 100px;
 `;
 
-const Message = styled.p`font-size:2rem;`;
+const Message = styled.p`
+  font-size: 2rem;
+`;
