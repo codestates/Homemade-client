@@ -30,5 +30,5 @@ const ListContainer = styled.div`
 
 const Container = styled.div`
   margin: 0 auto;
-  width: fit-content;
+  width: 92.5vw;
 `;

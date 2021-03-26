@@ -119,6 +119,5 @@ const Container = styled.div`
   width: 100vw;
   min-height: 100vh;
   margin: 0 auto;
-  border-top: 1px solid gray;
 `;
 export default App;

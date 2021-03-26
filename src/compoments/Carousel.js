@@ -42,7 +42,7 @@ export default function Carousel() {
 
 const Wrapper = styled.div`
   max-width: 92.5%;
-  width: 100%;
+  width: 80%;
   min-height: 30vh;
   position: absolute;
   top: 50%;
@@ -65,7 +65,7 @@ const Prev = styled.div`
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  left: 0;
+  left: -10px;
 `;
 
 const Next = styled.div`
@@ -73,5 +73,5 @@ const Next = styled.div`
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  right: 0;
+  right: -10px;
 `;

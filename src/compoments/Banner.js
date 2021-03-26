@@ -11,7 +11,7 @@ export default function Banner({ url }) {
 }
 
 const BannerWrap = styled.div`
-  width: 100%;
+  width: 87.5%;
   height: 60vh;
   margin: 0 auto;
 `;

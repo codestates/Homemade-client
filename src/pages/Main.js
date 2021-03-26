@@ -18,26 +18,15 @@ export default function Main() {
         <Section2>
           <Section2Title>2월달 최고의 레시피</Section2Title>
           <Section2Wrap>
-            <Card>
-              <CardImg src="../images/img5.jpg" />
+            <Card background="../images/img5.jpg">
               <CardTitle section2>쿠스쿠스드 샐러드</CardTitle>
             </Card>
-            <Section2Right>
-              <Section2RightTop>
-                <Card>
-                  <CardImg src="../images/img6.jpg" />
-                  <CardTitle section2>레몬 탄산수</CardTitle>
-                </Card>
-                <Card>
-                  <CardImg src="../images/img7.jpg" />
-                  <CardTitle section2>수제 햄버거</CardTitle>
-                </Card>
-              </Section2RightTop>
-              <Card Section2Bottom>
-                <CardImg src="../images/img4.jpg" Section2Bottom />
-                <CardTitle section2>매운탕</CardTitle>
-              </Card>
-            </Section2Right>
+            <Card background="../images/img6.jpg">
+              <CardTitle section2>레몬 탄산수</CardTitle>
+            </Card>
+            <Card background="../images/img7.jpg">
+              <CardTitle section2>수제 햄버거</CardTitle>
+            </Card>
           </Section2Wrap>
         </Section2>
       </Conatiner>
@@ -83,7 +72,7 @@ const SliderConatiner = styled.div`
 const Title = styled.p`
   font-size: 1.4rem;
   font-weight: 600;
-  margin-left: 5%;
+  margin-left: 11.25%;
 `;
 
 const Conatiner = styled.div`
@@ -99,15 +88,17 @@ const Section3Title = styled.p`
   color: #f2701d;
   margin-left: 5%;
   margin-top: 2rem;
+  padding-left: 6%;
 `;
 
 const Section3 = styled.div`
-  width: 90%;
-  height: auto;
+  width: 78.75%;
+  height: 20vh;
   display: flex;
   justify-content: space-around;
   margin: 1.5rem auto;
   margin-bottom: 3rem;
+  padding-right: 2rem;
 `;
 
 const Section2 = styled.div`
@@ -124,7 +115,7 @@ const Section2 = styled.div`
 
 const Section2Wrap = styled.div`
   display: flex;
-  width: 90%;
+  width: 78.75%;
   margin: 0 auto;
 `;
 
@@ -134,36 +125,41 @@ const Section2Title = styled(Section3Title)`
   font-size: 1.4rem;
 `;
 
-const Section2Right = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-`;
+// const Section2Right = styled.div`
+//   flex: 1;
+//   display: flex;
+//   flex-direction: column;
+// `;
 
-const Section2RightTop = styled.div`
-  display: flex;
-  flex: 1;
-`;
+// const Section2RightTop = styled.div`
+//   display: flex;
+//   flex: 1;
+// `;
 
 const Card = styled.div`
+  background-size: contain;
+  background-repeat: no-repeat;
   flex: 1;
   display: flex;
-  width: fit-content;
-  height: auto;
+  width: 30%;
+  height: 70vh;
   flex-direction: column;
   border-radius: 12px;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+  margin-bottom: 3rem;
+  padding-left: 0.5rem;
 
-  ${({ Section2Bottom }) =>
-    Section2Bottom &&
+  ${({ background }) =>
+    background &&
     `
+    background-image: url(${background})
   `}
 `;
 
 const CardImg = styled.img`
   width: 100%;
-  height: 100%;
+  height: 50vh;
   border-radius: 12px;
   cursor: pointer;
 
