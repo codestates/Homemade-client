@@ -66,17 +66,13 @@ export default function Test({ isLogin, signInHanlder, handleLogOut }) {
             </WriteLink>
             {isLogin ? (
               <>
-                <AccessBtn onClick={() => handleLogOut()}>
-                  <AccessLink>로그아웃</AccessLink>
-                </AccessBtn>
+                <AccessBtn onClick={() => handleLogOut()}>로그아웃</AccessBtn>
               </>
             ) : (
               <>
-                <AccessBtn onClick={() => setShowLogin(true)}>
-                  <AccessLink>로그인</AccessLink>
-                </AccessBtn>
+                <AccessBtn onClick={() => setShowLogin(true)}>로그인</AccessBtn>
                 <AccessBtn onClick={() => setShowSignUp(true)}>
-                  <AccessLink>회원가입</AccessLink>
+                  회원가입
                 </AccessBtn>
               </>
             )}
@@ -106,7 +102,7 @@ const TopBar = styled.div`
 
 const MenuContainer = styled.div`
   width: 100%;
-  flex: 100;
+  flex: 5;
   display: flex;
   flex-direction: column;
 `;
@@ -275,15 +271,16 @@ const Write = styled(HiOutlinePencil)`
 `;
 
 const AccessBtn = styled.button`
-  margin-left: .5rem;
   height: 52px;
-  text-align: center;
-  vertical-align: middle;
+  width: 96px;
+  margin-left: .5rem;
   border: 1px solid #dddddd;
   border-radius: 16px;
+  padding: 0.5rem .5rem;
   font-size: 1rem;
-  padding: 1rem;
   font-weight: 600;
+  text-align: center;
+  cursor: pointer;
   background: #000000;
   color: #ffffff;
   &:hover {
@@ -297,23 +294,18 @@ const AccessBtn = styled.button`
   }
 `;
 
-const AccessLink = styled(Link)`
-  text-decoration: none;
-  text-align: center;
-  color: white;
-`;
-
 const LogoWrapper = styled(Link)`
-  flex: 20;
+  flex: 1;
   min-width: 160px;
-  height: 14vh;
+  height: 12vh;
+  padding: 1vh;
+  margin: auto 0;
   margin-left: 4%;
 `;
 
 const Logo = styled.img`
   width: 100%;
   max-height: 100%;
-  object-fit: cover;
 `;
 
 Test.propTypes = {
